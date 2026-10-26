@@ -121,7 +121,9 @@ on the page, in the title and across each chart, and must not be shared as a res
 
 `.github/workflows/scheduled-reports.yml` runs `uwmc-monitor run --fetch` on GitHub each
 quarter and attaches the report to the run (Actions, then scheduled-reports). Start one any
-time with **Run workflow**.
+time with **Run workflow**. **Known limitation (October 2026):** data.cms.gov refused the
+first run from GitHub's servers with HTTP 403. If that persists, run `uwmc-monitor run --fetch`
+from your own computer, or use the manual download steps below; the run summary says so.
 
 ### Teach-back findings beside the discharge measures
 

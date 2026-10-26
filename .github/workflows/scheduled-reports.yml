@@ -42,7 +42,7 @@ jobs:
       - name: Fetch the current CMS release and build the UWMC report
         run: |
           set -o pipefail
-          uwmc-monitor run --fetch --out output | tee run.txt
+          uwmc-monitor run --fetch --out output 2>&1 | tee run.txt
       - name: Summary
         if: always()
         run: |
@@ -51,7 +51,12 @@ jobs:
             echo '```'
             cat run.txt 2>/dev/null || echo "run did not produce output"
             echo '```'
-            echo "Download the **quality-monitor-report** artifact below. Spot-check three values against Medicare Care Compare before sharing."
+            if grep -q "403" run.txt 2>/dev/null; then
+              echo "**data.cms.gov refused this request from GitHub's servers (HTTP 403).** This is CMS access policy, not a bug in the report."
+              echo "Run it from your own computer instead: \`uwmc-monitor run --fetch\` (TESTING.md, Quality Signal Monitor), or download the three CSVs from data.cms.gov by hand (quality-signal-monitor/README.md, Offline or manual downloads)."
+            else
+              echo "Download the **quality-monitor-report** artifact below. Spot-check three values against Medicare Care Compare before sharing."
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
@@ -85,7 +90,7 @@ jobs:
       - name: Search PubMed and ClinicalTrials.gov and build the digest
         run: |
           set -o pipefail
-          ep-copilot run --days 30 | tee run.txt
+          ep-copilot run --days 30 2>&1 | tee run.txt
       - name: Summary
         if: always()
         run: |
