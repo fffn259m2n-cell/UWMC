@@ -66,7 +66,7 @@ sponsor-maintained. Full list: [limitations.md](limitations.md).
 
 Independent, unpaid contribution. Not requested or endorsed by UW Medicine. MIT-licensed
 code; use, change or discard it freely. Feedback: open an issue in the repository
-**[CONFIRM: repository URL]** or reply to the message below.
+https://github.com/fffn259m2n-cell/UWMC (currently private; **[CONFIRM]** visibility before sending) or reply to the message below.
 
 ## Draft message to your PI or senior EP research colleague
 

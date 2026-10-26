@@ -60,7 +60,7 @@ need direction rules; only facility ID 500008 is covered. Full list:
 
 ## Links
 
-- Code: **[CONFIRM: repository URL once published]**
+- Code: https://github.com/fffn259m2n-cell/UWMC/tree/main/quality-signal-monitor (currently **private**; **[CONFIRM]** make it public, or share access, before sending)
 - Report: **[CONFIRM: link to the PDF generated from real CMS data]**
 - Methodology: [`methodology.md`](methodology.md)
 
