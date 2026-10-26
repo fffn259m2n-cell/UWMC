@@ -70,6 +70,7 @@ teachback check-content                                                # validat
 | Screen every message for emergency, crisis, medication-change and diagnosis requests first | Perform triage; the emergency screen is a conservative prototype safeguard |
 | Set in-app reminders only for documented tasks, at times the patient chooses | Invent schedules or deadlines, or send messages to phones |
 | Score rewrites and translations for preserved numbers, negations, 911 and medicine names | Certify any text as safe; every verdict ends with "review still required" |
+| Say plainly that an automatic check cannot confirm understanding | Reassure: no result is shown as "all good", and a 911/988 strip is on every screen |
 
 ## How it works
 
@@ -91,7 +92,7 @@ Details: [docs/architecture.md](docs/architecture.md), [docs/clinical_safety.md]
 ## Testing
 
 ```bash
-pip install -e ".[dev]" && pytest          # 164 tests
+pip install -e ".[dev]" && pytest          # 247 tests
 teachback serve --port 8765 &
 node scripts/e2e_check.mjs http://127.0.0.1:8765    # needs playwright + axe-core (npm)
 ```
@@ -110,13 +111,21 @@ hand-written plain-language text. The antibiotic rewrite had dropped the drug na
 strength, and a negation-scope bug misread a list of drugs to avoid. Both were fixed. That
 is the kind of slip the tool is meant to catch.
 
-**Independent adversarial review.** A separate reviewer tried to break the safety screen,
-teach-back checker and evaluator, and reproduced 12 findings (9 rated critical). Examples:
-"my chest feels heavy" was not treated as an emergency; "Never call 911 for chest pain"
-counted as covering the instruction; "take 2 tablets twice a day" and swapped weight
-thresholds passed the evaluator. All 12 were fixed. Every reproduced case is now a regression
-test (`tests/test_review_regressions.py`), and the evaluator cases were added to the benchmark.
-A second review round is recommended after any rule change.
+**Measured accuracy.** The honest numbers come from labelled cases written by independent
+reviewers who did not see the rules, scored *before* any tuning. They are in
+[docs/evaluation_results.md](docs/evaluation_results.md). In short: this is a rule-based
+prototype that misses some dangerous misunderstandings and some emergencies phrased in
+unexpected ways. It is an aid for clinician-led teach-back and a research baseline, **never
+a safety net**.
+
+```bash
+teachback evaluate-set eval/dev_set.json --show-misses      # development set (tuned on; regression check)
+teachback evaluate-set my_cases.json --show-misses          # your own labelled cases (format: REVIEW.md)
+```
+
+**Review history.** Three rounds of independent adversarial review found and fixed
+emergency-wording gaps, negation tricks, and evaluator gaps; every reproduced case is a
+regression test or part of the development set. See [docs/clinical_safety.md](docs/clinical_safety.md).
 
 ## Documents
 

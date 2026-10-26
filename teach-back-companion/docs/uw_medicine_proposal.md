@@ -78,8 +78,10 @@ instructions change? Would the evaluator run on vendor AI output, and where?
 
 ## 15. Limitations and approvals
 
-Not clinically validated; keyword-based matching; English patient text only; draft education
-content. Any real use requires a clinical sponsor, IT, privacy and security review, clinical-
+Not clinically validated; rule-based matching that misses some dangerous misunderstandings
+and unusually phrased emergencies (independent measurements in `evaluation_results.md`);
+English patient text only; draft education content. Positioned as an aid to clinician-led
+teach-back and a research baseline, never as a safety net. Any real use requires a clinical sponsor, IT, privacy and security review, clinical-
 safety sign-off, an IRB determination for evaluation, and regulatory assessment.
 
 ## Who to approach **[CONFIRM before sending]**

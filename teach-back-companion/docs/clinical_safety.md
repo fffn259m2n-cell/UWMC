@@ -26,11 +26,32 @@ doses, interpret a patient's own results, triage, or monitor.
   understanding, negation tricks ("no problem taking ibuprofen"), and evaluator gaps
   (tablet counts, added doses, threshold periods, limit direction, negated 911). All
   were fixed and locked in by `tests/test_review_regressions.py`.
+- Second review round (October 2026): further negation and emergency-wording gaps; fixed,
+  locked in by `tests/test_review_round2.py`.
+- Third round (October 2026): about 540 reviewer-written cases showed the rules still
+  missed about half of dangerous teach-back explanations. Response: a shared
+  meaning-change module (`consistency.py`), a labelled development set
+  (`eval/dev_set.json`), and interface changes so nothing reassures (below).
+- Held-out round 1 (October 2026): 360 independently written cases scored before tuning;
+  results in [evaluation_results.md](evaluation_results.md). The cases were then retired
+  into the development set and the exposed patterns fixed.
+
+## Interface safeguards against false reassurance
+
+- A 911 / 988 strip is visible on every screen.
+- Teach-back results never use an "all good" colour. Every result says the automatic check
+  cannot confirm understanding and asks the patient to review with their nurse, pharmacist
+  or care team.
+- Covered points are labelled "Points the tool recognized", not "You understood".
+- Fidelity verdicts without flags say "this is not evidence the text is correct" and that
+  clinician review is still required.
 
 ## Known limits
 
 - The emergency screen is keyword-based. It will miss unusual phrasing and will sometimes
-  trigger on questions about symptoms. It is not validated and the interface says so.
+  trigger on questions about symptoms. On independent text it missed about 1 in 6
+  emergencies before tuning (see evaluation_results.md). It is not validated and the
+  interface says so.
 - Teach-back matching is phrase-based. Unusual but correct explanations may show as "not
   mentioned"; misunderstandings not anticipated in the plan's patterns may be missed, except
   number mismatches and lost "do not" statements, which are detected generally.
