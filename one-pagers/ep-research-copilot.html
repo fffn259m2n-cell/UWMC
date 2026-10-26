@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>EP Research Copilot — one-page summary</title><link rel="stylesheet" href="_style.css"></head><body>
+<div class="kicker">Independent open-source contribution · public data only</div>
+<h1>EP Research Copilot</h1>
+<p class="lede">A monthly, one-command digest of new AF-ablation literature and registered trials, with evidence pulled from each abstract next to the exact sentence it came from.</p>
+<div class="grid">
+<div><h2>What it does</h2><ul>
+<li><b>Finds new PubMed articles</b> for a saved, documented query (by PubMed entry date, so nothing indexed between runs is missed); removes duplicates.</li>
+<li><b>Sorts them for review</b> by topic: pulsed-field ablation, recurrence, monitoring, repeat ablation, safety. Nothing is discarded.</li>
+<li><b>Extracts from abstracts</b>: design terms, sample size, interventions, follow-up, outcome statements, effect estimates and p-values, trial IDs and limitations. Each comes with its source sentence.</li>
+<li><b>Tracks ClinicalTrials.gov</b>: what changed since last month (status, enrollment, outcomes, dates, results flag, Washington State sites).</li></ul></div>
+<div><h2>What it does not do</h2><ul>
+<li>No systematic review, appraisal or clinical recommendations.</li>
+<li>No full text; abstracts only, labelled as such.</li>
+<li>No patient or institutional data; no login; no paid services.</li></ul>
+<h2>Status</h2><ul>
+<li>54 automated tests; CI on Python 3.11 to 3.13.</li>
+<li>Sample run on real records: 26 PubMed articles (one week) and 396 tracked trials.</li>
+<li>Screening precision and recall will be measured from reviewer decisions; it is not yet measured.</li></ul></div></div>
+<div class="box"><b>Try it:</b> <code>pip install -e . &amp;&amp; ep-copilot run</code> (about 1 minute), then open <code>output/ep_research_digest.html</code>. Monthly upkeep: about 30 minutes. New topics are a configuration edit.<br><b>Code:</b> {{REPO_URL}}/tree/main/ep-research-copilot</div>
+<p class="note">Independent, unpaid project. Not affiliated with or endorsed by UW Medicine. MIT-licensed code; abstracts and registry text remain the property of their owners. Data courtesy of the U.S. National Library of Medicine (PubMed) and ClinicalTrials.gov.</p>
+</body></html>

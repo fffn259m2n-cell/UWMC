@@ -101,6 +101,11 @@ The repository is currently **private** and the work sits on branch
 - **Key message:** "Epic's assistant explains records. This checks whether patients
   understood, and whether simplified or translated instructions still say the same thing."
 
+### One-page summaries
+`one-pagers/pdf/*.pdf`, one per project, are ready to attach to an introduction email.
+After renaming or publishing the repository, rebuild them with the final link:
+`python one-pagers/build.py --repo-url https://github.com/<owner>/<new-name> --qsm-status "generated <date> from the <month> CMS release"`.
+
 ### 2.4 Message rules (all three)
 - Lead with their benefit, in one sentence. Then what it is, then what you are asking.
 - State clearly: independent, unpaid, public or synthetic data only, not affiliated or endorsed.

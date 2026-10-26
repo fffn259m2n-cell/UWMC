@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>UWMC Quality Signal Monitor — one-page summary</title><link rel="stylesheet" href="_style.css"></head><body>
+<div class="kicker">Independent open-source contribution · public CMS data only</div>
+<h1>UWMC Quality Signal Monitor</h1>
+<p class="lede">A reproducible report on UW Medical Center's publicly reported HCAHPS patient-experience results, led by discharge and care-transition measures, compared with matched national values after every CMS refresh.</p>
+<div class="grid">
+<div><h2>What it does</h2><ul>
+<li><b>Downloads</b> the official CMS datasets (HCAHPS Hospital, HCAHPS National, Hospital General Information) and records URLs, dates and checksums.</li>
+<li><b>Verifies</b> facility 500008 by name, city and state before analysing anything.</li>
+<li><b>Compares</b> each measure with the national value only when the measure ID, reporting window and response category all match; otherwise it explains why not.</li>
+<li><b>Leads with</b> discharge information, medicines, care coordination and symptom information; accounts for the 2025 HCAHPS survey update.</li>
+<li><b>Lists data issues</b>: suppression, footnotes, small samples, schema changes.</li></ul></div>
+<div><h2>What it does not do</h2><ul>
+<li>No statistical significance claims (CMS publishes no standard errors).</li>
+<li>No causes, quality judgements or clinical recommendations.</li>
+<li>No patient-level data; no access to UW systems.</li></ul>
+<h2>Status</h2><ul>
+<li>74 automated tests; CI on Python 3.11 to 3.13.</li>
+<li>Real-data report: {{QSM_STATUS}}</li></ul></div></div>
+<div class="box"><b>Try it:</b> <code>pip install -e . &amp;&amp; uwmc-monitor run --fetch</code>, then open <code>output/uwmc_quality_report.html</code>. Re-run after each CMS refresh; keep earlier downloads to show change over time.<br><b>Code:</b> {{REPO_URL}}/tree/main/quality-signal-monitor</div>
+<p class="note">Independent, unpaid project. Not affiliated with or endorsed by UW Medicine or CMS. Descriptive comparisons of public data; please verify against Medicare Care Compare before use. MIT license.</p>
+</body></html>
