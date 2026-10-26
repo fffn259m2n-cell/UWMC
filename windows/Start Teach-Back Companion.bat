@@ -14,8 +14,6 @@ call ".venv\Scripts\activate.bat"
 python -c "import teachback, ep_copilot, uwmc_monitor" >nul 2>&1
 if errorlevel 1 goto :install
 goto :run
-rem UWMC_NO_SERVE=1 installs only (used by the automated Windows check)
-if defined UWMC_NO_SERVE exit /b 0
 
 :install
 python -m pip install -q --upgrade pip
@@ -23,6 +21,8 @@ python -m pip install -q -e ./quality-signal-monitor -e ./ep-research-copilot -e
 if errorlevel 1 goto :installfailed
 
 :run
+rem UWMC_NO_SERVE=1 installs only (used by the automated Windows check)
+if defined UWMC_NO_SERVE exit /b 0
 echo.
 echo == Starting the Teach-Back Companion at http://127.0.0.1:8000 ==
 echo    Your browser will open. Keep this window open while you use it.
