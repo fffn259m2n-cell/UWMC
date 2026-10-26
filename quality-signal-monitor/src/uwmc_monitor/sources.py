@@ -165,8 +165,7 @@ def fetch_release(raw_dir: Path) -> Path:
     manifest_path = release_dir / MANIFEST_NAME
     if not manifest_path.exists():
         manifest_path.write_text(
-            json.dumps({"release": label, "provenance": "cms_api", "datasets": entries}, indent=2)
-        )
+            json.dumps({"release": label, "provenance": "cms_api", "datasets": entries}, indent=2), encoding="utf-8")
     return release_dir
 
 
@@ -201,7 +200,7 @@ def read_provenance(release_dir: Path, files: dict[str, Path]) -> dict:
     synthetic = (release_dir / SYNTHETIC_MARKER).exists()
     manifest_path = release_dir / MANIFEST_NAME
     if manifest_path.exists():
-        prov = json.loads(manifest_path.read_text())
+        prov = json.loads(manifest_path.read_text(encoding="utf-8"))
     else:
         prov = {
             "release": release_dir.name,

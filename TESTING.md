@@ -3,6 +3,15 @@
 About 45 minutes for all three projects. You do not need to know Python.
 Write anything surprising in the "Notes" column, and send it back for fixing.
 
+## Quickest on Windows: double-click
+
+In the zip package, open `source\windows\` and double-click **Start Teach-Back Companion.bat**
+(if Windows shows "Windows protected your PC", click **More info**, then **Run anyway**). If it
+says Python is needed, install Python 3.11 or newer and tick **"Add python.exe to PATH"** on
+the first installer screen, then double-click again. It installs everything the first time and
+opens the demo in your browser. Then double-click **Run demos and tests.bat**. Continue at
+section 1.
+
 ## Quickest on a Mac: double-click
 
 In the zip package, open `source/mac/` and double-click **Start Teach-Back Companion.command**
@@ -41,8 +50,8 @@ pip install -e ./quality-signal-monitor -e ./ep-research-copilot -e ./teach-back
 
 ```bash
 pip install pytest httpx
-cd quality-signal-monitor && pytest -q && cd ..      # expect: 74 passed
-cd ep-research-copilot   && pytest -q && cd ..      # expect: 54 passed
+cd quality-signal-monitor && pytest -q && cd ..      # expect: all passed
+cd ep-research-copilot   && pytest -q && cd ..      # expect: all passed
 cd teach-back-companion  && pytest -q && cd ..      # expect: all passed
 ```
 
@@ -75,6 +84,10 @@ Start it (Option B only; Codespaces starts it for you):
 | 18 | Click **A+** a few times; try the keyboard only (Tab, Enter) | Text grows; everything is reachable and the focus outline is visible | |
 | 19 | Repeat steps 4 to 7 with **Jordan Lee** (heart failure) and **Sam Okafor** (pneumonia), e.g. `If I gain 3 pounds I take an extra water pill` or `I stop the antibiotic when my fever is gone` | Concerns for each | |
 | 20 | Open it on your phone (Codespaces port link) | Usable on a small screen; no sideways scrolling | |
+| 21 | **Check my understanding**: tick "I am a family member or caregiver", type `she takes it twice a day until she feels better` | The prompt changes to "the person you care for"; a concern about stopping | |
+| 22 | **Check my understanding**: click **Speak my answer** (Chrome, Edge or Safari), say an explanation | Your words appear in the box; then check it | |
+| 23 | **For care teams**: click **Check all instructions in this plan** | Each instruction listed as passed or held, with "clinician review still required" | |
+| 24 | **For care teams**: click **Show insights** | A synthetic banner, a table by HCAHPS domain, and the five most-misunderstood instructions | |
 
 ## 2. EP Research Copilot (about 10 minutes)
 

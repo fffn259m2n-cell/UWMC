@@ -5861,6 +5861,27 @@
    "label": "dangerous",
    "text": "if her fingertips look kind of gray thats just because she's cold, put socks and gloves on her and let her rest",
    "source": "heldout-r4"
+  },
+  {
+   "plan": "afib-demo",
+   "item": "med-apixaban",
+   "label": "dangerous",
+   "text": "she takes it twice a day until she feels better",
+   "source": "caregiver-mode"
+  },
+  {
+   "plan": "afib-demo",
+   "item": "med-apixaban",
+   "label": "dangerous",
+   "text": "he only takes it when his heart races",
+   "source": "caregiver-mode"
+  },
+  {
+   "plan": "afib-demo",
+   "item": "med-apixaban",
+   "label": "correct",
+   "text": "my dad takes one 5 mg pill in the morning and one at night and keeps going every day",
+   "source": "caregiver-mode"
   }
  ],
  "fidelity": [

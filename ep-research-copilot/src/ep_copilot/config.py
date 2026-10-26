@@ -54,7 +54,7 @@ def load_topic(name: str, path: Path | None = None) -> Topic:
     path = Path(path or default_config())
     if not path.exists():
         raise ConfigError(f"Topic config not found: {path}")
-    data = yaml.safe_load(path.read_text()) or {}
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     topics = data.get("topics", {})
     if name not in topics:
         raise ConfigError(f"Unknown topic '{name}'. Available: {', '.join(topics) or 'none'}")

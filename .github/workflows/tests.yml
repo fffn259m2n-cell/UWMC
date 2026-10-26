@@ -15,6 +15,43 @@ jobs:
       - run: pip install ruff==0.16.9
       - run: ruff check .
 
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e "./quality-signal-monitor[dev]" -e "./ep-research-copilot[dev]" -e "./teach-back-companion[dev]"
+      - run: python -m pytest -q
+        working-directory: quality-signal-monitor
+      - run: python -m pytest -q
+        working-directory: ep-research-copilot
+      - run: python -m pytest -q
+        working-directory: teach-back-companion
+      - run: teachback check-content
+        working-directory: teach-back-companion
+      - name: Windows double-click scripts (install, demos, tests)
+        shell: cmd
+        timeout-minutes: 10
+        env:
+          UWMC_NO_SERVE: "1"
+        run: |
+          echo --- start script
+          call "windows\Start Teach-Back Companion.bat" < NUL
+          echo --- start script finished
+          if not exist ".venv\Scripts\python.exe" exit /b 1
+          echo --- demos and tests script
+          call "windows\Run demos and tests.bat" < NUL > run.log 2>&1
+          echo --- demos and tests script finished
+          type run.log
+          findstr /r /c:"[0-9][0-9]* passed" run.log || exit /b 1
+          findstr /r /c:"[0-9][0-9]* failed" /c:"[0-9][0-9]* error" run.log && exit /b 1
+          echo No test failures.
+          if not exist "quality-signal-monitor\output\uwmc_quality_report.html" exit /b 1
+          if not exist "ep-research-copilot\output\ep_research_digest.html" exit /b 1
+          exit /b 0
+
   quality-signal-monitor:
     runs-on: ubuntu-latest
     strategy:

@@ -33,7 +33,7 @@ def _rate(hit: int, n: int) -> float | None:
 
 
 def score(path: Path) -> dict:
-    data = json.loads(Path(path).read_text())
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
     plans = load_plans()
     out: dict = {"set": str(path), "misses": {"teachback": [], "fidelity": [], "safety": []},
                  "false_alarms": {"teachback": [], "fidelity": [], "safety": []}}

@@ -15,7 +15,7 @@ from .plans import load_plans
 
 
 def load_cases() -> list[dict]:
-    return json.loads(resources.files("teachback").joinpath("data/benchmark/cases.json").read_text())["cases"]
+    return json.loads(resources.files("teachback").joinpath("data/benchmark/cases.json").read_text(encoding="utf-8"))["cases"]
 
 
 def run(cases: list[dict] | None = None) -> dict:

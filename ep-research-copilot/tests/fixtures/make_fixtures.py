@@ -77,7 +77,7 @@ def write(name, articles, trials, window, rechecked=(), missing=(), pubmed_total
         "synthetic": True, "provenance": "synthetic fixture (invented records)",
         "window": window, "pubmed_total": pubmed_total or len(articles),
         "articles": articles, "trials": trials, "trials_total": len(trials),
-        "rechecked_trials": list(rechecked), "missing_trials": list(missing)}, indent=2))
+        "rechecked_trials": list(rechecked), "missing_trials": list(missing)}, indent=2), encoding="utf-8")
 
 
 # Run 1: baseline. Includes a duplicate PMID to exercise deduplication.
@@ -99,9 +99,9 @@ write("snapshot_run2", [updated_editorial, MONITOR, RCT],
 raw = HERE / "api"
 raw.mkdir(exist_ok=True)
 (raw / "esearch_page1.json").write_text(json.dumps(
-    {"esearchresult": {"count": "3", "retmax": "2", "retstart": "0", "idlist": ["99000001", "99000002"]}}))
+    {"esearchresult": {"count": "3", "retmax": "2", "retstart": "0", "idlist": ["99000001", "99000002"]}}), encoding="utf-8")
 (raw / "esearch_page2.json").write_text(json.dumps(
-    {"esearchresult": {"count": "3", "retmax": "2", "retstart": "2", "idlist": ["99000002", "99000003"]}}))
+    {"esearchresult": {"count": "3", "retmax": "2", "retstart": "2", "idlist": ["99000002", "99000003"]}}), encoding="utf-8")
 (raw / "efetch.xml").write_text("""<?xml version="1.0" ?>
 <PubmedArticleSet>
 <PubmedArticle><MedlineCitation><PMID>99000001</PMID><Article>
@@ -127,7 +127,7 @@ raw.mkdir(exist_ok=True)
 </Article></MedlineCitation><PubmedData><ArticleIdList><ArticleId IdType="pubmed">99000003</ArticleId></ArticleIdList></PubmedData>
 </PubmedArticle>
 </PubmedArticleSet>
-""")
+""", encoding="utf-8")
 study = lambda nct, status, token=None: {  # noqa: E731
     "protocolSection": {
         "identificationModule": {"nctId": nct, "briefTitle": f"[SYNTHETIC] Trial {nct}"},
@@ -145,8 +145,8 @@ study = lambda nct, status, token=None: {  # noqa: E731
     "hasResults": False}
 (raw / "ctgov_page1.json").write_text(json.dumps(
     {"totalCount": 3, "studies": [study("NCT99000101", "RECRUITING"), study("NCT99000102", "RECRUITING")],
-     "nextPageToken": "PAGE2"}))
+     "nextPageToken": "PAGE2"}), encoding="utf-8")
 (raw / "ctgov_page2.json").write_text(json.dumps(
-    {"totalCount": 3, "studies": [study("NCT99000102", "RECRUITING"), study("NCT99000103", "NOT_YET_RECRUITING")]}))
-(raw / "ctgov_single.json").write_text(json.dumps(study("NCT99000104", "COMPLETED")))
+    {"totalCount": 3, "studies": [study("NCT99000102", "RECRUITING"), study("NCT99000103", "NOT_YET_RECRUITING")]}), encoding="utf-8")
+(raw / "ctgov_single.json").write_text(json.dumps(study("NCT99000104", "COMPLETED")), encoding="utf-8")
 print("Synthetic fixtures written.")

@@ -117,6 +117,21 @@ footer { margin-top: 40px; color: var(--ink-2); font-size: 12px; }
   {% endif %}
   <p class="muted">CMS updated the HCAHPS survey for discharges from 1 January 2025: Care Transition was dropped and Care Coordination,
   Information About Symptoms and Restfulness of the Hospital Environment were added. Results from different survey versions are not compared over time.</p>
+  {% if teachback %}
+  <h3>Alongside: which discharge instructions were misunderstood in teach-back</h3>
+  {% if teachback|selectattr("synthetic", "equalto", "yes")|list %}<div class="banner warn"><b>Synthetic teach-back data.</b> These counts come from
+    reviewer-written test cases in the Teach-Back Companion, not from patients. They show the layout only.</div>{% endif %}
+  <p>From the Teach-Back Companion (<code>teachback insights --csv</code>): for each instruction, how many teach-back explanations raised an automated
+  concern, grouped by the HCAHPS domain that instruction most affects. This is a <b>different data source</b> from HCAHPS, collected locally;
+  the two are shown side by side to suggest which instructions to rewrite first, not to explain any HCAHPS score.</p>
+  <div class="table-wrap"><table>
+    <tr><th>HCAHPS domain</th><th>Instruction</th><th class="num">Explanations flagged</th><th>Most common concerns</th></tr>
+    {% for r in teachback %}
+    <tr><td>{{ r.hcahps_label }}</td><td>{{ r.title }}</td><td class="num">{{ r.flagged }} of {{ r.attempts }} ({{ "%.0f"|format(r.flagged_rate * 100) }}%)</td>
+      <td>{{ r.top|join("; ") }}</td></tr>
+    {% endfor %}
+  </table></div>
+  {% endif %}
 </section>
 
 <section>

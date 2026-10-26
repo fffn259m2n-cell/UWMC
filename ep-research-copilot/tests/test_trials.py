@@ -8,7 +8,7 @@ from ep_copilot.models import Trial
 
 
 def test_parse_study_fields_and_washington_sites():
-    t = parse_study(json.loads((API / "ctgov_single.json").read_text()))
+    t = parse_study(json.loads((API / "ctgov_single.json").read_text(encoding="utf-8")))
     assert t.nct_id == "NCT99000104" and t.overall_status == "COMPLETED"
     assert t.interventions == ["Device: Pulsed field ablation"]
     assert t.primary_outcomes == ["Freedom from AF | 12 months"]

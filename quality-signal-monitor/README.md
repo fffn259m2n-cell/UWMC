@@ -117,6 +117,20 @@ on the page, in the title and across each chart, and must not be shared as a res
 
 ---
 
+### Automatic quarterly runs
+
+`.github/workflows/scheduled-reports.yml` runs `uwmc-monitor run --fetch` on GitHub each
+quarter and attaches the report to the run (Actions, then scheduled-reports). Start one any
+time with **Run workflow**.
+
+### Teach-back findings beside the discharge measures
+
+`uwmc-monitor run ... --teachback-insights insights.csv` adds a table, made by the
+Teach-Back Companion (`teachback insights --csv insights.csv`), showing which discharge
+instructions were most often misunderstood, grouped by the HCAHPS domain each affects. It is
+a separate, local data source, labelled as such, and is shown to suggest which instructions to
+rewrite first, not to explain any score.
+
 ## Data sources
 
 All are public CMS Provider Data Catalog datasets, retrieved through the documented

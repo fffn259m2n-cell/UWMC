@@ -96,6 +96,21 @@ footer { margin-top:40px; color:var(--ink-2); font-size:12px; }
     Narrow the query or raise <code>max_records</code> in config/topics.yaml.</div>{% endif %}
 </section>
 
+{% set results_posted = rows.changes|selectattr("field", "equalto", "has_results")|selectattr("new", "equalto", true)|list %}
+{% set wa_changes = rows.changes|selectattr("field", "equalto", "washington_sites")|list %}
+{% set new_rcts = arts|selectattr("status", "equalto", "new")|selectattr("scope", "equalto", "in_scope")|selectattr("study_design", "equalto", "Randomized controlled trial")|list %}
+<section id="alerts">
+  <h2>Alerts: what may change practice or referrals</h2>
+  {% if not (results_posted or new_rcts or wa_changes) %}<p class="muted">Nothing new this run: no tracked trial posted results, no new in-scope randomized trial, no change in Washington State sites.</p>{% endif %}
+  {% if results_posted %}<h3>Trials that posted results ({{ results_posted|length }})</h3>
+  <ul>{% for c in results_posted %}<li><a href="https://clinicaltrials.gov/study/{{ c.nct_id }}">{{ c.nct_id }}</a> {{ c.brief_title or "" }}: results are now posted on ClinicalTrials.gov. Read them before citing.</li>{% endfor %}</ul>{% endif %}
+  {% if new_rcts %}<h3>New in-scope randomized controlled trials ({{ new_rcts|length }})</h3>
+  <ul>{% for a in new_rcts %}<li><a href="{{ a.url }}">{{ a.title }}</a> ({{ a.journal }}, {{ a.pub_date }})</li>{% endfor %}</ul>{% endif %}
+  {% if wa_changes %}<h3>Washington State site changes ({{ wa_changes|length }})</h3>
+  <ul>{% for c in wa_changes %}<li><a href="https://clinicaltrials.gov/study/{{ c.nct_id }}">{{ c.nct_id }}</a>: {{ c.old|join("; ") if c.old else "none" }} &rarr; {{ c.new|join("; ") if c.new else "none" }}. Check before referring a patient; site lists change.</li>{% endfor %}</ul>{% endif %}
+  <p class="muted">Alerts come from registry flags and publication types. They are prompts to read the source, not conclusions.</p>
+</section>
+
 <section id="literature">
   <h2>Literature ({{ arts|length }})</h2>
   <p class="muted">Sorted by review priority, then new records first. Priority reflects topic relevance only; it does not rate study quality.

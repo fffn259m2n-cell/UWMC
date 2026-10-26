@@ -15,7 +15,7 @@ LEVELS = ("simple", "standard", "detailed")
 
 @lru_cache(maxsize=1)
 def library() -> dict:
-    data = json.loads(resources.files("teachback").joinpath("data/knowledge/library.json").read_text())
+    data = json.loads(resources.files("teachback").joinpath("data/knowledge/library.json").read_text(encoding="utf-8"))
     for t in data["topics"]:
         missing = [lv for lv in LEVELS if not t["levels"].get(lv)]
         if missing:

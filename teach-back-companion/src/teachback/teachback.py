@@ -56,6 +56,7 @@ class Concern:
     message: str
     original: str        # the documented instruction, verbatim
     severity: str
+    check: str = ""      # stable category, used to count misunderstandings (insights.py)
 
 
 @dataclass
@@ -137,23 +138,23 @@ def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
         res.not_mentioned = [{"fact_id": f.id, "statement": f.statement, "severity": f.severity} for f in item.facts]
         return res
 
-    def concern(fact: Fact, kind: str, message: str) -> None:
+    def concern(fact: Fact, kind: str, message: str, check: str = "") -> None:
         if not any(c.fact_id == fact.id and c.kind == kind and c.message == message for c in res.concerns):
-            res.concerns.append(Concern(fact.id, kind, message, item.original, fact.severity))
+            res.concerns.append(Concern(fact.id, kind, message, item.original, fact.severity, check or kind))
 
     for fact in item.facts:
         # 1) Known misunderstandings for this instruction (unless the patient negated them).
         for mc in fact.misconceptions:
             m = re.search(mc.pattern, norm)
             if m and not text.is_negated(norm, m.start()):
-                concern(fact, "misconception", mc.message)
+                concern(fact, "misconception", mc.message, f"misconception:{mc.id}")
         # 2) "Do not ..." instructions restated without the "not".
         if fact.action:
             for verb, negated in text.action_mentions(said, fact.action.verbs, fact.action.objects):
                 if not negated and not any(c.fact_id == fact.id for c in res.concerns):
                     concern(fact, "contradiction",
                             f"Your explanation mentions “{verb}”, but the instruction says: “{fact.statement}” "
-                            "Please read the instruction below again, and ask your care team if you are unsure.")
+                            "Please read the instruction below again, and ask your care team if you are unsure.", "do_not_lost")
         # 3) A required point stated the opposite way ("never call 911", "without food").
         #    Emergency signs are skipped: "can't talk" or "can't breathe" describes the sign.
         for g in fact.concepts:
@@ -163,10 +164,10 @@ def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
             if neg:
                 concern(fact, "contradiction",
                         f"Your explanation seems to say not to “{neg}”, but the instruction says: “{fact.statement}” "
-                        "Please read the instruction below again, and ask your care team if you are unsure.")
+                        "Please read the instruction below again, and ask your care team if you are unsure.", "meaning_reversed")
         # 4) Numbers that do not match the instruction.
         for c in _number_mismatches(item, fact, said):
-            concern(fact, c.kind, c.message)
+            concern(fact, c.kind, c.message, "number_changed")
 
     # 5) Skipping, stopping or adding doses of a medicine when the plan says nothing of the kind.
     if item.kind == "medication":
@@ -176,21 +177,21 @@ def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
                 if not negated and not re.search(rf"\b(if|when|in case) (i|you) {re.escape(verb)}", norm):
                     concern(f, "contradiction",
                             f"Your explanation mentions “{verb}”, but your instructions do not say to skip or stop "
-                            "this medicine. Please check with your care team or pharmacist before changing how you take it.")
+                            "this medicine. Please check with your care team or pharmacist before changing how you take it.", "stop_or_skip")
                     break
         digits = text._words_to_digits(norm)
         m = re.search(EXTRA_DOSE, digits)
         if m and not text.is_negated(digits, m.start()) and not re.search(EXTRA_DOSE, text._words_to_digits(text.normalize(item.original))):
             concern(f, "contradiction",
                     "Your explanation mentions an extra dose. Your instructions do not say to take extra. "
-                    "Please ask your care team or pharmacist before taking more than prescribed.")
+                    "Please ask your care team or pharmacist before taking more than prescribed.", "dose_added")
 
     # 6) A limit read the wrong way ("at least 2 liters" when 2 liters is the most allowed).
     for unit, value, got, want in text.direction_conflicts(item.original, said):
         f = next((fa for fa in item.facts if any(q.unit == unit and q.value == value for q in fa.quantities)), item.facts[0])
         concern(f, "number_mismatch",
                 f"You described {_fmt(value)} {_unit_label(unit)} as a {'minimum' if 'lower' in got else 'maximum'}, "
-                f"but in your instructions it is a {'maximum' if 'upper' in want else 'minimum'}. Please check the instruction below.")
+                f"but in your instructions it is a {'maximum' if 'upper' in want else 'minimum'}. Please check the instruction below.", "limit_direction")
 
     # 7) Meaning changes shared with the fidelity evaluator (time of day, food, stop
     #    conditions, emergency signs without 911, limits and periods), in patient wording.
@@ -200,7 +201,7 @@ def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
     for ch in consistency.compare(item, said, patient=True):
         if already and ch.check in OVERLAPPING:
             continue   # a plan-specific message already covers this
-        concern(target, "contradiction", f"{PATIENT_MESSAGES.get(ch.check, ch.message)} {READ_AGAIN}")
+        concern(target, "contradiction", f"{PATIENT_MESSAGES.get(ch.check, ch.message)} {READ_AGAIN}", ch.check)
     # 8) Medicines this instruction does not mention.
     from .fidelity import COMMON_DRUGS
     src = text.normalize(item.original)
@@ -215,7 +216,7 @@ def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
                 and d not in {n.lower() for n in item.drug_names} and not text.is_negated(norm, norm.index(d)):
             concern(target, "contradiction",
                     f"You mentioned {d}. This instruction does not mention it. Please check with your care team "
-                    "or pharmacist before taking any medicine that is not in your instructions.")
+                    "or pharmacist before taking any medicine that is not in your instructions.", "medicine_not_in_instruction")
             break
 
     for fact in item.facts:

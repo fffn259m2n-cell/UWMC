@@ -5,6 +5,8 @@
   teachback benchmark
   teachback check-content
   teachback evaluate-set eval/dev_set.json [--show-misses]
+  teachback gate drafts.json [--html report.html]       # safety gate for AI-drafted text; exit 1 if any held
+  teachback insights [attempts.json] [--csv f] [--html f]  # most-misunderstood instructions by HCAHPS domain
 """
 
 from __future__ import annotations
@@ -31,6 +33,13 @@ def main(argv: list[str] | None = None) -> int:
     e.add_argument("--language", choices=["en", "es", "non-en"])
     sub.add_parser("benchmark", help="Run the evaluator on the synthetic benchmark")
     sub.add_parser("check-content", help="Validate bundled plans and education library")
+    g = sub.add_parser("gate", help="Safety gate: check a batch of AI-drafted (or any rewritten) instructions")
+    g.add_argument("file", type=Path, help='JSON: {"drafts": [{"id", "plan", "item", "text", "language"}]}')
+    g.add_argument("--html", type=Path, help="Also write a readable HTML report")
+    ins = sub.add_parser("insights", help="Which instructions are misunderstood most, mapped to HCAHPS domains")
+    ins.add_argument("file", type=Path, nargs="?", help='JSON: {"attempts": [...]} (default: bundled synthetic cohort)')
+    ins.add_argument("--csv", type=Path, help="Write a CSV the Quality Signal Monitor can read")
+    ins.add_argument("--html", type=Path, help="Write an HTML report")
     es = sub.add_parser("evaluate-set", help="Score the checks against a labelled evaluation set")
     es.add_argument("file", type=Path)
     es.add_argument("--show-misses", action="store_true")
@@ -65,6 +74,23 @@ def main(argv: list[str] | None = None) -> int:
             r = run()
             print(json.dumps(r, indent=2))
             return 0 if r["detected"] == r["seeded_errors"] and r["false_alarms"] == 0 else 1
+        elif args.command == "gate":
+            from . import gate
+            r = gate.run_file(args.file)
+            if args.html:
+                args.html.write_text(gate.to_html(r), encoding="utf-8")
+            print(json.dumps(r, indent=2, ensure_ascii=False))
+            return 1 if r["held"] else 0
+        elif args.command == "insights":
+            from . import insights
+            synthetic = args.file is None
+            attempts = insights.bundled_cohort() if synthetic else json.loads(args.file.read_text(encoding="utf-8"))["attempts"]
+            r = insights.run(attempts)
+            if args.csv:
+                insights.write_csv(r, args.csv, synthetic=synthetic)
+            if args.html:
+                args.html.write_text(insights.to_html(r, synthetic=synthetic), encoding="utf-8")
+            print(json.dumps({k: r[k] for k in ("attempts", "domains", "note")}, indent=2, ensure_ascii=False))
         elif args.command == "evaluate-set":
             from .evaluation import score
             r = score(args.file)

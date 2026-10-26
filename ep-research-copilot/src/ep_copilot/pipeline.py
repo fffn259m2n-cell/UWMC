@@ -85,7 +85,7 @@ def fetch_live(topic: Topic, start: date, end: date, store: Store,
 def load_snapshot(folder: Path, mode: str) -> FetchResult:
     """Load pre-captured records (fixtures, or records imported from another retrieval)."""
     folder = Path(folder)
-    manifest = json.loads((folder / "snapshot.json").read_text())
+    manifest = json.loads((folder / "snapshot.json").read_text(encoding="utf-8"))
     articles = [Article.from_dict(a) for a in manifest.get("articles", [])]
     trials = [Trial.from_dict(t) for t in manifest.get("trials", [])]
     w = manifest["window"]

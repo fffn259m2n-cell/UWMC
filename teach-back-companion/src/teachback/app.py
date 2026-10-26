@@ -40,6 +40,18 @@ class EvaluateIn(BaseModel):
     language: str | None = Field(default=None, pattern=r"^(en|es|non-en)$")
 
 
+class DraftIn(BaseModel):
+    id: str | None = Field(default=None, max_length=80)
+    plan: str = Field(max_length=80)
+    item: str = Field(max_length=80)
+    text: str = Field(min_length=1, max_length=4000)
+    language: str | None = Field(default=None, pattern=r"^(en|es|non-en)$")
+
+
+class GateIn(BaseModel):
+    drafts: list[DraftIn] = Field(min_length=1, max_length=200)
+
+
 class ReminderIn(BaseModel):
     item_id: str = Field(max_length=80)
     remind_at: datetime
@@ -65,7 +77,7 @@ def create_app(db_path: Path | None = None, today: date | None = None) -> FastAP
         resp.headers["Referrer-Policy"] = "no-referrer"
         resp.headers["X-Frame-Options"] = "DENY"
         resp.headers["Cache-Control"] = "no-store"
-        resp.headers["Permissions-Policy"] = "camera=(), microphone=(), geolocation=()"
+        resp.headers["Permissions-Policy"] = "camera=(), microphone=(self), geolocation=()"  # microphone: optional voice teach-back
         return resp
 
     def plan_or_404(pid: str):
@@ -138,6 +150,20 @@ def create_app(db_path: Path | None = None, today: date | None = None) -> FastAP
     def evaluate(pid: str, body: EvaluateIn):
         p = plan_or_404(pid)
         return evaluate_item(p, item_or_404(p, body.item_id), body.candidate, body.language).to_dict()
+
+    @app.post("/api/gate")
+    def gate_drafts(body: GateIn):
+        from . import gate
+        return gate.run([d.model_dump() for d in body.drafts])
+
+    insights_cache: dict = {}
+
+    @app.get("/api/insights")
+    def insights_demo():
+        from . import insights
+        if "r" not in insights_cache:   # the bundled cohort never changes while the app runs
+            insights_cache["r"] = insights.run(insights.bundled_cohort())
+        return insights_cache["r"]
 
     @app.get("/api/benchmark")
     def run_benchmark():

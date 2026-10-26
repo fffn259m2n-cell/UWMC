@@ -28,11 +28,11 @@ def main() -> None:
     with tempfile.TemporaryDirectory() as tmp:
         shutil.copy(HERE / "_style.css", tmp)
         for src in sorted(HERE.glob("*.html")):
-            html = (src.read_text().replace("{{REPO_URL}}", a.repo_url.rstrip("/"))
+            html = (src.read_text(encoding="utf-8").replace("{{REPO_URL}}", a.repo_url.rstrip("/"))
                     .replace("{{QSM_STATUS}}", a.qsm_status).replace("{{BENCH}}", a.bench)
                     .replace("{{TBC_TESTS}}", a.tbc_tests))
             filled = Path(tmp) / src.name
-            filled.write_text(html)
+            filled.write_text(html, encoding="utf-8")
             if not exe:
                 print(f"No Chrome/Chromium found; open {filled} in a browser and print to PDF.")
                 continue

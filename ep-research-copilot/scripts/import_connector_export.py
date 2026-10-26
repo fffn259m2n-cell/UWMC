@@ -74,12 +74,12 @@ def main() -> None:
 
     arts = {}
     for f in a.articles:
-        for rec in json.loads(f.read_text())["articles"]:
+        for rec in json.loads(f.read_text(encoding="utf-8"))["articles"]:
             x = article(rec)
             arts.setdefault(x["pmid"], x)
     trials = {}
     for f in a.trials:
-        for rec in json.loads(f.read_text())["items"]:
+        for rec in json.loads(f.read_text(encoding="utf-8"))["items"]:
             trials.setdefault(rec["nct_id"], trial(rec))
     a.out.mkdir(parents=True, exist_ok=True)
     (a.out / "snapshot.json").write_text(json.dumps({
@@ -95,7 +95,7 @@ def main() -> None:
                        "first_posted", "last_update_posted", "has_results", "washington_sites"]},
         "articles": list(arts.values()),
         "trials": list(trials.values()),
-    }, indent=2, ensure_ascii=False))
+    }, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"{len(arts)} articles, {len(trials)} trials -> {a.out / 'snapshot.json'}")
 
 

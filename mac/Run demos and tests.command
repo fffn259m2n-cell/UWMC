@@ -11,7 +11,7 @@ echo "== 1/3 Quality Signal Monitor demo (synthetic data) =="
 (cd quality-signal-monitor && uwmc-monitor run --data-dir tests/fixtures/synthetic_current --previous-dir tests/fixtures/synthetic_previous | tail -2)
 echo "== 2/3 EP Research Copilot demo (synthetic data, two months) =="
 (cd ep-research-copilot && ep-copilot run --offline | tail -1 && ep-copilot run --offline --fixtures tests/fixtures/snapshot_run2 | tail -1)
-echo "== 3/3 Automated tests (expect 74, 54 and 249 passed) =="
+echo "== 3/3 Automated tests (each project should say passed, with nothing failed) =="
 for d in quality-signal-monitor ep-research-copilot teach-back-companion; do
   printf "%-24s" "$d"; (cd "$d" && python -m pytest -q 2>&1 | tail -1)
 done

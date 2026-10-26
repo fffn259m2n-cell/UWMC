@@ -59,7 +59,7 @@ FOOD_CHANGED = (r"\bempty stomach\b|\bwithout (food|eating|a meal)\b|\bfood (doe
 STOP_CONDITION = (
     r"\b(leave|leaves|left|leaving) (out|off)\b|\b(once|when|after) (the |my |her |his )?\w+ (goes|go|is|are|gets) (down|away|gone|better)\b"
     r"|\bno big deal\b|\bnot a big deal\b|\blike a vitamin\b|\bif (i|you|we|she|he) run out\b|\btil (i|she|he|you|they) feels?\b|"
-    r"\b(until|till|once|when|whenever|if|unless) (i|you|my \w+|your \w+|the \w+) (feel|feels|am|are|is|get|gets|seem|seems)"
+    r"\b(until|till|til|once|when|whenever|if|unless) (i|you|she|he|they|we|my \w+|your \w+|her \w+|his \w+|their \w+|the \w+) (feel|feels|am|are|is|get|gets|seem|seems)"
     r"( \w+)? (better|fine|normal|good|ok|okay|well|back to normal|gone|over|slow|dizzy)\b"
     r"|\bthen (i'?m|i am|you'?re|you are) (done|finished)\b|\bi'?m (done|finished)\b"
     r"|\b(bottle|pills?|prescription|medicine) (runs?|run) out\b|\bwhen (it|they) runs? out\b"
@@ -104,7 +104,7 @@ GAIN, LOSS = r"\b(gain|gains|gained|goes up|go up|went up|increase\w*|up by|heav
 PERIOD = (r"(?:in|per|within|a|an|each|every|over|en|al|por)\s+(?:(1|2|3|4|5|6|7|a|an|one|un|una)\s+)?"
           r"(day|week|month|hour|24 hours|meal|dose|serving|sitting|time|dia|semana)s?\b")
 NON_DAILY = (r"\bonce a week\b|\bevery other (morning|night|evening)\b|\bevery (other day|week|few days|2 days|couple (of )?days)\b|\bweekly\b|\b(a few|couple of|2|3) times a week\b"
-             r"|\bnow and then\b|\bonly (take|use|weigh|need|do|get)\b[^.]{0,30}\b(when|if|on days)\b|\b(just|only) for when\b|\b(una|1) vez (por|a la) semana\b|\bcada semana\b|\bsemanal\w*\b|\bwhenever (i|you) remember\b|\bonly (need to|have to)\b[^.]{0,30}\b(when|if)\b|\bonly (on days|on the days|when|if)\b|\bon (the )?days (i|you|when)\b|\bsome days\b")
+             r"|\bnow and then\b|\bonly (take|takes|use|uses|weigh|weighs|need|needs|do|does|get|gets)\b[^.]{0,30}\b(when|if|on days)\b|\b(just|only) for when\b|\b(una|1) vez (por|a la) semana\b|\bcada semana\b|\bsemanal\w*\b|\bwhenever (i|you) remember\b|\bonly (need to|have to)\b[^.]{0,30}\b(when|if)\b|\bonly (on days|on the days|when|if)\b|\bon (the )?days (i|you|when)\b|\bsome days\b")
 DAILY = r"\bevery (day|morning|night|evening)\b|\bdaily\b|\beach (day|morning)\b|\b(once|twice|\d times) (a|per|each) day\b"
 AS_NEEDED = r"\bas needed\b|\bif (you|i) need\b|\bwhen needed\b|\bif needed\b"
 COMBINED = r"\bboth\b[^.]{0,25}\bin the (morning|evening)\b|\bnone (at night|at bedtime|in the morning|in the evening)\b|\b(both|all)\b[^.]{0,40}\b(together|at once|at the same time)\b|\btogether at (breakfast|dinner|night|bedtime)\b"
