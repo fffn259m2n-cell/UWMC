@@ -19,6 +19,14 @@ doses, interpret a patient's own results, triage, or monitor.
 | AI output is verified | Optional LLM rephrasing is accepted only if the evaluator finds no critical or major issue; otherwise the clinician-authored version is shown. | `test_llm_rephrase_rejected_when_unfaithful` |
 | Unsafe content is refused | Plans must be marked synthetic; text resembling instructions to an AI system blocks loading. | `test_non_synthetic_plan_refused`, `test_prompt_injection_in_plan_refused` |
 
+## Review history
+
+- Independent adversarial review (October 2026): 12 reproduced findings (9 critical),
+  covering missed emergency and medication-change wording, negated phrases counted as
+  understanding, negation tricks ("no problem taking ibuprofen"), and evaluator gaps
+  (tablet counts, added doses, threshold periods, limit direction, negated 911). All
+  were fixed and locked in by `tests/test_review_regressions.py`.
+
 ## Known limits
 
 - The emergency screen is keyword-based. It will miss unusual phrasing and will sometimes

@@ -172,7 +172,9 @@
               "crush",
               "chew",
               "split",
-              "break"
+              "break",
+              "cut",
+              "halve"
             ],
             "polarity": "dont"
           },

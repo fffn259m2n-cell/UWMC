@@ -12,7 +12,7 @@ README, tests, documentation and gift-handoff notes.
 |---|---|---|---|
 | [quality-signal-monitor](quality-signal-monitor/) | Benchmarks UWMC's public CMS HCAHPS patient-experience results against matched national values, led by discharge and care-transition measures, with data-quality checks and an HTML/PDF report | CMS Provider Data Catalog (public) | Tested on synthetic fixtures; first real run pending (CMS blocked in build environment) |
 | [ep-research-copilot](ep-research-copilot/) | Monthly AF-ablation literature discovery, abstract evidence extraction with source quotes, and ClinicalTrials.gov change tracking for an EP research team | PubMed, ClinicalTrials.gov (public) | Tested; sample run on 26 real articles and 396 real trials |
-| [teach-back-companion](teach-back-companion/) | Patient teach-back checks on discharge instructions, plus an Instruction Fidelity Evaluator that flags dose, negation, 911 and medicine-name errors in simplified, AI-generated or translated instructions | Fictional patients only | Working local web app; 73 tests; browser and accessibility checks pass; not clinically reviewed |
+| [teach-back-companion](teach-back-companion/) | Patient teach-back checks on discharge instructions, plus an Instruction Fidelity Evaluator that flags dose, negation, 911 and medicine-name errors in simplified, AI-generated or translated instructions | Fictional patients only | Working local web app; 164 tests; browser and accessibility checks pass; not clinically reviewed |
 
 ## Quick start
 

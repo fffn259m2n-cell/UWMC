@@ -98,7 +98,67 @@ def detect_language(s: str) -> str:
 
 
 def _has_quantity(candidate_numbers, value, unit) -> bool:
+    if unit == "per_day" and value == 2:
+        # "every 12 hours" is the same frequency as "twice a day"
+        if any(n.unit == "per_day" and n.value == 2 for n in candidate_numbers):
+            return True
     return any(n.unit == unit and n.value == value for n in candidate_numbers)
+
+
+DIRECTION_BEFORE = (
+    ("max", r"(no more than|not more than|never (?:take |have |drink |eat )?more than|(?:do not|don't) (?:take|have|drink|eat|use) more than"
+            r"|limit\w*\b.{0,30}?\bto|up to|at most|maximum(?: of)?|max\.?|not to exceed|keep\b.{0,30}?\bto)\s*$"),
+    ("min", r"(at least|minimum(?: of)?|no less than|no fewer than)\s*$"),
+    ("above", r"(more than|above|over|greater than|higher than|exceeds?|faster than)\s*$"),
+    ("below", r"(below|under|less than|lower than|fewer than|slower than)\s*$"),
+)
+DIRECTION_AFTER = (("max", r"^\s*\S*\s*(?:\([^)]*\)\s*)?(?:or less|or fewer|or under|at most|or below)"),
+                   ("min", r"^\s*\S*\s*(?:\([^)]*\)\s*)?(?:or more|or higher|or above|at least)"))
+DIRECTIONAL_UNITS = {"mg", "liters", "cups", "bpm", "fahrenheit", "celsius", "pounds", "drinks"}
+
+
+def _digits(s: str) -> str:
+    return text._words_to_digits(text.normalize(s))
+
+
+def _directions(s: str) -> dict[tuple[str, float], set[str]]:
+    """(unit, value) -> direction words around it: max/min (limits) or above/below (thresholds)."""
+    t = _digits(s)
+    out: dict[tuple[str, float], set[str]] = {}
+    for n in text.numbers(s):
+        if n.unit not in DIRECTIONAL_UNITS:
+            continue
+        sentence_start = max(t.rfind(".", 0, n.span[0]), t.rfind(";", 0, n.span[0])) + 1
+        before = t[max(sentence_start, n.span[0] - 60):n.span[0]]
+        after = t[n.span[1]:n.span[1] + 30]
+        for label, pat in DIRECTION_BEFORE:
+            if re.search(pat, before):
+                out.setdefault((n.unit, n.value), set()).add(label)
+                break
+        for label, pat in DIRECTION_AFTER:
+            if re.search(pat, after):
+                out.setdefault((n.unit, n.value), set()).add(label)
+    return out
+
+
+def _threshold_periods(s: str) -> set[tuple[float, str]]:
+    """Pairs such as (2, 'day') and (5, 'week') from "2 pounds in one day or 5 pounds in one week"."""
+    t = _digits(s)
+    pairs = set()
+    for n in text.numbers(s):
+        if n.unit == "pounds":
+            m = re.match(r"^\s*(?:pounds?|lbs?)?\s*(?:or more\s+)?(?:in|per|within)\s+(?:1|a|an|one)\s+(day|week)", t[n.span[1]:])
+            if m:
+                pairs.add((n.value, m.group(1)))
+    return pairs
+
+
+def _sentences_with_live_911(s: str) -> list[str]:
+    out = []
+    for sent in re.split(r"(?<=[.!?;])\s+", text.normalize(s)):
+        if any(not neg for neg in text.phrase_states(sent, "911")):
+            out.append(sent)
+    return out
 
 
 def evaluate_item(plan: CarePlan, item: Item, candidate: str, language: str | None = None) -> FidelityReport:
@@ -106,67 +166,119 @@ def evaluate_item(plan: CarePlan, item: Item, candidate: str, language: str | No
     rep = FidelityReport(item_id=item.id, language=lang)
     src = item.original
     cand_nums = text.numbers(candidate)
+    src_nums = text.numbers(src)
     cand_bare = text.bare_numbers(candidate)
+    cand_norm = text.normalize(candidate)
     english = lang in ("en", "unknown")
     if not english:
         rep.not_assessed = ["required concepts", "negation of 'do not' instructions",
                             "meaning and tone (needs a qualified bilingual reviewer)", "readability"]
 
+    def add(sev, check, fact_id, msg):
+        if not any(i.check == check and i.fact_id == fact_id and i.message == msg for i in rep.issues):
+            rep.issues.append(Issue(sev, check, fact_id, msg))
+
+    live_911 = _sentences_with_live_911(candidate)
     for fact in item.facts:
         rep.facts_checked += 1
         for q in fact.quantities:
-            if english:
-                ok = _has_quantity(cand_nums, q.value, q.unit)
-            else:
-                ok = q.value in cand_bare  # units are language-specific; check the number itself
+            ok = _has_quantity(cand_nums, q.value, q.unit) if english else q.value in cand_bare
             if not ok:
-                rep.issues.append(Issue(fact.severity, "quantity_missing_or_changed", fact.id,
-                                        f"“{fact.statement}” — “{q.value:g} {UNIT_WORDS.get(q.unit, q.unit)}” "
-                                        "is missing or changed."))
-        if fact.emergency and "911" not in candidate:
-            rep.issues.append(Issue("critical", "emergency_action_missing", fact.id,
-                                    f"“{fact.statement}” — the instruction to call 911 is missing."))
+                add(fact.severity, "quantity_missing_or_changed", fact.id,
+                    f"“{fact.statement}” — “{q.value:g} {UNIT_WORDS.get(q.unit, q.unit)}” is missing or changed.")
+        if fact.emergency:
+            if "911" not in cand_norm:
+                add("critical", "emergency_action_missing", fact.id, f"“{fact.statement}” — the instruction to call 911 is missing.")
+            elif not live_911:
+                add("critical", "emergency_action_negated", fact.id,
+                    f"“{fact.statement}” — the candidate mentions 911 but does not tell the reader to call it.")
+            elif english:
+                for g in fact.concepts:
+                    if any("911" in p for p in g):
+                        continue
+                    for phrase in g:
+                        if text.find_phrase(src, phrase) and text.find_phrase(candidate, phrase) \
+                                and not any(text.find_phrase(sent, phrase) for sent in live_911):
+                            add("critical", "emergency_sign_not_with_911", fact.id,
+                                f"“{phrase}” is in the candidate, but not in a sentence that says to call 911.")
         if english and fact.action:
             mentions = text.action_mentions(candidate, fact.action.verbs, fact.action.objects)
             if any(not neg for _, neg in mentions):
-                rep.issues.append(Issue(fact.severity, "negation_lost", fact.id,
-                                        f"“{fact.statement}” — the candidate states the action without “do not”."))
+                add(fact.severity, "negation_lost", fact.id, f"“{fact.statement}” — the candidate states the action without “do not”.")
             elif fact.coverage == "negated_action" and not mentions:
-                rep.issues.append(Issue(fact.severity, "instruction_missing", fact.id,
-                                        f"“{fact.statement}” — this “do not” instruction is missing."))
-        if english and fact.concepts and fact.coverage == "concepts":
+                add(fact.severity, "instruction_missing", fact.id, f"“{fact.statement}” — this “do not” instruction is missing.")
+        if english:
             for g in fact.concepts:
-                if not text.group_present(candidate, g):
-                    rep.issues.append(Issue("major" if fact.severity != "minor" else "minor", "concept_missing",
-                                            fact.id, f"“{fact.statement}” — no mention of: {', '.join(g[:4])}."))
+                neg = text.group_only_negated(candidate, g)
+                if neg:
+                    add("critical" if fact.severity == "critical" else "major", "meaning_reversed", fact.id,
+                        f"“{fact.statement}” — the candidate says not to “{neg}”.")
+                elif fact.coverage == "concepts" and not text.group_present(candidate, g):
+                    add("major" if fact.severity != "minor" else "minor", "concept_missing", fact.id,
+                        f"“{fact.statement}” — no mention of: {', '.join(g[:4])}.")
+            for mc in fact.misconceptions:
+                m = re.search(mc.pattern, cand_norm)
+                if m and not text.is_negated(cand_norm, m.start()):
+                    add("critical", "contradicts_instruction", fact.id, f"“{fact.statement}” — {mc.message}")
+        elif fact.action and re.search(r"(?<!\bno )\b(puede|pueden|podra|podria)\s+(dejar de|suspender|parar|dejarlo)", cand_norm):
+            add("critical", "negation_possibly_lost", fact.id,
+                f"“{fact.statement}” — the translation appears to allow stopping (“puede dejar de…”).")
+
+    if item.kind == "medication":
+        src_freq = {n.value for n in src_nums if n.unit == "per_day"} | {
+            q.value for f in item.facts for q in f.quantities if q.unit == "per_day"}
+        cand_freq = {n.value for n in cand_nums if n.unit == "per_day"}
+        if src_freq and cand_freq - src_freq:
+            add("critical", "frequency_changed", None,
+                f"The candidate gives {', '.join(f'{v:g}' for v in sorted(cand_freq - src_freq))} time(s) a day; "
+                f"the original says {', '.join(f'{v:g}' for v in sorted(src_freq))}.")
+        src_tabs = {n.value for n in src_nums if n.unit == "tablets"} | {1.0}
+        for n in cand_nums:
+            if n.unit == "tablets" and n.value not in src_tabs:
+                add("critical", "tablet_count_changed", None, f"“{n.value:g} tablet(s)” does not match the original.")
+        dose_add = (r"\b(?:extra|additional|double|another|1 more|one more)\s+(?:\d+ mg\s+)?(?:doses?|pills?|tablets?|capsules?|ones?)\b"
+                    r"|\bdouble (?:up|the dose|your dose|it)\b|\b(?:1|one) extra\b")
+        if english and re.search(dose_add, _digits(candidate)) and not re.search(dose_add, _digits(src)):
+            add("critical", "dose_added", None, "The candidate mentions an extra or additional dose that the original does not.")
+
+    src_pairs, cand_pairs = _threshold_periods(src), _threshold_periods(candidate)
+    if src_pairs and cand_pairs - src_pairs:
+        add("critical", "threshold_period_changed", None,
+            "A threshold is paired with a different time period than in the original "
+            f"({', '.join(f'{v:g} pounds per {p}' for v, p in sorted(cand_pairs - src_pairs))}).")
+
+    if english:
+        src_dir, cand_dir = _directions(src), _directions(candidate)
+        for key, labels in cand_dir.items():
+            if key in src_dir and labels and not labels & src_dir[key]:
+                add("critical", "direction_changed", None,
+                    f"“{key[1]:g} {UNIT_WORDS.get(key[0], key[0])}” is described as "
+                    f"{'/'.join(sorted(labels))}; the original says {'/'.join(sorted(src_dir[key]))}.")
 
     # Medicine names: every source medicine still named; nothing new introduced.
     known = COMMON_DRUGS | plan.drug_names
-    src_l, cand_l = text.normalize(src), text.normalize(candidate)
+    src_l = text.normalize(src)
     src_drugs = {d for d in known if re.search(rf"(?<![a-z]){re.escape(d)}(?![a-z])", src_l)}
-    cand_drugs = {d for d in known if re.search(rf"(?<![a-z]){re.escape(d)}(?![a-z])", cand_l)}
+    cand_drugs = {d for d in known if re.search(rf"(?<![a-z]){re.escape(d)}(?![a-z])", cand_norm)}
     if item.kind == "medication" and item.drug_names:
         names = {n.lower() for n in item.drug_names}
-        if not names & cand_drugs and not any(n in cand_l for n in names):
-            rep.issues.append(Issue("critical", "medicine_name_missing", None,
-                                    f"The medicine name ({item.drug_names[0]}) is missing."))
+        if not names & cand_drugs and not any(n in cand_norm for n in names):
+            add("critical", "medicine_name_missing", None, f"The medicine name ({item.drug_names[0]}) is missing.")
     for d in sorted(cand_drugs - src_drugs - {n.lower() for n in item.drug_names}):
-        rep.issues.append(Issue("critical", "medicine_added", None,
-                                f"“{d}” is not in the original instruction."))
+        add("critical", "medicine_added", None, f"“{d}” is not in the original instruction.")
 
-    # Numbers the source does not contain (allowing simple equivalents such as 12 hours <-> twice a day).
-    src_bare = text.bare_numbers(src) | {float(q.value) for f in item.facts for q in f.quantities}
+    # Numbers the source does not contain. "1" is ignored ("one day", "one pill"); tablet counts are checked above.
+    src_bare = text.bare_numbers(src) | {float(q.value) for f in item.facts for q in f.quantities} | {1.0, 911.0}
     for n in sorted(cand_bare - src_bare):
-        rep.issues.append(Issue("critical" if item.kind == "medication" else "major", "number_added", None,
-                                f"The number {n:g} does not appear in the original instruction."))
+        add("critical" if item.kind == "medication" else "major", "number_added", None,
+            f"The number {n:g} does not appear in the original instruction.")
 
     if english:
         rep.readability_source = readability.stats(src)
         rep.readability_candidate = readability.stats(candidate)
         g = rep.readability_candidate.get("fk_grade")
         if g is not None and g > readability.TARGET_GRADE:
-            rep.issues.append(Issue("minor", "reading_level", None,
-                                    f"Estimated reading grade {g} is above the target of {readability.TARGET_GRADE:g}."))
+            add("minor", "reading_level", None, f"Estimated reading grade {g} is above the target of {readability.TARGET_GRADE:g}.")
     rep.issues.sort(key=lambda i: SEVERITY_ORDER[i.severity])
     return rep
 

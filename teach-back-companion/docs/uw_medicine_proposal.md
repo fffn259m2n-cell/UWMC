@@ -22,8 +22,8 @@ thing?** This prototype answers both, for fictional patients, with no AI require
   shows covered points, points not mentioned, and possible misunderstandings, always quoting
   the original and pointing to the care team.
 - **Instruction Fidelity Evaluator**: checks any rewrite against the original for numbers,
-  units, negations, 911, medicine names and reading level; 16/16 seeded errors detected with
-  0 false alarms on a synthetic benchmark.
+  units, negations, 911, medicine names and reading level; 30/30 seeded errors detected with
+  0 false alarms on 16 clean rewrites (synthetic benchmark).
 - Grounded Q&A, plan/education labelling, reminders for documented tasks, and a safety screen.
 
 ## 4. Possible value across UW Medicine

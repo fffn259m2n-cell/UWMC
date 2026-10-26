@@ -15,6 +15,9 @@ from . import text
 from .models import CarePlan, Fact, Item
 
 MAX_INPUT = 2000
+# Durations compared in days, so "2 months" conflicts with "2 weeks".
+DURATION_DAYS = {"days": 1, "weeks": 7, "months": 30}
+SKIP_VERBS = ["skip", "stop taking", "stop", "quit", "miss"]
 
 
 @dataclass
@@ -37,8 +40,22 @@ class TeachBackResult:
     safety: dict | None = None
 
     def to_dict(self) -> dict:
-        d = asdict(self)
-        return d
+        return asdict(self)
+
+
+def _fmt(v: float) -> str:
+    return f"{v:,.0f}" if float(v).is_integer() else f"{v:g}"
+
+
+def _unit_label(unit: str) -> str:
+    return {"per_day": "time(s) a day", "mg": "mg", "bpm": "beats a minute", "fahrenheit": "°F",
+            "tablets": "tablet(s)"}.get(unit, unit)
+
+
+def _quantities_stated(fact: Fact, said: str) -> bool:
+    """At least one of the fact's key numbers is stated with its unit (exact match)."""
+    nums = text.numbers(said)
+    return any(any(n.unit == q.unit and n.value == q.value for n in nums) for q in fact.quantities)
 
 
 def _fact_covered(fact: Fact, said: str) -> bool:
@@ -55,35 +72,28 @@ def _fact_covered(fact: Fact, said: str) -> bool:
     return concepts_ok or negated_action
 
 
-def _quantities_stated(fact: Fact, said: str) -> bool:
-    """At least one of the fact's key numbers is stated with its unit (exact match)."""
-    nums = text.numbers(said)
-    return any(any(n.unit == q.unit and n.value == q.value for n in nums) for q in fact.quantities)
-
-
 def _number_mismatches(item: Item, fact: Fact, said: str) -> list[Concern]:
     """Numbers the patient states, in a unit this fact uses, that appear nowhere in the instruction."""
     documented = {(n.unit, n.value) for n in text.numbers(item.original)}
+    documented_days = {n.value * DURATION_DAYS[n.unit] for n in text.numbers(item.original) if n.unit in DURATION_DAYS}
     fact_units = {q.unit for q in fact.quantities}
+    fact_has_duration = bool(fact_units & DURATION_DAYS.keys())
     out = []
     for n in text.numbers(said):
-        if n.unit in fact_units and (n.unit, n.value) not in documented:
-            expected = sorted({q.value for q in fact.quantities if q.unit == n.unit})
-            out.append(Concern(
-                fact.id, "number_mismatch",
-                f"You mentioned {_fmt(n.value)} {_unit_label(n.unit)}. Your instructions say "
-                f"{' or '.join(_fmt(v) for v in expected)} {_unit_label(n.unit)}. Please check the "
-                "instruction below, and ask your care team or pharmacist if it is unclear.",
-                item.original, fact.severity))
+        if n.unit in DURATION_DAYS and fact_has_duration:
+            if n.value * DURATION_DAYS[n.unit] in documented_days:
+                continue
+            expected = [f"{_fmt(q.value)} {q.unit}" for q in fact.quantities if q.unit in DURATION_DAYS]
+        elif n.unit in fact_units and (n.unit, n.value) not in documented:
+            expected = [f"{_fmt(v)} {_unit_label(n.unit)}" for v in sorted({q.value for q in fact.quantities if q.unit == n.unit})]
+        else:
+            continue
+        out.append(Concern(
+            fact.id, "number_mismatch",
+            f"You mentioned {_fmt(n.value)} {_unit_label(n.unit)}. Your instructions say {' or '.join(expected)}. "
+            "Please check the instruction below, and ask your care team or pharmacist if it is unclear.",
+            item.original, fact.severity))
     return out
-
-
-def _fmt(v: float) -> str:
-    return f"{v:,.0f}" if float(v).is_integer() else f"{v:g}"
-
-
-def _unit_label(unit: str) -> str:
-    return {"per_day": "time(s) a day", "mg": "mg", "bpm": "beats a minute", "fahrenheit": "°F"}.get(unit, unit)
 
 
 def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
@@ -96,22 +106,45 @@ def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
         res.not_mentioned = [{"fact_id": f.id, "statement": f.statement, "severity": f.severity} for f in item.facts]
         return res
 
+    def concern(fact: Fact, kind: str, message: str) -> None:
+        if not any(c.fact_id == fact.id and c.kind == kind and c.message == message for c in res.concerns):
+            res.concerns.append(Concern(fact.id, kind, message, item.original, fact.severity))
+
     for fact in item.facts:
-        # 1) Known misunderstandings written by the care team for this instruction.
+        # 1) Known misunderstandings for this instruction (unless the patient negated them).
         for mc in fact.misconceptions:
-            if re.search(mc.pattern, norm):
-                res.concerns.append(Concern(fact.id, "misconception", mc.message, item.original, fact.severity))
+            m = re.search(mc.pattern, norm)
+            if m and not text.is_negated(norm, m.start()):
+                concern(fact, "misconception", mc.message)
         # 2) "Do not ..." instructions restated without the "not".
         if fact.action:
             for verb, negated in text.action_mentions(said, fact.action.verbs, fact.action.objects):
                 if not negated and not any(c.fact_id == fact.id for c in res.concerns):
-                    res.concerns.append(Concern(
-                        fact.id, "contradiction",
-                        f"Your explanation mentions “{verb}”, but the instruction says: “{fact.statement}” "
-                        "Please read the instruction below again, and ask your care team if you are unsure.",
-                        item.original, fact.severity))
-        # 3) Numbers that do not match the instruction.
-        res.concerns.extend(_number_mismatches(item, fact, said))
+                    concern(fact, "contradiction",
+                            f"Your explanation mentions “{verb}”, but the instruction says: “{fact.statement}” "
+                            "Please read the instruction below again, and ask your care team if you are unsure.")
+        # 3) A required point stated the opposite way ("never call 911", "without food").
+        for g in fact.concepts:
+            neg = text.group_only_negated(said, g)
+            if neg:
+                concern(fact, "contradiction",
+                        f"Your explanation seems to say not to “{neg}”, but the instruction says: “{fact.statement}” "
+                        "Please read the instruction below again, and ask your care team if you are unsure.")
+        # 4) Numbers that do not match the instruction.
+        for c in _number_mismatches(item, fact, said):
+            concern(fact, c.kind, c.message)
+
+    # 5) Skipping or stopping a medicine when the plan says nothing of the kind.
+    if item.kind == "medication" and not any(f.action for f in item.facts):
+        for verb, negated in text.action_mentions(said, SKIP_VERBS):
+            if not negated:
+                f = item.facts[0]
+                concern(f, "contradiction",
+                        f"Your explanation mentions “{verb}”, but your instructions do not say to skip or stop "
+                        "this medicine. Please check with your care team or pharmacist before changing how you take it.")
+                break
+
+    for fact in item.facts:
         flagged = any(c.fact_id == fact.id for c in res.concerns)
         entry = {"fact_id": fact.id, "statement": fact.statement, "severity": fact.severity}
         if _fact_covered(fact, said) and not flagged:

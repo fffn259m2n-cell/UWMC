@@ -63,8 +63,19 @@ def _simpler(level: str) -> str:
 
 
 def _items_for_drug(plan: CarePlan, message: str):
-    return [i for i in plan.items if i.kind == "medication"
-            and any(text.find_phrase(message, n) for n in i.drug_names)]
+    """Plan items naming a medicine in the message (any kind, so "do not take ibuprofen" is found).
+
+    Library aliases count too ("water pill" -> furosemide's item).
+    """
+    out = []
+    for i in plan.items:
+        names = list(i.drug_names)
+        t = knowledge.topic(i.education_topic) if i.education_topic and i.kind == "medication" else None
+        if t:
+            names += [a for a in t["aliases"] if a not in ("antibiotic", "beta blocker", "beta-blocker", "diuretic")]
+        if any(text.find_phrase(message, n) for n in names):
+            out.append(i)
+    return out
 
 
 def answer(plan: CarePlan, message: str, level: str = "standard", last_topic: str | None = None,
@@ -90,6 +101,8 @@ def answer(plan: CarePlan, message: str, level: str = "standard", last_topic: st
         return ans
 
     allowed = _plan_topics(plan)
+    if last_topic not in allowed:
+        last_topic = None  # never continue a topic that is not part of this patient's plan
 
     # "Simpler, please" / "explain again"
     if re.search(r"\b(simpler|simply|more simple|easier|plain(er)? (words|language)|don'?t understand|do not understand|(explain|say) (that|it) again)\b", msg):
@@ -101,7 +114,7 @@ def answer(plan: CarePlan, message: str, level: str = "standard", last_topic: st
             ans.suggestions = [f"What questions should I ask about {t['title']}?", "Can you give me more detail?"]
             return ans
 
-    if re.search(r"\b(more detail|tell me more|in more depth)\b", msg) and last_topic and knowledge.topic(last_topic):
+    if re.search(r"\b(more detail|tell me more|in more depth)\b", msg) and last_topic:
         t = knowledge.topic(last_topic)
         new = LEVEL_ORDER[min(2, LEVEL_ORDER.index(level) + 1)]
         ans.level, ans.topic = new, t["id"]

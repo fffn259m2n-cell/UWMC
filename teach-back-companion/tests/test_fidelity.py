@@ -23,8 +23,8 @@ def test_original_passes_against_itself(plans):
 
 def test_benchmark_all_detected_no_false_alarms():
     r = benchmark.run()
-    assert r["detected"] == r["seeded_errors"] == 16
-    assert r["false_alarms"] == 0 and r["clean_cases"] == 8
+    assert r["detected"] == r["seeded_errors"] == 30
+    assert r["false_alarms"] == 0 and r["clean_cases"] == 16
 
 
 @pytest.mark.parametrize("candidate,expected", [

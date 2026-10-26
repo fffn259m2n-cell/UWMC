@@ -126,7 +126,7 @@ def create_app(db_path: Path | None = None, today: date | None = None) -> FastAP
         p = plan_or_404(pid)
         item_or_404(p, body.item_id)
         from . import safety
-        s = safety.screen(body.text)
+        s = safety.screen(body.text, context="teachback")
         res = teachback.check(p, body.item_id, body.text).to_dict()
         if s.level != "none":
             res["safety"] = s.to_dict()

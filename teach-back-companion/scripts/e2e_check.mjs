@@ -80,7 +80,7 @@ await expectText(".chat", "call 911 now", "chat emergency");
 await page.fill("#ask-input", "Can I stop my metoprolol?");
 await page.click("form button[type=submit]");
 await page.waitForFunction(() => document.querySelectorAll(".msg.bot").length >= 3);
-await expectText(".chat", "can't advise changing", "chat medication-change refusal");
+await expectText(".chat", "can't advise on starting, stopping", "chat medication-change refusal");
 await audit("06-ask");
 
 await page.click("#tabs button[data-view=reminders]");

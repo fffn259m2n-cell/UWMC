@@ -91,7 +91,7 @@ Details: [docs/architecture.md](docs/architecture.md), [docs/clinical_safety.md]
 ## Testing
 
 ```bash
-pip install -e ".[dev]" && pytest          # 73 tests
+pip install -e ".[dev]" && pytest          # 164 tests
 teachback serve --port 8765 &
 node scripts/e2e_check.mjs http://127.0.0.1:8765    # needs playwright + axe-core (npm)
 ```
@@ -101,7 +101,7 @@ WCAG 2.x A/AA checks on each view (0 violations at the time of writing). Automat
 accessibility checks catch only part of WCAG; see the manual items in
 [docs/clinical_review_checklist.md](docs/clinical_review_checklist.md).
 
-**Evaluator benchmark** (synthetic): 16 of 16 seeded errors detected, 0 false alarms on 8
+**Evaluator benchmark** (synthetic): 30 of 30 seeded errors detected, 0 false alarms on 16
 clean rewrites. The same person wrote the benchmark and the evaluator, so this shows the
 checks work as designed. It is not evidence of real-world accuracy.
 
@@ -109,6 +109,14 @@ checks work as designed. It is not evidence of real-world accuracy.
 hand-written plain-language text. The antibiotic rewrite had dropped the drug name and
 strength, and a negation-scope bug misread a list of drugs to avoid. Both were fixed. That
 is the kind of slip the tool is meant to catch.
+
+**Independent adversarial review.** A separate reviewer tried to break the safety screen,
+teach-back checker and evaluator, and reproduced 12 findings (9 rated critical). Examples:
+"my chest feels heavy" was not treated as an emergency; "Never call 911 for chest pain"
+counted as covering the instruction; "take 2 tablets twice a day" and swapped weight
+thresholds passed the evaluator. All 12 were fixed. Every reproduced case is now a regression
+test (`tests/test_review_regressions.py`), and the evaluator cases were added to the benchmark.
+A second review round is recommended after any rule change.
 
 ## Documents
 
