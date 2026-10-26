@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if meta.synthetic_data %}[SYNTHETIC] {% endif %}EP Research Copilot: {{ topic.title }}</title>
+<style>
+:root { --bg:#fcfcfb; --surface:#fff; --ink:#0b0b0b; --ink-2:#52514e; --rule:#e4e3df; --accent:#2a78d6;
+  --hi-bg:#e7f0fb; --hi-ink:#184f95; --warn-bg:#fff4e0; --warn-ink:#7a4b00; --bad-bg:#fde8e8; --bad-ink:#8a1c1c;
+  --ok-bg:#e6f4ea; --ok-ink:#1e5b2e; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg:#1a1a19; --surface:#222221; --ink:#f0efec; --ink-2:#c3c2b7; --rule:#3a3a38; --accent:#3987e5;
+  --hi-bg:#17263a; --hi-ink:#9ec5f4; --warn-bg:#3a2c10; --warn-ink:#f3c56b; --bad-bg:#3d1c1c; --bad-ink:#f2a3a3;
+  --ok-bg:#16301d; --ok-ink:#a8dcb5; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.5 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:28px 16px 64px; }
+a { color:var(--accent); }
+h1 { font-size:26px; margin:0 0 4px; } h2 { font-size:18px; margin:34px 0 10px; padding-top:12px; border-top:1px solid var(--rule); }
+h3 { font-size:15px; margin:18px 0 8px; }
+.sub,.muted { color:var(--ink-2); }
+nav { display:flex; flex-wrap:wrap; gap:6px 14px; margin:12px 0; font-size:13px; }
+.banner { padding:12px 14px; border-radius:6px; margin:10px 0; }
+.banner.synthetic { background:var(--bad-bg); color:var(--bad-ink); font-weight:600; border:2px solid currentColor; }
+.banner.note { background:var(--hi-bg); color:var(--hi-ink); } .banner.warn { background:var(--warn-bg); color:var(--warn-ink); }
+.tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin:12px 0; }
+.tile { background:var(--surface); border:1px solid var(--rule); border-radius:6px; padding:10px 12px; }
+.tile b { display:block; font-size:24px; } .tile span { color:var(--ink-2); font-size:12px; }
+.table-wrap { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; font-size:12.5px; background:var(--surface); }
+th,td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--rule); vertical-align:top; }
+th { color:var(--ink-2); background:var(--bg); font-weight:600; position:sticky; top:0; }
+.tag { display:inline-block; font-size:11px; padding:1px 6px; border-radius:3px; margin:1px 2px 1px 0; background:var(--bg); border:1px solid var(--rule); }
+.p-high { background:var(--hi-bg); color:var(--hi-ink); border-color:transparent; font-weight:700; }
+.p-review { background:var(--warn-bg); color:var(--warn-ink); border-color:transparent; font-weight:700; }
+.p-medium { font-weight:600; } .p-low { color:var(--ink-2); }
+.new { background:var(--ok-bg); color:var(--ok-ink); border-color:transparent; }
+.subst { background:var(--warn-bg); color:var(--warn-ink); border-color:transparent; }
+details summary { cursor:pointer; color:var(--accent); font-size:12px; }
+blockquote { margin:4px 0 8px; padding:4px 10px; border-left:3px solid var(--rule); color:var(--ink-2); font-size:12px; }
+input[type=search] { width:100%; max-width:420px; padding:7px 10px; border:1px solid var(--rule); border-radius:6px; background:var(--surface); color:var(--ink); font:inherit; }
+.filters { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:8px 0; }
+select { padding:6px; border-radius:6px; border:1px solid var(--rule); background:var(--surface); color:var(--ink); font:inherit; }
+code { font-size:12px; } pre { white-space:pre-wrap; background:var(--surface); border:1px solid var(--rule); padding:8px; border-radius:6px; font-size:12px; }
+footer { margin-top:40px; color:var(--ink-2); font-size:12px; }
+@media print { nav,.filters { display:none; } th { position:static; } details { display:block; } }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>EP Research Copilot: {{ topic.title }}</h1>
+  <p class="sub">PubMed entries {{ meta.pubmed.window_start }} to {{ meta.pubmed.window_end }} &middot;
+    ClinicalTrials.gov tracked trials &middot; generated {{ meta.generated_at }} &middot; run #{{ meta.run_id }}</p>
+  {% if meta.synthetic_data %}
+  <div class="banner synthetic">SYNTHETIC TEST DATA. These records were invented to test the software. They are not real
+    publications or trials. Do not cite or share.</div>
+  {% elif meta.mode == "imported" %}
+  <div class="banner warn">Records in this digest were retrieved through a separate PubMed / ClinicalTrials.gov connector and imported
+    ({{ meta.provenance }}). Confirm items against their PubMed and registry links before sharing; a direct
+    <code>ep-copilot run</code> on a networked machine is the reference workflow.</div>
+  {% endif %}
+  {% if meta.fields_unavailable %}<div class="banner warn">Not available from this source, so shown blank rather than guessed:
+    {% for kind, flds in meta.fields_unavailable.items() %}{{ kind }}: {{ flds|join(", ") }}{% if not loop.last %}; {% endif %}{% endfor %}.</div>{% endif %}
+  <div class="banner note">{{ disclaimer }} Independent, unofficial project; not affiliated with or endorsed by UW Medicine.
+    Extraction is from abstracts only and every item needs human review before use.</div>
+  <nav>
+    <a href="#overview">Overview</a><a href="#literature">Literature</a><a href="#extraction">Evidence extraction</a>
+    <a href="#trials">Trials</a><a href="#review">Review queue</a><a href="#methods">Methods &amp; limitations</a><a href="#sources">Sources</a>
+  </nav>
+</header>
+
+{% set arts = rows.articles %}
+{% set high = arts|selectattr("priority", "equalto", "high")|list %}
+{% set uncertain = arts|selectattr("uncertain")|list %}
+{% set inscope = arts|selectattr("scope", "equalto", "in_scope")|list %}
+{% set changed_trials = rows.trials|selectattr("changes")|list %}
+{% set new_trials = rows.trials|selectattr("status_this_run", "equalto", "new")|list %}
+{% set wa_trials = rows.trials|selectattr("washington_sites")|list %}
+
+<section id="overview">
+  <h2>Overview</h2>
+  <div class="tiles">
+    <div class="tile"><b>{{ meta.pubmed.retrieved }}</b><span>PubMed records retrieved (of {{ meta.pubmed.total_reported }} matching)</span></div>
+    <div class="tile"><b>{{ meta.counts.new_articles }}</b><span>new since last run</span></div>
+    <div class="tile"><b>{{ inscope|length }}</b><span>in configured scope</span></div>
+    <div class="tile"><b>{{ high|length }}</b><span>high review priority</span></div>
+    <div class="tile"><b>{{ uncertain|length }}</b><span>uncertain (no abstract)</span></div>
+    <div class="tile"><b>{{ rows.trials|length }}</b><span>trials tracked</span></div>
+    <div class="tile"><b>{{ new_trials|length }} / {{ changed_trials|length }}</b><span>new / changed trials this run</span></div>
+    <div class="tile"><b>{{ "n/a" if "washington_sites" in meta.fields_unavailable.get("trials", []) else wa_trials|length }}</b><span>tracked trials with a Washington State site</span></div>
+  </div>
+  {% if first_run %}<p class="muted">This is the first run for this topic, so every record is new and no trial changes can exist yet.
+  Later runs compare against this baseline.</p>{% endif %}
+  {% if meta.clinicaltrials.truncated %}<div class="banner warn">The trial search returned more than {{ topic.trial_max_records }} records and was truncated.
+    Narrow the query or raise <code>max_records</code> in config/topics.yaml.</div>{% endif %}
+</section>
+
+<section id="literature">
+  <h2>Literature ({{ arts|length }})</h2>
+  <p class="muted">Sorted by review priority, then new records first. Priority reflects topic relevance only; it does not rate study quality.
+    <b>high</b>: in scope and matches 2+ topic categories; <b>medium</b>: in scope, 1 category; <b>low</b>: in scope with no category, or outside scope (kept, not discarded);
+    <b>review</b>: no abstract, screened on title and indexing only.</p>
+  <div class="filters">
+    <input type="search" id="q" placeholder="Filter by word, PMID, journal…" aria-label="Filter literature">
+    <label>Priority <select id="pf"><option value="">all</option><option>high</option><option>review</option><option>medium</option><option>low</option></select></label>
+    <label><input type="checkbox" id="nf"> new only</label>
+    <span class="muted" id="count"></span>
+  </div>
+  <div class="table-wrap"><table id="lit">
+    <thead><tr><th>Priority</th><th>Article</th><th>Topics</th><th>Design (descriptive)</th><th>Key extracted items</th></tr></thead>
+    <tbody>
+    {% for a in arts %}
+    <tr data-priority="{{ a.priority }}" data-new="{{ 1 if a.status == 'new' else 0 }}">
+      <td><span class="tag p-{{ a.priority }}">{{ a.priority }}</span>{% if a.status == "new" %}<br><span class="tag new">new</span>{% elif a.status == "updated" %}<br><span class="tag subst">updated</span>{% endif %}</td>
+      <td><a href="{{ a.url }}">{{ a.title or "(no title)" }}</a><br>
+        <span class="muted">{{ a.first_author }}{% if a.first_author %} et al. &middot; {% endif %}{{ a.journal }} &middot; {{ a.pub_date }} &middot; PMID {{ a.pmid }}{% if a.doi %} &middot; <a href="{{ a.doi_url }}">DOI</a>{% endif %}</span>
+        {% if a.scope != "in_scope" %}<br><span class="muted">{{ a.reasons|join("; ") }}</span>{% elif a.uncertain %}<br><span class="muted">No abstract in PubMed.</span>{% endif %}</td>
+      <td>{% for c in a.categories %}<span class="tag">{{ c }}</span>{% else %}<span class="muted">none</span>{% endfor %}</td>
+      <td>{{ a.study_design }}</td>
+      <td>{% set x = a.extraction %}
+        {% if x.sample_size %}n = {{ x.sample_size }}<br>{% endif %}
+        {% if x.follow_up %}Follow-up: {{ x.follow_up }}<br>{% endif %}
+        {% if x.trial_registration %}Registered: {% for n in x.trial_registration.split("; ") %}<a href="https://clinicaltrials.gov/study/{{ n }}">{{ n }}</a> {% endfor %}<br>{% endif %}
+        {% if a.evidence %}<details><summary>{{ a.evidence|length }} quoted item(s)</summary>
+          {% for e in a.evidence %}<div><b>{{ e.field.replace("_", " ") }}</b>: {{ e.value }}<blockquote>“{{ e.evidence }}”</blockquote></div>{% endfor %}
+        </details>{% elif not a.has_abstract %}<span class="muted">nothing to extract</span>{% else %}<span class="muted">no items matched</span>{% endif %}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+</section>
+
+<section id="extraction">
+  <h2>Evidence extraction</h2>
+  <p class="muted">Abstract-only, rule-based. Each value is shown with the sentence it came from (see quoted items above and
+    <code>evidence_quotes.csv</code>); a blank cell means the abstract did not state it in a recognizable form, not that the study lacks it.
+    Effect estimates are copied verbatim, never recalculated. Extraction accuracy has not been measured until a reviewer completes <code>docs/validation.md</code>.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>PMID</th><th>Design terms stated</th><th>n</th><th>Interventions</th><th>Follow-up</th><th>Outcome statements</th><th>Effect estimates</th><th>Limitations stated</th></tr></thead>
+    <tbody>
+    {% for a in arts if a.scope == "in_scope" %}{% set x = a.extraction %}
+    <tr><td><a href="{{ a.url }}">{{ a.pmid }}</a></td><td>{{ x.study_design_stated or "" }}</td><td>{{ x.sample_size or "" }}{% if x.notes %} <span title="{{ x.notes }}">*</span>{% endif %}</td>
+      <td>{{ x.intervention or "" }}</td><td>{{ x.follow_up or "" }}</td><td>{{ x.outcome_statements or "" }}</td><td>{{ x.effect_estimates or "" }}</td><td>{{ "yes" if x.limitations else "" }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  <p class="muted">* several participant counts appear in the abstract; check which describes the study population.</p>
+</section>
+
+<section id="trials">
+  <h2>Clinical trials ({{ rows.trials|length }} tracked)</h2>
+  <p class="muted">Registry metadata only. A status or completion date describes the registration, not results; “Results posted” reflects the registry flag.
+    Changes are classed as <b>substantive</b> (status, enrollment, outcomes, interventions, dates, results flag, Washington sites) or <b>administrative</b> (titles, sponsor name, update dates, site count).</p>
+  <h3>Changes since the previous run ({{ changed_trials|length }})</h3>
+  {% if rows.changes %}
+  <div class="table-wrap"><table>
+    <thead><tr><th>Trial</th><th>Change</th><th>Before</th><th>After</th></tr></thead>
+    <tbody>
+    {% for c in rows.changes %}
+    <tr><td><a href="https://clinicaltrials.gov/study/{{ c.nct_id }}">{{ c.nct_id }}</a></td>
+      <td><span class="tag {{ 'subst' if c.kind == 'substantive' else '' }}">{{ c.kind }}</span> {{ c.label }}</td>
+      <td>{{ c.old if c.old is string else (c.old|join("; ") if c.old is iterable else c.old) }}</td>
+      <td>{{ c.new if c.new is string else (c.new|join("; ") if c.new is iterable else c.new) }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}<p>No changes detected{% if first_run %} (baseline run){% endif %}.</p>{% endif %}
+
+  {% if wa_trials %}
+  <h3>Tracked trials with a Washington State site ({{ wa_trials|length }})</h3>
+  <ul>{% for t in wa_trials %}<li><a href="{{ t.url }}">{{ t.nct_id }}</a> {{ t.brief_title }} &middot; {{ t.overall_status }} &middot; {{ t.washington_sites|join("; ") }}</li>{% endfor %}</ul>
+  {% endif %}
+
+  <h3>All tracked trials</h3>
+  <details {% if rows.trials|length <= 40 %}open{% endif %}><summary>Show {{ rows.trials|length }} trials</summary>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Trial</th><th>Status</th><th>Type / phase</th><th class="num">Enrollment</th><th>Interventions</th><th>Primary outcome(s)</th><th>Sponsor</th><th>Primary completion</th><th>This run</th></tr></thead>
+    <tbody>
+    {% for t in rows.trials %}
+    <tr><td><a href="{{ t.url }}">{{ t.nct_id }}</a><br><span class="muted">{{ t.brief_title }}</span></td><td>{{ t.overall_status }}</td>
+      <td>{{ t.study_type }}{% if t.phases %} / {{ t.phases|join(", ") }}{% endif %}</td><td>{{ t.enrollment if t.enrollment is not none else "" }} {{ t.enrollment_type|lower }}</td>
+      <td>{{ t.interventions|join("; ") }}</td><td>{{ t.primary_outcomes|join("; ") }}</td><td>{{ t.sponsor }}</td><td>{{ t.primary_completion_date }}</td>
+      <td><span class="tag {{ 'new' if t.status_this_run == 'new' else ('subst' if t.status_this_run == 'changed' else '') }}">{{ t.status_this_run }}</span></td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div></details>
+  {% if rows.trial_mentions %}
+  <h3>Trials cited in this period's abstracts</h3>
+  <ul>{% for nct, pmids in rows.trial_mentions.items() %}<li><a href="https://clinicaltrials.gov/study/{{ nct }}">{{ nct }}</a> in PMID {% for p in pmids %}<a href="https://pubmed.ncbi.nlm.nih.gov/{{ p }}/">{{ p }}</a> {% endfor %}</li>{% endfor %}</ul>
+  {% endif %}
+</section>
+
+<section id="review">
+  <h2>Review queue</h2>
+  <p><code>review_queue.csv</code> lists every record with its suggested priority and the reason. Fill in <code>reviewer_decision</code>
+    (<code>include</code>, <code>exclude</code> or <code>unsure</code>) and <code>reviewer_notes</code>, then run
+    <code>ep-copilot import-reviews review_queue.csv</code> and <code>ep-copilot evaluate</code> to measure screening precision and recall.
+    Reviewer decisions are stored separately and never overwritten by the tool.</p>
+</section>
+
+<section id="methods">
+  <h2>Methods &amp; limitations</h2>
+  <ul>
+    <li>PubMed is searched by <b>Entrez date</b> (when a record entered PubMed), so older articles indexed this period are included; publication dates are shown separately.</li>
+    <li>Screening uses configured keyword rules over title, abstract, keywords and MeSH terms. Records are never dropped; out-of-scope ones are labelled.</li>
+    <li>Extraction reads abstracts only, keeps the verbatim sentence for every value, and leaves a field empty when it is not explicitly stated. It does not assess bias, quality or clinical significance.</li>
+    <li>Trial changes are detected by comparing stored snapshots field by field, not only the registry's last-update date. Tracked trials that drop out of the status filter are re-read individually.</li>
+    <li>Abstracts and registry text remain the property of their publishers and sponsors; outputs link to sources rather than republishing them.</li>
+    <li>Screening precision/recall and extraction accuracy are unmeasured until a person reviews a sample.</li>
+  </ul>
+</section>
+
+<section id="sources">
+  <h2>Sources &amp; queries</h2>
+  <p><b>PubMed</b> (NCBI E-utilities, {{ meta.pubmed.endpoint }}), Entrez date {{ meta.pubmed.window_start }} to {{ meta.pubmed.window_end }}:</p>
+  <pre>{{ meta.pubmed.query }}</pre>
+  <p><b>ClinicalTrials.gov</b> (API v2, {{ meta.clinicaltrials.endpoint }}): condition “{{ meta.clinicaltrials.condition }}”, intervention “{{ meta.clinicaltrials.intervention }}”,
+    statuses {{ meta.clinicaltrials.statuses|join(", ") }}; {{ meta.clinicaltrials.retrieved }} of {{ meta.clinicaltrials.total_reported }} returned.</p>
+  <p class="muted">Mode: {{ meta.mode }}. Provenance: {{ meta.provenance }}. Run started {{ meta.run.started_at }}, finished {{ meta.run.finished_at }}.</p>
+</section>
+
+<footer>EP Research Copilot {{ meta.version }} &middot; MIT-licensed code &middot; Data from the U.S. National Library of Medicine (PubMed) and ClinicalTrials.gov.</footer>
+</main>
+<script>
+(function () {
+  var q = document.getElementById("q"), pf = document.getElementById("pf"), nf = document.getElementById("nf"),
+      rows = document.querySelectorAll("#lit tbody tr"), count = document.getElementById("count");
+  function apply() {
+    var term = q.value.toLowerCase(), p = pf.value, onlyNew = nf.checked, shown = 0;
+    rows.forEach(function (r) {
+      var ok = (!term || r.textContent.toLowerCase().indexOf(term) >= 0) &&
+               (!p || r.dataset.priority === p) && (!onlyNew || r.dataset.new === "1");
+      r.style.display = ok ? "" : "none"; if (ok) shown++;
+    });
+    count.textContent = shown + " of " + rows.length + " shown";
+  }
+  [q, pf, nf].forEach(function (el) { el.addEventListener("input", apply); });
+  apply();
+})();
+</script>
+</body>
+</html>

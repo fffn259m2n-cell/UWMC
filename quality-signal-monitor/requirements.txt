@@ -1,0 +1,4 @@
+# Runtime dependencies (same as pyproject.toml). For development: pip install -e ".[dev]"
+pandas>=2.0
+jinja2>=3.1
+matplotlib>=3.7

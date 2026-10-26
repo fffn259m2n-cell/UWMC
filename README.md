@@ -1,2 +1,36 @@
 # UWMC
-Gifts
+
+Independent, open-source contributions intended for UW Medicine and University of
+Washington Medical Center teams. Each folder is a self-contained project with its own
+README, tests, documentation and gift-handoff notes.
+
+> None of these projects is affiliated with, requested by, or endorsed by UW Medicine.
+> They use only public data or clearly labelled synthetic data. No patient records,
+> no PHI, no institutional credentials.
+
+| Project | What it does | Data | Status |
+|---|---|---|---|
+| [quality-signal-monitor](quality-signal-monitor/) | Benchmarks UWMC's public CMS HCAHPS patient-experience results against matched national values, led by discharge and care-transition measures, with data-quality checks and an HTML/PDF report | CMS Provider Data Catalog (public) | Tested on synthetic fixtures; first real run pending (CMS blocked in build environment) |
+| [ep-research-copilot](ep-research-copilot/) | Monthly AF-ablation literature discovery, abstract evidence extraction with source quotes, and ClinicalTrials.gov change tracking for an EP research team | PubMed, ClinicalTrials.gov (public) | Tested; sample run on 26 real articles and 396 real trials |
+
+## Quick start
+
+Each project installs and runs on its own (Python 3.11+):
+
+```bash
+cd quality-signal-monitor && pip install -e . && uwmc-monitor run --fetch
+cd ep-research-copilot   && pip install -e . && ep-copilot run
+```
+
+Offline demos with synthetic data are described in each README. CI runs every project's
+tests on Python 3.11 to 3.13.
+
+## Before sharing anything
+
+Each project has a `docs/gift_handoff.md` with a checklist marked **[CONFIRM]**. Work
+through it, run the tool on real data, and have a qualified person review the output
+before it goes to anyone at UW Medicine.
+
+## License
+
+MIT for all code (see each project's LICENSE). Source data keeps its own terms.

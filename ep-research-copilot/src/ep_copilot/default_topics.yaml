@@ -1,0 +1,61 @@
+# EP Research Copilot topic configuration.
+#
+# Each topic defines: a PubMed query, a ClinicalTrials.gov query, an in-scope test,
+# and screening categories. Patterns are case-insensitive regular expressions
+# matched against title, abstract, keywords and MeSH terms.
+#
+# To add a topic (e.g. ventricular tachycardia), copy the af-ablation block,
+# change the queries and patterns, and run:  ep-copilot run --topic <name>
+
+topics:
+  af-ablation:
+    title: "AF Ablation Evidence Update"
+    description: "Catheter ablation for atrial fibrillation: outcomes, recurrence, pulsed-field ablation, monitoring, repeat procedures and safety."
+
+    pubmed_query: >-
+      ("Atrial Fibrillation"[MeSH Terms] OR "atrial fibrillation"[Title/Abstract])
+      AND ("Catheter Ablation"[MeSH Terms] OR "catheter ablation"[Title/Abstract]
+      OR "pulsed field ablation"[Title/Abstract] OR "pulsed-field ablation"[Title/Abstract]
+      OR "cryoballoon"[Title/Abstract] OR "radiofrequency ablation"[Title/Abstract]
+      OR "pulmonary vein isolation"[Title/Abstract])
+      AND (recurrence[Title/Abstract] OR outcomes[Title/Abstract] OR follow-up[Title/Abstract]
+      OR efficacy[Title/Abstract] OR safety[Title/Abstract])
+
+    trials:
+      condition: "atrial fibrillation"
+      intervention: "catheter ablation OR pulsed field ablation OR cryoballoon OR radiofrequency ablation OR pulmonary vein isolation"
+      statuses: [NOT_YET_RECRUITING, RECRUITING, ENROLLING_BY_INVITATION, ACTIVE_NOT_RECRUITING]
+      max_records: 1000
+
+    # A record is in scope when it matches BOTH groups.
+    scope:
+      all_of:
+        - ['atrial fibrillation', '\bAF\b', '\bAFib\b', 'atrial arrhythmia']
+        - ['ablation', 'pulmonary vein isolation', '\bPVI\b', 'electroporation', 'cryoballoon']
+
+    # Related-but-outside records are kept and labelled, never dropped.
+    other_ep_patterns: ['arrhythmi', 'ventricular tachycardia', 'atrial flutter', 'electrophysiolog',
+                        'pacemaker', 'defibrillator', 'left atrial appendage', 'sudden cardiac death']
+
+    categories:
+      - key: ablation_outcomes
+        label: "AF ablation outcomes"
+        # Specific outcome language only: the PubMed query already requires generic
+        # words such as "outcomes", "efficacy" and "safety", so they cannot discriminate.
+        patterns: ['freedom from', 'success rate', 'arrhythmia[- ]free', 'recurrence[- ]free', 'sinus rhythm', 'AF burden', 'quality of life']
+      - key: pulsed_field
+        label: "Pulsed-field ablation"
+        patterns: ['pulsed[- ]field', '\bPFA\b', 'electroporation']
+      - key: recurrence
+        label: "AF recurrence"
+        patterns: ['recurren', 'relapse', 'predictor', 'predict']
+      - key: monitoring
+        label: "Rhythm monitoring"
+        patterns: ['holter', 'loop recorder', '\bILR\b', '\bICM\b', 'insertable cardiac monitor', 'wearable', 'smartwatch', 'continuous monitoring', 'rhythm monitoring', 'ECG monitoring']
+      - key: repeat_ablation
+        label: "Repeat ablation"
+        patterns: ['repeat ablation', 'redo', 'second procedure', 'reablation', 're-ablation', 'pulmonary vein reconnection', 'reconnect']
+      - key: procedural_safety
+        label: "Procedural safety"
+        patterns: ['complication', 'adverse event', 'tamponade', 'stroke', 'esophag', 'phrenic', 'hemolysis', 'silent cerebral',
+                   'pulmonary vein (?:stenosis|narrowing|thrombosis)', 'vascular access', 'bleeding', 'coronary spasm']

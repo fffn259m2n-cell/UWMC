@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+build/
+dist/
+
+# Raw CMS downloads are large and reproducible: never commit them.
+data/raw/
+data/*.csv
+data/*.zip
+
+# Generated outputs
+output/*
+!output/.gitkeep

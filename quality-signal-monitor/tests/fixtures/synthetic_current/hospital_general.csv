@@ -1,0 +1,4 @@
+Facility ID,Facility Name,Address,City/Town,State,ZIP Code,County/Parish,Telephone Number,Hospital Type,Hospital Ownership,Emergency Services,Hospital overall rating,Hospital overall rating footnote
+500008,UNIVERSITY OF WASHINGTON MEDICAL CTR,1959 NE PACIFIC ST,SEATTLE,WA,98195,KING,(000) 000-0000,Acute Care Hospitals,Government - State,Yes,4,
+990001,SYNTHETIC COMPARISON HOSPITAL,1 TEST WAY,TESTVILLE,WA,99999,TEST,(000) 000-0000,Acute Care Hospitals,Voluntary non-profit - Private,Yes,3,
+5008,SYNTHETIC ID WITH LOST LEADING ZERO,,,WA,,,,Acute Care Hospitals,,,,

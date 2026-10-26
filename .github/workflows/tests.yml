@@ -1,0 +1,48 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  quality-signal-monitor:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    defaults:
+      run:
+        working-directory: quality-signal-monitor
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+      - name: Offline smoke run on synthetic fixtures
+        run: |
+          uwmc-monitor run --data-dir tests/fixtures/synthetic_current \
+            --previous-dir tests/fixtures/synthetic_previous --out output
+          test -s output/uwmc_quality_report.html
+
+  ep-research-copilot:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    defaults:
+      run:
+        working-directory: ep-research-copilot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+      - name: Offline smoke run on synthetic fixtures
+        run: |
+          ep-copilot run --offline
+          ep-copilot run --offline --fixtures tests/fixtures/snapshot_run2
+          test -s output/ep_research_digest.html

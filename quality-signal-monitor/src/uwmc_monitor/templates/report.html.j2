@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% if synthetic %}[SYNTHETIC] {% endif %}UWMC Discharge &amp; Patient Experience Signals</title>
+<style>
+:root {
+  --bg: #fcfcfb; --surface: #ffffff; --ink: #0b0b0b; --ink-2: #52514e; --rule: #e4e3df;
+  --accent: #2a78d6; --warn-bg: #fff4e0; --warn-ink: #7a4b00; --bad-bg: #fde8e8; --bad-ink: #8a1c1c;
+  --info-bg: #eef4fc; --info-ink: #184f95;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1a1a19; --surface: #222221; --ink: #f0efec; --ink-2: #c3c2b7; --rule: #3a3a38;
+    --accent: #3987e5; --warn-bg: #3a2c10; --warn-ink: #f3c56b; --bad-bg: #3d1c1c; --bad-ink: #f2a3a3;
+    --info-bg: #17263a; --info-ink: #9ec5f4;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 14px/1.5 -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+main { max-width: 980px; margin: 0 auto; padding: 32px 16px 64px; }
+h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.01em; }
+h2 { font-size: 18px; margin: 36px 0 10px; padding-top: 12px; border-top: 1px solid var(--rule); }
+h3 { font-size: 15px; margin: 20px 0 8px; }
+.sub { color: var(--ink-2); margin: 0 0 16px; }
+.banner { padding: 12px 14px; border-radius: 6px; margin: 12px 0; }
+.banner.synthetic { background: var(--bad-bg); color: var(--bad-ink); font-weight: 600; font-size: 15px;
+  border: 2px solid currentColor; }
+.banner.note { background: var(--info-bg); color: var(--info-ink); }
+.banner.warn { background: var(--warn-bg); color: var(--warn-ink); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 14px 0; }
+.tile { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 10px 12px; }
+.tile b { display: block; font-size: 24px; }
+.tile span { color: var(--ink-2); font-size: 12px; }
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 12.5px; background: var(--surface); }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 600; color: var(--ink-2); background: var(--bg); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+code { font-size: 12px; }
+.sev { font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; }
+.sev.failure { background: var(--bad-bg); color: var(--bad-ink); }
+.sev.anomaly { background: var(--warn-bg); color: var(--warn-ink); }
+.sev.info { background: var(--info-bg); color: var(--info-ink); }
+figure { margin: 12px 0; background: #fff; border: 1px solid var(--rule); border-radius: 6px; padding: 8px; }
+figure img { width: 100%; height: auto; display: block; }
+figcaption { color: #52514e; font-size: 12px; padding: 6px 4px 0; }
+ul.tight li { margin: 3px 0; }
+.muted { color: var(--ink-2); }
+footer { margin-top: 40px; color: var(--ink-2); font-size: 12px; }
+@media print {
+  body { background: #fff; color: #000; font-size: 11px; }
+  main { padding: 0; max-width: none; }
+  h2 { break-after: avoid; }
+  figure, tr { break-inside: avoid; }
+  .table-wrap { overflow: visible; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <h1>Discharge &amp; Patient Experience Signals</h1>
+  <p class="sub">{{ hospital.facility_name }} (CMS facility {{ hospital.facility_id }}) compared with matched national HCAHPS values
+  &middot; CMS release {{ provenance.release }} &middot; prepared {{ generated }}</p>
+  {% if synthetic %}
+  <div class="banner synthetic">SYNTHETIC TEST DATA. Every number in this report comes from fabricated fixture files used to
+  test the software. These are NOT actual results for {{ hospital.facility_name }} or any hospital. Do not cite or share.</div>
+  {% elif provenance.provenance == "manual" %}
+  <div class="banner warn">Source files were placed in the data folder by hand rather than downloaded by this tool, so their
+  origin is not recorded automatically. Confirm they are unmodified CMS downloads (checksums are listed under Sources).</div>
+  {% endif %}
+  <div class="banner note"><b>Independent project.</b> This report was produced by an independent, unpaid, open-source tool
+  using only public CMS data. It is not an official UW Medicine or CMS report, and UW Medicine did not request, review or endorse it.
+  It contains no patient-level data.</div>
+</header>
+
+<section>
+  <h2>1. Executive summary</h2>
+  <div class="tiles">
+    <div class="tile"><b>{{ facts.measures_total }}</b><span>HCAHPS rows published for this hospital</span></div>
+    <div class="tile"><b>{{ facts.measures_comparable }}</b><span>matched to a national value</span></div>
+    <div class="tile"><b>{{ facts.top_box_above_national }} / {{ facts.top_box_below_national }}</b><span>top-box measures above / below national</span></div>
+    <div class="tile"><b>{{ facts.data_quality.failure }} / {{ facts.data_quality.anomaly }}</b><span>data-quality failures / anomalies</span></div>
+  </div>
+  {% for p in summary.paragraphs %}<p>{{ p }}</p>{% endfor %}
+  <p class="muted">Narrative method: {{ summary.method }}. Draft for human review before any use.</p>
+  {% if summary.problems %}
+  <div class="banner warn">The optional AI draft was rejected because it contained unverified content:
+    {{ summary.problems | join("; ") }}. The deterministic summary is shown instead.</div>
+  {% endif %}
+</section>
+
+<section>
+  <h2>2. Focus: discharge and care transitions</h2>
+  <p>HCAHPS items closest to the hand-off from hospital to home: discharge information, communication about medicines,
+  care coordination and information about symptoms. These describe what patients <em>reported</em>; they cannot show
+  whether a discharge was safe or whether a patient understood their medicines.</p>
+  {% if charts.focus %}
+  <figure><img alt="Dot chart of UWMC versus national favorable responses for discharge and care-transition measures; values are in the table below." src="data:image/png;base64,{{ charts.focus }}">
+  <figcaption>Blue: UWMC. Gray: national. Favorable-response measures only. Where only a blue dot shows, the two values are equal.</figcaption></figure>
+  {% endif %}
+  {% if focus|length %}
+  <div class="table-wrap"><table>
+    <tr><th>Domain</th><th>Measure</th><th>Response</th><th class="num">UWMC</th><th class="num">National</th><th class="num">Gap (pp)</th><th class="num">Favorable gap</th><th>Status</th></tr>
+    {% for r in focus.itertuples() %}
+    <tr><td>{{ r.domain }}</td><td><code>{{ r.hcahps_measure_id }}</code></td><td>{{ r.hcahps_answer_description or r.hcahps_question }}</td>
+      <td class="num">{{ r.uwmc_percent|pct }}</td><td class="num">{{ r.national_percent|pct }}</td><td class="num">{{ r.gap_pp|pp }}</td><td class="num">{{ r.favorable_gap_pp|pp }}</td>
+      <td>{% if r.retired_measure %}Retired from the updated survey; reference only{% elif r.comparable %}{{ r.direction_meaning }}{% else %}Not comparable: {{ r.not_comparable_reason }}{% endif %}</td></tr>
+    {% endfor %}
+  </table></div>
+  {% else %}
+  <p>No discharge or care-transition measures were published for this facility in this release.</p>
+  {% endif %}
+  <p class="muted">CMS updated the HCAHPS survey for discharges from 1 January 2025: Care Transition was dropped and Care Coordination,
+  Information About Symptoms and Restfulness of the Hospital Environment were added. Results from different survey versions are not compared over time.</p>
+</section>
+
+<section>
+  <h2>3. Hospital identity and data</h2>
+  <div class="table-wrap"><table>
+    <tr><th>CMS facility ID</th><td>{{ hospital.facility_id }}</td></tr>
+    <tr><th>Facility name (CMS)</th><td>{{ hospital.facility_name }}</td></tr>
+    <tr><th>Location</th><td>{{ hospital.address }} {{ hospital.city_town }}, {{ hospital.state }} {{ hospital.zip_code }}</td></tr>
+    {% if hospital.hospital_type %}<tr><th>Hospital type</th><td>{{ hospital.hospital_type }}</td></tr>{% endif %}
+    {% if hospital.hospital_ownership %}<tr><th>Ownership</th><td>{{ hospital.hospital_ownership }}</td></tr>{% endif %}
+    {% if hospital.hospital_overall_rating %}<tr><th>CMS overall star rating</th><td>{{ hospital.hospital_overall_rating }}</td></tr>{% endif %}
+    <tr><th>HCAHPS reporting window(s)</th><td>{{ windows | join("; ") or "none" }}</td></tr>
+    {% if previous %}<tr><th>Prior release compared</th><td>{{ previous.release }}</td></tr>{% endif %}
+  </table></div>
+  <p class="muted">Identity verified against CMS Hospital General Information: facility ID, name, state and city must all match
+  the expected record or the tool stops. Results cover only what CMS publishes under this one facility ID; other UW Medicine
+  facilities are not combined.</p>
+</section>
+
+<section>
+  <h2>4. Noteworthy descriptive signals</h2>
+  {% if signals|length %}
+  <p>Ranked by the transparent score in section 9. A gap is the hospital percentage minus the national percentage, in percentage points (pp).</p>
+  <div class="table-wrap"><table>
+    <tr><th>#</th><th>Measure</th><th>Domain</th><th>Response</th><th class="num">UWMC</th><th class="num">National</th><th class="num">Gap (pp)</th><th>Band</th><th>Confidence</th><th>Prior release</th><th class="num">Score</th></tr>
+    {% for s in signals.head(8).itertuples() %}
+    <tr><td>{{ s.rank }}</td><td><code>{{ s.hcahps_measure_id }}</code></td><td>{{ s.domain }}</td><td>{{ s.hcahps_answer_description or s.hcahps_question }}</td>
+      <td class="num">{{ s.uwmc_percent|pct }}</td><td class="num">{{ s.national_percent|pct }}</td><td class="num">{{ s.gap_pp|pp }}</td>
+      <td>{{ s.gap_band }}{% if s.within_rounding %} (within rounding){% endif %}</td><td>{{ s.confidence }}</td><td>{{ s.persistence }}</td><td class="num">{{ "%.2f"|format(s.score) }}</td></tr>
+    {% endfor %}
+  </table></div>
+  {% else %}
+  <p>No top-box measure was comparable, so no signals are ranked.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>5. National benchmark comparisons</h2>
+  {% if charts.benchmark %}
+  <figure><img alt="Dot chart of UWMC versus national top-box percentages for each comparable measure; values are listed in the table below." src="data:image/png;base64,{{ charts.benchmark }}">
+  <figcaption>Each row is one favorable-response (top-box) measure. Blue: UWMC. Gray: national. Where only a blue dot shows, the two values are equal. Values from the table below.</figcaption></figure>
+  {% endif %}
+  <h3>Favorable-response (top-box) measures</h3>
+  {% if top_box|length %}
+  <div class="table-wrap"><table>
+    <tr><th>Measure</th><th>Question</th><th>Response</th><th class="num">UWMC</th><th class="num">National</th><th class="num">Gap (pp)</th><th class="num">Surveys</th><th>Footnote</th></tr>
+    {% for r in top_box.itertuples() %}
+    <tr><td><code>{{ r.hcahps_measure_id }}</code></td><td>{{ r.hcahps_question }}</td><td>{{ r.hcahps_answer_description }}</td>
+      <td class="num">{{ r.uwmc_percent|pct }}</td><td class="num">{{ r.national_percent|pct }}</td><td class="num">{{ r.gap_pp|pp }}</td>
+      <td class="num">{{ r.completed_surveys|num }}</td><td>{{ r.uwmc_footnote }}</td></tr>
+    {% endfor %}
+  </table></div>
+  {% else %}<p>None comparable.</p>{% endif %}
+
+  {% if other_comparable|length %}
+  <h3>Other comparable response categories</h3>
+  <p class="muted">Middle and bottom response boxes. For bottom-box measures a <em>negative</em> gap means fewer unfavorable
+  responses than nationally. "Favorable gap" applies that direction for you.</p>
+  <div class="table-wrap"><table>
+    <tr><th>Measure</th><th>Response</th><th>Direction</th><th class="num">UWMC</th><th class="num">National</th><th class="num">Gap (pp)</th><th class="num">Favorable gap</th></tr>
+    {% for r in other_comparable.itertuples() %}
+    <tr><td><code>{{ r.hcahps_measure_id }}</code></td><td>{{ r.hcahps_answer_description or r.hcahps_question }}</td><td>{{ r.direction_meaning }}</td>
+      <td class="num">{{ r.uwmc_percent|pct }}</td><td class="num">{{ r.national_percent|pct }}</td><td class="num">{{ r.gap_pp|pp }}</td><td class="num">{{ r.favorable_gap_pp|pp }}</td></tr>
+    {% endfor %}
+  </table></div>
+  {% endif %}
+
+  <h3>Not comparable ({{ not_comparable|length }})</h3>
+  {% if not_comparable|length %}
+  <div class="table-wrap"><table>
+    <tr><th>Measure</th><th>Reported value</th><th>Reason excluded from comparison</th></tr>
+    {% for r in not_comparable.itertuples() %}
+    <tr><td><code>{{ r.hcahps_measure_id }}</code></td><td>{{ r.uwmc_value_raw }}</td><td>{{ r.not_comparable_reason }}</td></tr>
+    {% endfor %}
+  </table></div>
+  {% else %}<p>None.</p>{% endif %}
+</section>
+
+<section>
+  <h2>6. Changes between releases</h2>
+  {% if trends is none %}
+  <p>No prior release was supplied, so no change over time is reported. A single release cannot show a trend.
+  Archived CMS releases are available at <a href="{{ archive_url }}">{{ archive_url }}</a>; see the README for how to add one.</p>
+  {% else %}
+  {% if charts.trend %}
+  <figure><img alt="Dot chart of UWMC top-box percentages in the current and prior release; values are listed in the table below." src="data:image/png;base64,{{ charts.trend }}">
+  <figcaption>Dark blue: current release. Light blue: prior release.</figcaption></figure>
+  {% endif %}
+  <div class="banner warn">HCAHPS results are rolling four-quarter windows. When windows overlap, the two releases share patients,
+  so the change is not between independent periods.</div>
+  <div class="table-wrap"><table>
+    <tr><th>Measure</th><th>Prior window</th><th>Current window</th><th class="num">Prior</th><th class="num">Current</th><th class="num">Change (pp)</th><th class="num">National change</th><th class="num">Gap change</th><th>Windows / reason</th></tr>
+    {% for r in trends.itertuples() %}
+    <tr><td><code>{{ r.hcahps_measure_id }}</code></td><td>{{ r.previous_window }}</td><td>{{ r.current_window }}</td>
+      <td class="num">{{ r.previous_percent|pct }}</td><td class="num">{{ r.current_percent|pct }}</td><td class="num">{{ r.change_pp|pp }}</td>
+      <td class="num">{{ r.national_change_pp|pp }}</td><td class="num">{{ r.gap_change_pp|pp }}</td>
+      <td>{% if r.comparable %}{{ r.window_relation }}{% else %}{{ r.not_comparable_reason }}{% endif %}</td></tr>
+    {% endfor %}
+  </table></div>
+  {% endif %}
+</section>
+
+<section>
+  <h2>7. Data-quality findings</h2>
+  <p class="muted"><span class="sev failure">failure</span> confirmed problem, rows excluded &nbsp;
+  <span class="sev anomaly">anomaly</span> possible problem, rows kept and flagged &nbsp;
+  <span class="sev info">info</span> context only</p>
+  {% if findings|length %}
+  <div class="table-wrap"><table>
+    <tr><th>Severity</th><th>Dataset</th><th>Check</th><th>Detail</th><th class="num">Count</th><th>Measures</th></tr>
+    {% for f in findings.itertuples() %}
+    <tr><td><span class="sev {{ f.severity }}">{{ f.severity }}</span></td><td>{{ f.dataset }}</td><td><code>{{ f.check }}</code></td>
+      <td>{{ f.detail }}</td><td class="num">{{ f.count }}</td><td><code>{{ f.measure_ids | replace(";", " ") }}</code></td></tr>
+    {% endfor %}
+  </table></div>
+  {% else %}<p>No findings.</p>{% endif %}
+</section>
+
+<section>
+  <h2>8. Limitations</h2>
+  <ul class="tight">
+    <li>Differences are descriptive. CMS publishes adjusted, whole-number percentages without standard errors, so no statistical significance is claimed or computed.</li>
+    <li>A gap of about 1 pp can be produced by rounding alone.</li>
+    <li>HCAHPS covers a sample of adult inpatients who returned a survey; it does not describe every patient or every service.</li>
+    <li>National values are averages over all reporting hospitals, which differ in size, case mix and mission from an academic medical center.</li>
+    <li>Results reflect a reporting window that ends months before publication.</li>
+    <li>Directionality comes from CMS measure-ID conventions; IDs outside those rules are shown but not interpreted.</li>
+    <li>Nothing here identifies causes or recommends clinical action.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>9. Methodology</h2>
+  <ul class="tight">
+    <li>A hospital measure is <b>comparable</b> only when its value is numeric and within 0-100, exactly one valid national row exists with the same measure ID, both cover the identical reporting window, and the response category text matches.</li>
+    <li>Gap (pp) = UWMC % &minus; national %. Favorable gap flips the sign for bottom-box measures.</li>
+    <li>Gap bands: large &ge; {{ rules.gap_bands_pp.large }} pp, moderate &ge; {{ rules.gap_bands_pp.moderate }} pp, otherwise small. These are reading aids, not significance thresholds.</li>
+    <li>Confidence: <i>low</i> with CMS footnote 6 or 10 or fewer than 100 completed surveys; <i>caution</i> with any other footnote or fewer than 300 surveys; otherwise <i>standard</i>. Weights {{ rules.confidence_weights }}.</li>
+    <li>Signal score = |favorable gap| &times; confidence weight + 1.0 if, since a comparable prior release, the gap to national grew by more than 1 pp in the same direction. Only top-box measures are ranked, so complementary boxes of one question are not counted twice.</li>
+  </ul>
+  <details><summary>Directionality rules (first match wins)</summary>
+    <div class="table-wrap"><table><tr><th>Measure-ID pattern</th><th>Direction</th><th>Meaning</th></tr>
+    {% for r in rules.direction_rules %}<tr><td><code>{{ r.pattern }}</code></td><td>{{ r.direction }}</td><td>{{ r.meaning }}</td></tr>{% endfor %}
+    </table></div>
+  </details>
+</section>
+
+<section>
+  <h2>10. Sources</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Dataset</th><th>CMS ID</th><th>CMS modified</th><th>Retrieved</th><th>SHA-256 (first 16)</th></tr>
+    {% for ds, rec in sources %}
+    <tr><td><a href="{{ ds.landing_page }}">{{ rec.title or ds.title }}</a></td><td>{{ ds.dataset_id }}</td>
+      <td>{{ rec.cms_modified or "not recorded" }}</td><td>{{ rec.retrieved_at or rec.file_modified or "not recorded" }}</td>
+      <td><code>{{ (rec.sha256 or "")[:16] }}</code></td></tr>
+    {% endfor %}
+  </table></div>
+  <p class="muted">Provenance: {{ provenance.provenance }}. Data folder: <code>{{ provenance.path }}</code>.</p>
+</section>
+
+<section>
+  <h2>11. Reproduce this report</h2>
+<pre><code>pip install -e .
+uwmc-monitor fetch            # downloads the current CMS release into data/raw/&lt;date&gt;/
+uwmc-monitor run              # validate, analyze, write output/
+uwmc-monitor run --previous-dir data/raw/&lt;earlier-date&gt;   # add a release comparison</code></pre>
+</section>
+
+<footer>Generated by uwmc-quality-signal-monitor {{ version }} (MIT licensed). Independent project; not affiliated with or endorsed by UW Medicine or CMS.</footer>
+</main>
+</body>
+</html>
