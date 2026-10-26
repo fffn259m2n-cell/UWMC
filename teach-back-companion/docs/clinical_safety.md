@@ -39,6 +39,8 @@ doses, interpret a patient's own results, triage, or monitor.
 ## Interface safeguards against false reassurance
 
 - A 911 / 988 strip is visible on every screen.
+- A broad safety net adds a red 911 / 988 box above any chat answer whose message touches an
+  emergency or self-harm topic, even when the specific patterns do not recognise it.
 - Teach-back results never use an "all good" colour. Every result says the automatic check
   cannot confirm understanding and asks the patient to review with their nurse, pharmacist
   or care team.

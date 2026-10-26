@@ -24,6 +24,29 @@ over to the next reviewer's phrasing. Sensitivity for emergencies and especially
 statements stays around 60 to 87% on new text. Keyword rules cannot reach 100% on unseen
 language. That is why the design does not depend on detection (next section).
 
+## Design response: a safety net that does not depend on recognising the wording
+
+Because specific patterns keep missing new phrasing, the chat now has two layers:
+
+1. **Specific patterns** (as before) decide when to stop and say "call 911 now" or "call or
+   text 988", show the plan's warning signs, and give no other answer.
+2. **A broad safety net**: any message that touches an emergency or self-harm topic at all
+   (chest, breathing, bleeding, fainting, speech, confusion, swallowing pills, dying, ending
+   things, not waking up, and Spanish equivalents) gets a red "If this is happening now…
+   call 911 … call or text 988" box **above** the normal answer. A needless box costs a
+   little reading; a missed crisis can cost a life, so this layer is deliberately wide.
+
+The 911/988 strip on every screen is the third layer, and it never depends on any text.
+
+**These figures are not independent.** The safety-net word lists were written after seeing
+round 3, so the round-3 "reached" figures below are development numbers. The next fresh
+held-out round is the real test.
+
+| Set | Emergencies reached | Crisis reached | Ordinary messages shown the box |
+|---|---|---|---|
+| Round 3 (seen) | 100% | 100% | 13% |
+| Development set (all rounds) | 100% | 100% | 19% |
+
 ## Held-out round 2
 
 390 cases written by a second independent reviewer who did not read the rule code, the
