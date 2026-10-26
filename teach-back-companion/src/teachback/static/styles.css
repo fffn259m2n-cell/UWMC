@@ -88,3 +88,8 @@ th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--rule
 .foot { max-width: 900px; margin: 0 auto; padding: 16px; color: var(--ink-2); font-size: .8rem; border-top: 1px solid var(--rule); }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .inline-label { margin: 0; font-weight: 400; }
+
+.check-row { display: flex; gap: .5rem; align-items: center; margin: .5rem 0; }
+.check-row input { width: auto; }
+.voice { margin-top: .5rem; }
+meter { width: 8rem; }

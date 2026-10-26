@@ -145,11 +145,45 @@ function renderPlan() {
 }
 
 // ---------------------------------------------------------------- teach-back
+// Speak instead of type, using the browser's own speech recognition when it has one.
+function voiceInput(box) {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) return el("p", { class: "muted" }, "Tip: you can also use your device's dictation (microphone) key to speak your answer.");
+  const lang = el("select", { id: "tb-voice-lang", "aria-label": "Speech language" },
+    el("option", { value: "en-US" }, "English"), el("option", { value: "es-US" }, "Español"));
+  const status = el("span", { class: "muted", "aria-live": "polite" });
+  let rec = null;
+  const btn = el("button", { type: "button", id: "tb-voice" }, "🎤 Speak my answer");
+  btn.addEventListener("click", () => {
+    if (rec) { rec.stop(); return; }
+    rec = new SR();
+    rec.lang = lang.value; rec.interimResults = false; rec.maxAlternatives = 1;
+    rec.onresult = ev => { const t = Array.from(ev.results).map(r => r[0].transcript).join(" "); box.value = (box.value ? box.value + " " : "") + t; };
+    rec.onerror = ev => { status.textContent = `Speech not available (${ev.error}). You can type instead.`; };
+    rec.onend = () => { rec = null; btn.textContent = "🎤 Speak my answer"; if (!status.textContent.startsWith("Speech not")) status.textContent = "Check the text, then press Check my explanation."; };
+    status.textContent = "Listening… press again to stop.";
+    btn.textContent = "■ Stop";
+    rec.start();
+  });
+  return el("div", { class: "voice" }, el("div", { class: "status-row" }, btn, lang, status),
+    el("p", { class: "muted" }, "Speech uses your browser's speech service. In some browsers the audio is processed by the browser maker's servers. Demo only: never speak real patient information."));
+}
+
 function renderCheck() {
   const items = state.plan.items;
   const sel = el("select", { id: "tb-item" }, items.map(i => el("option", { value: i.id, selected: i.id === state.checkItem }, i.title)));
   const box = el("textarea", { id: "tb-text", "aria-describedby": "tb-hint" });
   const result = el("div", { "aria-live": "polite" });
+  const prompt = el("label", { for: "tb-text" }, "In your own words, what does this instruction mean for you?");
+  const carer = el("input", { type: "checkbox", id: "tb-carer" });
+  carer.checked = !!state.caregiver;
+  const setCarer = () => {
+    state.caregiver = carer.checked;
+    prompt.textContent = carer.checked ? "In your own words, what does this instruction mean for the person you care for?"
+      : "In your own words, what does this instruction mean for you?";
+  };
+  carer.addEventListener("change", setCarer); setCarer();
+  const voice = voiceInput(box);
   const showItem = el("div");
   const refresh = () => {
     const i = items.find(x => x.id === sel.value);
@@ -170,9 +204,10 @@ function renderCheck() {
     el("p", {}, "Teach-back means explaining an instruction in your own words. It helps you and your care team spot anything that is confusing. It is not a test, and there are no wrong answers here."),
     el("div", { class: "card" },
       el("label", { for: "tb-item" }, "Which instruction?"), sel, showItem,
-      el("label", { for: "tb-text" }, "In your own words, what does this instruction mean for you?"),
+      el("div", { class: "check-row" }, carer, el("label", { for: "tb-carer" }, "I am a family member or caregiver explaining it for someone else")),
+      prompt,
       el("p", { id: "tb-hint", class: "muted" }, "For example: what to do, how often, and when to call. What you type is not saved."),
-      box, el("div", { class: "status-row" }, el("button", { type: "button", class: "primary", onclick: submit }, "Check my explanation"))),
+      box, voice, el("div", { class: "status-row" }, el("button", { type: "button", class: "primary", onclick: submit }, "Check my explanation"))),
     result);
 }
 
@@ -319,6 +354,27 @@ function renderStaff() {
     } catch (e) { out.replaceChildren(el("p", { class: "result-concern" }, e.message)); }
   };
   const bench = el("div");
+  const gateOut = el("div", { "aria-live": "polite" });
+  const runGate = async () => {
+    gateOut.replaceChildren(el("p", { class: "muted" }, "Checking…"));
+    const drafts = items.map(i => ({ id: i.title, plan: state.plan.id, item: i.id, text: i.plain }));
+    const r = await post("/api/gate", { drafts });
+    gateOut.replaceChildren(el("p", {}, `${r.held} of ${r.total} held; ${r.passed_checks} passed the automated checks. ${r.note}`),
+      el("table", {}, el("thead", {}, el("tr", {}, el("th", {}, "Instruction"), el("th", {}, "Status"))),
+        el("tbody", {}, r.rows.map(x => el("tr", {}, el("td", {}, x.id), el("td", {}, x.status))))));
+  };
+  const insightsOut = el("div", { "aria-live": "polite" });
+  const runInsights = async () => {
+    insightsOut.replaceChildren(el("p", { class: "muted" }, "Working… checking about 900 synthetic explanations (a few seconds the first time)."));
+    const r = await api("/api/insights");
+    insightsOut.replaceChildren(
+      el("p", { class: "notice" }, "Synthetic: built from reviewer-written test cases that over-represent mistakes. Not real patients."),
+      el("table", {}, el("thead", {}, el("tr", {}, el("th", {}, "HCAHPS domain"), el("th", {}, "Explanations flagged"), el("th", {}, "Rate"))),
+        el("tbody", {}, r.domains.map(d => el("tr", {}, el("td", {}, d.label), el("td", {}, `${d.flagged} of ${d.attempts}`),
+          el("td", {}, el("meter", { min: "0", max: "1", low: "0.2", high: "0.5", optimum: "0", value: String(d.flagged_rate), "aria-label": `${Math.round(d.flagged_rate * 100)} percent` })))))),
+      el("h3", {}, "Most often misunderstood instructions"),
+      el("ol", {}, r.items.slice(0, 5).map(i => el("li", {}, `${i.title} (${i.plan}): ${i.flagged} of ${i.attempts} flagged. Top concern: ${i.top_concerns.length ? i.top_concerns[0].label : "none"}.`))));
+  };
   const runBench = async () => {
     const b = await api("/api/benchmark");
     bench.replaceChildren(el("p", {}, `${b.detected} of ${b.seeded_errors} seeded errors detected; ${b.false_alarms} false alarms on ${b.clean_cases} clean rewrites.`),
@@ -331,7 +387,13 @@ function renderStaff() {
       el("label", { for: "ev-text" }, "Rewritten version to check"), cand,
       el("label", { for: "ev-lang" }, "Language"), lang,
       el("div", { class: "status-row" }, el("button", { type: "button", class: "primary", onclick: run }, "Check"))),
-    out, el("h2", {}, "Evaluator benchmark (synthetic)"), el("button", { type: "button", onclick: runBench }, "Run benchmark"), bench);
+    out, el("h2", {}, "Evaluator benchmark (synthetic)"), el("button", { type: "button", onclick: runBench }, "Run benchmark"), bench,
+    el("h2", {}, "Safety gate for AI-drafted text"),
+    el("p", {}, "Before AI-drafted discharge text reaches a patient, every instruction can be checked in one batch. Anything that changes a dose, a “do not”, a 911 instruction or a limit is held for a person to fix. This demo checks this plan's plain-language versions."),
+    el("button", { type: "button", id: "gate-run", onclick: runGate }, "Check all instructions in this plan"), gateOut,
+    el("h2", {}, "Misunderstanding insights (synthetic)"),
+    el("p", {}, "Which instructions are misunderstood most often in teach-back, and how, grouped by the HCAHPS domain each instruction affects. Counts only; no explanation text is kept."),
+    el("button", { type: "button", id: "insights-run", onclick: runInsights }, "Show insights"), insightsOut);
 }
 
 // ---------------------------------------------------------------- shell

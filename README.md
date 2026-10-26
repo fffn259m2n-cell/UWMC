@@ -27,6 +27,14 @@ cd teach-back-companion  && pip install -e . && teachback serve   # http://127.0
 Offline demos with synthetic data are described in each README. CI runs every project's
 tests on Python 3.11 to 3.13.
 
+## What is new
+
+- **Safety gate for AI-drafted patient text** and **misunderstanding insights** in the Teach-Back Companion, plus **voice** and **caregiver** modes.
+- The Quality Monitor report can show **teach-back findings beside the HCAHPS discharge measures**.
+- The EP digest opens with **alerts**: results posted, new randomized trials, Washington State site changes.
+- **Automatic real-data runs** on GitHub: quarterly CMS report and monthly EP digest (`.github/workflows/scheduled-reports.yml`).
+- Double-click start files for **Mac** and **Windows**; Windows is tested in CI.
+
 ## Guides
 
 | Guide | For |

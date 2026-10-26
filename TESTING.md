@@ -84,6 +84,10 @@ Start it (Option B only; Codespaces starts it for you):
 | 18 | Click **A+** a few times; try the keyboard only (Tab, Enter) | Text grows; everything is reachable and the focus outline is visible | |
 | 19 | Repeat steps 4 to 7 with **Jordan Lee** (heart failure) and **Sam Okafor** (pneumonia), e.g. `If I gain 3 pounds I take an extra water pill` or `I stop the antibiotic when my fever is gone` | Concerns for each | |
 | 20 | Open it on your phone (Codespaces port link) | Usable on a small screen; no sideways scrolling | |
+| 21 | **Check my understanding**: tick "I am a family member or caregiver", type `she takes it twice a day until she feels better` | The prompt changes to "the person you care for"; a concern about stopping | |
+| 22 | **Check my understanding**: click **Speak my answer** (Chrome, Edge or Safari), say an explanation | Your words appear in the box; then check it | |
+| 23 | **For care teams**: click **Check all instructions in this plan** | Each instruction listed as passed or held, with "clinician review still required" | |
+| 24 | **For care teams**: click **Show insights** | A synthetic banner, a table by HCAHPS domain, and the five most-misunderstood instructions | |
 
 ## 2. EP Research Copilot (about 10 minutes)
 

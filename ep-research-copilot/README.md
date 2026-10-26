@@ -50,6 +50,18 @@ ep-copilot run --offline --fixtures tests/fixtures/snapshot_run2   # a second "m
 3. Optional: record decisions in `output/review_queue.csv` (`include` / `exclude` / `unsure`)
    and load them with `ep-copilot import-reviews output/review_queue.csv`.
 
+## Alerts
+
+The top of each digest lists what most deserves attention: tracked trials that **posted
+results** since the last run, **new in-scope randomized trials**, and **changes to Washington
+State sites** (useful before referring a patient). Alerts come from registry flags and
+publication types; they are prompts to read the source, not conclusions.
+
+**Automatic monthly runs:** `.github/workflows/scheduled-reports.yml` runs the copilot on
+GitHub each month, keeps the database between runs for change tracking, and attaches the
+digest to the run. The digest quotes abstracts, so keep the repository private or remove that
+upload before making it public.
+
 ## Commands
 
 | Command | What it does |

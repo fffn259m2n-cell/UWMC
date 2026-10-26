@@ -52,12 +52,27 @@ checklist progress live in `data/demo.sqlite` ("Clear demo data" in the footer r
 7. **For care teams**: paste `Take apixaban 5 mg once a day. You can stop when you feel better.`
    and run the benchmark.
 
+### Newer tools
+
+| Tool | What it does | Where |
+|---|---|---|
+| **Safety gate for AI-drafted text** | Checks a batch of AI-drafted (or any rewritten) instructions before they reach a patient; holds any that change a dose, a "do not", a 911 instruction or a limit. Never certifies: everything still needs clinician review. | `teachback gate drafts.json --html report.html` (exit 1 if anything is held), `POST /api/gate`, and the "For care teams" tab |
+| **Misunderstanding insights** | Which instructions are misunderstood most, and how, grouped by the HCAHPS domain each affects (medicines, symptoms, discharge information, care coordination). Counts only; no patient text kept. | `teachback insights [attempts.json] --csv insights.csv --html insights.html`, `GET /api/insights`, the "For care teams" tab |
+| **HCAHPS loop** | The insights CSV can be shown inside the Quality Signal Monitor report, beside the discharge measures. | `uwmc-monitor run ... --teachback-insights insights.csv` |
+| **Voice teach-back** | "Speak my answer" (English or Spanish) on the teach-back screen, using the browser's own speech recognition when available. | Teach-back screen. Some browsers send audio to the browser maker's servers; demo only |
+| **Caregiver mode** | A family member explains the instruction for someone else ("she takes it…"); third-person wording is checked the same way. | Tick "I am a family member or caregiver" on the teach-back screen |
+
+Not built: automatic back-translation of Spanish rewrites. It needs a translation model;
+`llm.py` shows where a locally hosted model could plug in, with the evaluator checking its output.
+
 ### Command line
 
 ```bash
 teachback evaluate afib-demo med-apixaban rewrite.txt [--language es]   # exit 1 on critical issues
 teachback benchmark                                                    # evaluator on seeded errors
 teachback check-content                                                # validate plans and library
+teachback gate drafts.json --html gate.html                            # safety gate for AI-drafted text
+teachback insights --csv insights.csv --html insights.html             # misunderstanding insights (synthetic cohort)
 ```
 
 ## What it does and does not do
@@ -139,6 +154,8 @@ regression test or part of the development set. See [docs/clinical_safety.md](do
 | [docs/architecture.md](docs/architecture.md) | Components and data flow |
 | [docs/epic_integration.md](docs/epic_integration.md) | Why Epic is not integrated yet, and what that would take |
 | [docs/prior_work.md](docs/prior_work.md) | What already exists, with sources |
+| [docs/evaluation_results.md](docs/evaluation_results.md) | Measured accuracy on four independent held-out rounds |
+| [docs/abstract_draft.md](docs/abstract_draft.md) | Draft conference abstract for a mentor to revise |
 
 ## License
 
