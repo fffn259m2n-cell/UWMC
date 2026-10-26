@@ -5,7 +5,8 @@ cd /d "%~dp0.."
 set PYTHONUTF8=1
 echo == UWMC projects: setting up. The first time takes 1 to 3 minutes. ==
 set "PY="
-for %%C in ("py -3.13" "py -3.12" "py -3.11" "python") do call :try %%C
+rem "python" first; "py -3" uses the newest installed Python 3 and never asks to install one.
+for %%C in ("python" "py -3") do call :try %%C
 if not defined PY goto :nopython
 if not exist ".venv\Scripts\python.exe" %PY% -m venv .venv
 if not exist ".venv\Scripts\python.exe" goto :novenv

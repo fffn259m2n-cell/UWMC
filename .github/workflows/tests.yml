@@ -33,12 +33,17 @@ jobs:
         working-directory: teach-back-companion
       - name: Windows double-click scripts (install, demos, tests)
         shell: cmd
+        timeout-minutes: 10
         env:
           UWMC_NO_SERVE: "1"
         run: |
+          echo --- start script
           call "windows\Start Teach-Back Companion.bat" < NUL
+          echo --- start script finished
           if not exist ".venv\Scripts\python.exe" exit /b 1
+          echo --- demos and tests script
           call "windows\Run demos and tests.bat" < NUL > run.log 2>&1
+          echo --- demos and tests script finished
           type run.log
           findstr /c:"249 passed" run.log || exit /b 1
           findstr /c:"74 passed" run.log || exit /b 1
