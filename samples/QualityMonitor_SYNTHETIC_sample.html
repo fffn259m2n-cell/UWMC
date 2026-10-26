@@ -65,7 +65,7 @@ footer { margin-top: 40px; color: var(--ink-2); font-size: 12px; }
 <header>
   <h1>Discharge &amp; Patient Experience Signals</h1>
   <p class="sub">UNIVERSITY OF WASHINGTON MEDICAL CTR (CMS facility 500008) compared with matched national HCAHPS values
-  &middot; CMS release synthetic_current &middot; prepared 2026-10-26 17:13 UTC</p>
+  &middot; CMS release synthetic_current &middot; prepared 2026-10-26 23:07 UTC</p>
   
   <div class="banner synthetic">SYNTHETIC TEST DATA. Every number in this report comes from fabricated fixture files used to
   test the software. These are NOT actual results for UNIVERSITY OF WASHINGTON MEDICAL CTR or any hospital. Do not cite or share.</div>
@@ -129,6 +129,90 @@ footer { margin-top: 40px; color: var(--ink-2); font-size: 12px; }
   
   <p class="muted">CMS updated the HCAHPS survey for discharges from 1 January 2025: Care Transition was dropped and Care Coordination,
   Information About Symptoms and Restfulness of the Hospital Environment were added. Results from different survey versions are not compared over time.</p>
+  
+  <h3>Alongside: which discharge instructions were misunderstood in teach-back</h3>
+  <div class="banner warn"><b>Synthetic teach-back data.</b> These counts come from
+    reviewer-written test cases in the Teach-Back Companion, not from patients. They show the layout only.</div>
+  <p>From the Teach-Back Companion (<code>teachback insights --csv</code>): for each instruction, how many teach-back explanations raised an automated
+  concern, grouped by the HCAHPS domain that instruction most affects. This is a <b>different data source</b> from HCAHPS, collected locally;
+  the two are shown side by side to suggest which instructions to rewrite first, not to explain any HCAHPS score.</p>
+  <div class="table-wrap"><table>
+    <tr><th>HCAHPS domain</th><th>Instruction</th><th class="num">Explanations flagged</th><th>Most common concerns</th></tr>
+    
+    <tr><td>Care coordination</td><td>Blood test (basic metabolic panel)</td><td class="num">13 of 25 (52%)</td>
+      <td>a visit or test treated as optional (7); a different number (dose, threshold, days) (5); required point stated the opposite way (2)</td></tr>
+    
+    <tr><td>Care coordination</td><td>Cardiology follow-up visit</td><td class="num">12 of 24 (50%)</td>
+      <td>a visit or test treated as optional (7); a different number (dose, threshold, days) (5); required point stated the opposite way (1)</td></tr>
+    
+    <tr><td>Care coordination</td><td>Primary care follow-up</td><td class="num">11 of 22 (50%)</td>
+      <td>a visit or test treated as optional (7); a different number (dose, threshold, days) (4); required point stated the opposite way (1)</td></tr>
+    
+    <tr><td>Care coordination</td><td>Follow-up chest X-ray</td><td class="num">11 of 22 (50%)</td>
+      <td>a visit or test treated as optional (6); a different number (dose, threshold, days) (5); required point stated the opposite way (3)</td></tr>
+    
+    <tr><td>Care coordination</td><td>Heart failure clinic visit</td><td class="num">11 of 23 (48%)</td>
+      <td>a different number (dose, threshold, days) (7); a visit or test treated as optional (4)</td></tr>
+    
+    <tr><td>Communication about medicines</td><td>Amoxicillin-clavulanate 875 mg/125 mg tablet</td><td class="num">31 of 48 (65%)</td>
+      <td>a different number (dose, threshold, days) (7); “do not” instruction restated without the “not” (7); a reason or time to stop that the plan does not give (6)</td></tr>
+    
+    <tr><td>Communication about medicines</td><td>Furosemide 40 mg tablet</td><td class="num">26 of 41 (63%)</td>
+      <td>a different time of day (8); a different schedule (8); a different number (dose, threshold, days) (5)</td></tr>
+    
+    <tr><td>Communication about medicines</td><td>Acetaminophen 325 mg tablets (as needed)</td><td class="num">29 of 46 (63%)</td>
+      <td>a different number (dose, threshold, days) (12); a different number of tablets (6); a limit treated as open-ended (5)</td></tr>
+    
+    <tr><td>Communication about medicines</td><td>Apixaban 5 mg tablet</td><td class="num">40 of 65 (62%)</td>
+      <td>“do not” instruction restated without the “not” (11); a different number (dose, threshold, days) (9); a reason or time to stop that the plan does not give (6)</td></tr>
+    
+    <tr><td>Communication about medicines</td><td>Metoprolol succinate ER 25 mg tablet</td><td class="num">27 of 45 (60%)</td>
+      <td>“do not” instruction restated without the “not” (13); a different number (dose, threshold, days) (5); a different time of day (5)</td></tr>
+    
+    <tr><td>Communication about medicines</td><td>Carvedilol 6.25 mg tablet</td><td class="num">20 of 34 (59%)</td>
+      <td>a different number (dose, threshold, days) (7); the food rule changed (5); a different schedule (3)</td></tr>
+    
+    <tr><td>Communication about medicines</td><td>Sacubitril/valsartan 24 mg/26 mg tablet</td><td class="num">18 of 32 (56%)</td>
+      <td>a different number (dose, threshold, days) (7); a different schedule (4); an extra or doubled dose (3)</td></tr>
+    
+    <tr><td>Discharge information</td><td>Bleeding precautions</td><td class="num">28 of 44 (64%)</td>
+      <td>an emergency sign without calling 911 (12); waiting before calling (12); a warning sign treated as normal (7)</td></tr>
+    
+    <tr><td>Discharge information</td><td>Salt and fluid limits</td><td class="num">25 of 41 (61%)</td>
+      <td>a limit treated as open-ended (13); a different number (dose, threshold, days) (6); a limit read the wrong way (4)</td></tr>
+    
+    <tr><td>Discharge information</td><td>Pain medicine while on apixaban</td><td class="num">27 of 51 (53%)</td>
+      <td>“do not” instruction restated without the “not” (24); required point stated the opposite way (8); a limit treated as open-ended (3)</td></tr>
+    
+    <tr><td>Discharge information</td><td>Weigh yourself every morning</td><td class="num">16 of 31 (52%)</td>
+      <td>a different schedule (13); required point stated the opposite way (3); a different time of day (1)</td></tr>
+    
+    <tr><td>Discharge information</td><td>Activity and alcohol</td><td class="num">14 of 29 (48%)</td>
+      <td>a limit treated as open-ended (9); a different number (dose, threshold, days) (7); required point stated the opposite way (2)</td></tr>
+    
+    <tr><td>Discharge information</td><td>Recovery at home</td><td class="num">15 of 32 (47%)</td>
+      <td>“do not” instruction restated without the “not” (6); known misunderstanding: cut down (4); fluids restricted instead of encouraged (3)</td></tr>
+    
+    <tr><td>Information about symptoms</td><td>Call for weight gain</td><td class="num">29 of 44 (66%)</td>
+      <td>a warning sign treated as normal (8); a different number (dose, threshold, days) (8); a limit applied to the wrong period (7)</td></tr>
+    
+    <tr><td>Information about symptoms</td><td>Emergency warning signs</td><td class="num">22 of 34 (65%)</td>
+      <td>an emergency sign without calling 911 (12); waiting before calling (10); known misunderstanding: wait and see (6)</td></tr>
+    
+    <tr><td>Information about symptoms</td><td>When to call your clinic</td><td class="num">18 of 29 (62%)</td>
+      <td>a different number (dose, threshold, days) (9); a warning sign treated as normal (7); required point stated the opposite way (4)</td></tr>
+    
+    <tr><td>Information about symptoms</td><td>Emergency warning signs</td><td class="num">19 of 31 (61%)</td>
+      <td>an emergency sign without calling 911 (9); waiting before calling (5); known misunderstanding: wait and see (5)</td></tr>
+    
+    <tr><td>Information about symptoms</td><td>Emergency warning signs</td><td class="num">28 of 46 (61%)</td>
+      <td>an emergency sign without calling 911 (16); waiting before calling (10); known misunderstanding: wait and see (6)</td></tr>
+    
+    <tr><td>Information about symptoms</td><td>When to call the cardiology clinic</td><td class="num">20 of 33 (61%)</td>
+      <td>a different number (dose, threshold, days) (8); a medicine the instruction does not mention (4); required point stated the opposite way (4)</td></tr>
+    
+  </table></div>
+  
 </section>
 
 <section>
