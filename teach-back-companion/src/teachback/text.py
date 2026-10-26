@@ -84,7 +84,7 @@ def _words_to_digits(t: str) -> str:
 # stronger form is present, so "every morning and every night" reads as twice a day.
 FREQUENCY = (
     (r"\b(?:once|1 time|one time)\s+(?:a|per|each|every)\s+day\b|\bonce daily\b|\b1 times? daily\b|\bonce a day\b|\b1 vez al dia\b", 1),
-    (r"\b(?:twice|2 times|two times)\s+(?:a|per|each|every)\s+day\b|\b(?:twice|2 times) daily\b|\b2x\s*(?:a\s+)?day\b|\bbid\b"
+    (r"\b(?:twice|2 times|two times)\s+(?:a|per|each|every)\s+day\b|\b(?:1 )?with breakfast and (?:1 |again )?with (?:dinner|supper)\b|\b(?:twice|2 times) daily\b|\b2x\s*(?:a\s+)?day\b|\bbid\b"
      r"|\bevery 12 hours\b|\b(?:in the |every |each )?mornings? and (?:again )?(?:at |in the |every |each )?(?:nights?|evenings?|bedtime)\b"
      r"|\b1 in the morning and 1 (?:at night|in the evening|at bedtime)\b|\band again (?:at|in the) (?:night|evening|bedtime)\b"
      r"|\b(?:and|plus) (?:1|another|once|1 more) (?:at|in the) (?:night|evening|bedtime)\b|\b2 veces al dia\b"

@@ -132,7 +132,7 @@ def _threshold_periods(s: str) -> set[tuple[float, str]]:
 
 def _sentences_with_live_911(s: str) -> list[str]:
     out = []
-    for sent in re.split(r"(?<=[.!?;])\s+", text.normalize(s)):
+    for sent in re.split(r"(?<=[.!?])\s+", text.normalize(s)):
         if any(not neg for neg in text.phrase_states(sent, "911")):
             out.append(sent)
     return out
@@ -160,6 +160,12 @@ def evaluate_item(plan: CarePlan, item: Item, candidate: str, language: str | No
         rep.facts_checked += 1
         for q in fact.quantities:
             ok = _has_quantity(cand_nums, q.value, q.unit) if english else q.value in cand_bare
+            if not ok and q.unit == "mg":
+                # "2 Tylenol (325 mg) pills" states a 650 mg dose
+                counts = {float(c) for c in re.findall(r"\b([2-4]) [^.]{0,40}?\b(?:pills|tablets|capsules)\b", _digits(candidate))}
+                ok = any(n.unit == "mg" and b * n.value == q.value for n in cand_nums for b in counts)
+            if not ok and q.unit == "hours" and q.value == 24:
+                ok = bool(re.search(r"\b(in|per|a|each) (1 |one |a )?day\b|\bdaily\b", _digits(candidate)))
             if not ok:
                 add(fact.severity, "quantity_missing_or_changed", fact.id,
                     f"“{fact.statement}” — “{q.value:g} {UNIT_WORDS.get(q.unit, q.unit)}” is missing or changed.")
@@ -251,6 +257,9 @@ def evaluate_item(plan: CarePlan, item: Item, candidate: str, language: str | No
 
     # Numbers the source does not contain. "1" is ignored ("one day", "one pill"); tablet counts are checked above.
     src_bare = text.bare_numbers(src) | {float(q.value) for f in item.facts for q in f.quantities} | {1.0, 911.0}
+    for n in src_nums:   # "in 1 week" may be written "in 7 days"
+        if n.unit in DAYS:
+            src_bare |= {n.value * DAYS[n.unit] / DAYS[u] for u in DAYS}
     for n in sorted(cand_bare - src_bare):
         add("critical" if item.kind == "medication" else "major", "number_added", None,
             f"The number {n:g} does not appear in the original instruction.")

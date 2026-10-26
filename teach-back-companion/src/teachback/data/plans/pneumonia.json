@@ -210,7 +210,13 @@
             ],
             "polarity": "dont"
           },
-          "misconceptions": []
+          "misconceptions": [
+            {
+              "id": "cut-down",
+              "pattern": "\\b(cut(ting)? (back|down)|fewer|a few|half a pack|less)\\b[^.]{0,30}\\b(cigarettes?|smok\\w*|packs?|cigs)\\b|\\b(packs?|cigarettes?|smok\\w*|cigs)\\b[^.]{0,30}\\b(cut(ting)? (back|down)|fewer|less|half)\\b",
+              "message": "Your instructions say not to smoke at all while you recover. Cutting down is a good step, and your care team can help you stop completely."
+            }
+          ]
         },
         {
           "id": "rest-fluids",

@@ -38,6 +38,13 @@ crisis messages. This is a demonstration and research baseline for clinician-led
 **never a safety net**. Real use would need a validated language-understanding component with
 these rules as a backstop, plus clinical validation.
 
+### After round 2
+
+Round 2's 390 cases were then retired into the development set (`"source": "heldout-r2"`)
+and the gaps above were fixed, with priority on crisis and emergency wording. The round 2
+numbers above remain the latest *independent* estimate; the next one needs a fresh set (see
+[REVIEW.md](../../REVIEW.md) section 3).
+
 ## Held-out round 1
 
 360 cases written by a separate reviewer who did not read the rule code or the

@@ -232,12 +232,19 @@
               "2 times",
               "2x",
               "morning and night",
-              "morning and evening"
+              "morning and evening",
+              "with breakfast and",
+              "breakfast and dinner",
+              "breakfast and supper"
             ],
             [
               "food",
               "meal",
-              "eat"
+              "eat",
+              "breakfast",
+              "dinner",
+              "supper",
+              "meals"
             ]
           ],
           "quantities": [
