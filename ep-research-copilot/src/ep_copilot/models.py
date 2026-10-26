@@ -38,7 +38,7 @@ class Article:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, d: dict) -> "Article":
+    def from_dict(cls, d: dict) -> Article:
         return cls(**{k: d[k] for k in cls.__dataclass_fields__ if k in d})
 
     def fingerprint(self) -> str:
@@ -79,7 +79,7 @@ class Trial:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, d: dict) -> "Trial":
+    def from_dict(cls, d: dict) -> Trial:
         return cls(**{k: d[k] for k in cls.__dataclass_fields__ if k in d})
 
     def fingerprint(self) -> str:

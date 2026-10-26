@@ -1,15 +1,13 @@
 import csv
 import json
-import sqlite3
 from datetime import date
 
 import pytest
+from conftest import FIX
 
 from ep_copilot import cli, pipeline, reporting, review
 from ep_copilot.http import FetchError
 from ep_copilot.storage import Store, StoreError
-
-from conftest import FIX
 
 RUN1, RUN2 = FIX / "snapshot_run1", FIX / "snapshot_run2"
 
@@ -179,6 +177,7 @@ def test_cli_offline_end_to_end(tmp_path, capsys):
 
 def test_packaged_config_matches_repo_config():
     from pathlib import Path
+
     from ep_copilot.config import PACKAGED_CONFIG
     assert PACKAGED_CONFIG.read_text() == (Path(__file__).parents[1] / "config" / "topics.yaml").read_text()
 

@@ -1,10 +1,10 @@
 import json
 
+from conftest import API
+
 from ep_copilot.changes import diff_trials
 from ep_copilot.clinical_trials import TrialsClient, parse_study
 from ep_copilot.models import Trial
-
-from conftest import API
 
 
 def test_parse_study_fields_and_washington_sites():

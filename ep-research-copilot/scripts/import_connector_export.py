@@ -13,7 +13,7 @@ Then:  ep-copilot --db data/ep_copilot_imported.sqlite run --snapshot OUT_DIR
 
 import argparse
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 MONTHS = {m: i for i, m in enumerate(
@@ -85,7 +85,7 @@ def main() -> None:
     (a.out / "snapshot.json").write_text(json.dumps({
         "synthetic": False,
         "provenance": a.provenance,
-        "retrieved_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "retrieved_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "window": {"start": a.window[0], "end": a.window[1]},
         "pubmed_total": a.pubmed_total or len(arts),
         "trials_total": a.trials_total or len(trials),

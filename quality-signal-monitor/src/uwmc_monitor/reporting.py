@@ -8,7 +8,7 @@ import json
 import os
 import shutil
 import subprocess
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pandas as pd
@@ -47,7 +47,7 @@ def metadata(result) -> dict:
     return {
         "tool": "uwmc-quality-signal-monitor",
         "version": __version__,
-        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "synthetic_data": bool(result.current.provenance.get("synthetic")),
         "hospital": result.current.hospital,
         "current_release": result.current.provenance,
@@ -173,7 +173,7 @@ def render_html(result, narrator: narrative.Narrator | None = None) -> str:
     datasets = {d["key"]: d for d in result.current.provenance.get("datasets", [])}
     windows = sorted({f"{r.start_date} to {r.end_date}" for r in comp.itertuples()}) if len(comp) else []
     return _env().get_template("report.html.j2").render(
-        generated=datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+        generated=datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC"),
         version=__version__,
         synthetic=synthetic,
         provenance=result.current.provenance,

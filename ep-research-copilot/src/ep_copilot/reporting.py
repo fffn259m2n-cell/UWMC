@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import csv
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from jinja2 import Environment, PackageLoader, select_autoescape
@@ -123,7 +123,7 @@ def write_outputs(result, store: Store, out_dir: Path) -> dict[str, Path]:
     n_trials = run["trials_retrieved"] if run and run["trials_retrieved"] is not None else len(result.fetch.trials)
     meta = {
         "tool": "ep-research-copilot", "version": __version__,
-        "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
         "synthetic_data": result.synthetic, "mode": result.fetch.mode,
         "provenance": result.fetch.details.get("provenance", "direct API retrieval"),
         "fields_unavailable": result.fetch.details.get("fields_unavailable", {}),

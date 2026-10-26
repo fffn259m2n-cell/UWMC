@@ -1,0 +1,23 @@
+name: Bug report
+description: Something does not work as documented
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: project
+    attributes:
+      label: Project
+      options: [teach-back-companion, ep-research-copilot, quality-signal-monitor, other]
+    validations: {required: true}
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Command or screen, the full error text, and what you expected. Python version and operating system help.
+    validations: {required: true}
+  - type: checkboxes
+    id: phi
+    attributes:
+      label: Privacy
+      options:
+        - label: This report contains no real patient information or credentials.
+          required: true

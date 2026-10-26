@@ -1,12 +1,11 @@
 from datetime import datetime, timedelta
 
 import pytest
+from conftest import TODAY
 from fastapi.testclient import TestClient
 
 from teachback.app import create_app
 from teachback.reminders import ReminderError, Store
-
-from conftest import TODAY
 
 
 @pytest.fixture

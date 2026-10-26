@@ -2,11 +2,10 @@ import json
 from datetime import date
 
 import pytest
+from conftest import API
 
 from ep_copilot import http
 from ep_copilot.pubmed import PubMedClient, parse_efetch
-
-from conftest import API
 
 
 def test_parse_structured_abstract_doi_dates_and_authors():

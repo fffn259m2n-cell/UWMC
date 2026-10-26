@@ -49,7 +49,7 @@ DESIGN_RULES = (  # (label, publication types, title/abstract phrases), first ma
 def study_design(article: Article) -> str:
     types = set(article.publication_types)
     text = f"{article.title}\n{article.abstract}".lower()
-    for label, ptypes, phrases in DESIGN_RULES:
+    for label, ptypes, _phrases in DESIGN_RULES:
         if types & ptypes:
             return label
     for label, _, phrases in DESIGN_RULES:

@@ -4,11 +4,10 @@ import urllib.request
 
 import pandas as pd
 import pytest
+from conftest import CURRENT, PREVIOUS, edit_csv
 
 from uwmc_monitor import cli, narrative, reporting, sources
 from uwmc_monitor.analysis import analyze
-
-from conftest import CURRENT, PREVIOUS, edit_csv
 
 
 @pytest.fixture(scope="module")
@@ -112,7 +111,7 @@ def test_resolve_data_dir_picks_newest_release(tmp_path):
 def test_fetch_release_with_mocked_cms(monkeypatch, tmp_path):
     """Exercise the download path without network access."""
     def fake_get(url, timeout=60.0):
-        for key, ds in sources.DATASETS.items():
+        for _key, ds in sources.DATASETS.items():
             if url == ds.metastore_url:
                 return io.BytesIO(json.dumps({
                     "title": ds.title, "modified": "2026-08-13", "issued": "2020-01-01",

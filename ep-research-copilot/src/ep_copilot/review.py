@@ -8,7 +8,7 @@ from decisions a person actually recorded.
 from __future__ import annotations
 
 import csv
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from .storage import Store
@@ -24,7 +24,7 @@ def import_decisions(store: Store, topic: str, path: Path) -> tuple[int, list[st
     problems, n = [], 0
     with Path(path).open(newline="", encoding="utf-8-sig") as fh:
         rows = list(csv.DictReader(fh))
-    now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    now = datetime.now(UTC).isoformat(timespec="seconds")
     with store.transaction() as db:
         for i, r in enumerate(rows, start=2):
             decision = (r.get("reviewer_decision") or "").strip().lower()

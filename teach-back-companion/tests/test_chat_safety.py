@@ -1,10 +1,8 @@
-from datetime import date
 
 import pytest
+from conftest import TODAY
 
 from teachback import chat, safety
-
-from conftest import TODAY
 
 
 @pytest.mark.parametrize("msg,level", [

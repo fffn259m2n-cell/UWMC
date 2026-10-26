@@ -1,12 +1,11 @@
 """Regression tests from the second adversarial review round (all cases were reproduced first)."""
 
 import pytest
+from conftest import TODAY
 
 from teachback import chat, safety
 from teachback.fidelity import evaluate_item
 from teachback.teachback import check
-
-from conftest import TODAY
 
 
 def blocking(rep):

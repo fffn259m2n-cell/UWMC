@@ -1,0 +1,13 @@
+# Shared lint settings for all three projects. Run: ruff check .
+line-length = 120
+target-version = "py311"
+extend-exclude = ["**/node_modules", "**/output", "**/data"]
+
+[lint]
+select = ["E", "F", "W", "B", "I", "UP"]
+# Long lines are mostly clinical regular expressions and quoted instruction text;
+# splitting them hurts readability more than it helps.
+ignore = ["E501"]
+
+[lint.isort]
+known-first-party = ["uwmc_monitor", "ep_copilot", "teachback"]

@@ -10,7 +10,7 @@ is ever sent; nothing the patient types is included.
 
 from __future__ import annotations
 
-from typing import Callable
+from collections.abc import Callable
 
 from .fidelity import evaluate_item
 from .models import CarePlan

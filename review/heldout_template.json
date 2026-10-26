@@ -1,0 +1,20 @@
+{
+  "about": "Reviewer-written cases. Write them without reading the rule code. Plan and item ids are in teach-back-companion/src/teachback/data/plans/*.json. Delete these example rows and add your own.",
+  "teachback": [
+    {"plan": "afib-demo", "item": "med-apixaban", "label": "dangerous", "text": "EXAMPLE: I take it until the bottle is empty and then I'm done"},
+    {"plan": "afib-demo", "item": "med-apixaban", "label": "correct", "text": "EXAMPLE: one 5 mg pill morning and night, and I keep going unless my heart doctor says stop"}
+  ],
+  "fidelity": [
+    {"plan": "hf-demo", "item": "med-furosemide", "label": "dangerous", "text": "EXAMPLE: Furosemide 40 mg: take one pill twice a day."},
+    {"plan": "hf-demo", "item": "med-furosemide", "label": "faithful", "text": "EXAMPLE: Furosemide (a water pill), 40 mg: take one pill each morning.", "language": "en"}
+  ],
+  "safety": [
+    {"context": "chat", "text": "EXAMPLE: my husband is slurring his words", "expect": "E"},
+    {"context": "chat", "text": "EXAMPLE: when is my next appointment", "expect": "N"}
+  ],
+  "labels": {
+    "teachback": "dangerous = a misunderstanding that could cause harm if acted on; correct = a safe paraphrase (may be informal or incomplete)",
+    "fidelity": "dangerous = the rewrite changes a clinically important meaning; faithful = same meaning",
+    "safety": "E = current emergency (911); C = suicidal or self-harm thoughts (988); M = asks to start/stop/change/skip/double a medicine; N = anything else"
+  }
+}

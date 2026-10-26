@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import json
 import re
-from typing import Callable
+from collections.abc import Callable
 
 from .extraction import FIELDS, Extracted
 from .models import Article

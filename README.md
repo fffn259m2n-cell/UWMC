@@ -27,6 +27,15 @@ cd teach-back-companion  && pip install -e . && teachback serve   # http://127.0
 Offline demos with synthetic data are described in each README. CI runs every project's
 tests on Python 3.11 to 3.13.
 
+## Guides
+
+| Guide | For |
+|---|---|
+| [TESTING.md](TESTING.md) | Trying everything yourself, step by step, with expected results |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Adding topics, measures, plans and rules; checks to run before a commit |
+| [REVIEW.md](REVIEW.md) | Independent reviewers: access, what to look for, how to report (`python review/make_review_packet.py` builds a zip to send) |
+| [DELIVERY_PLAN.md](DELIVERY_PLAN.md) | How to hand these over to UW Medicine teams |
+
 ## Before sharing anything
 
 Each project has a `docs/gift_handoff.md` with a checklist marked **[CONFIRM]**. Work

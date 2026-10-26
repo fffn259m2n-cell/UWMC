@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 from . import changes, extraction, screening
@@ -184,14 +184,14 @@ def store_run(store: Store, topic: Topic, fetched: FetchResult, started: str, sy
                         dumps("not returned by ClinicalTrials.gov"), "substantive"))
 
         db.execute("UPDATE runs SET status='success', finished_at=? WHERE id=?",
-                   (datetime.now(timezone.utc).isoformat(timespec="seconds"), run_id))
+                   (datetime.now(UTC).isoformat(timespec="seconds"), run_id))
     return RunResult(run_id, topic, fetched, new_pmids, updated, dupes, screenings, extractions,
                      new_trials, trial_changes, synthetic)
 
 
 def run(store: Store, topic: Topic, *, days: int | None = None, snapshot: Path | None = None,
         mode: str = "live", today: date | None = None, pubmed=None, trials=None) -> RunResult:
-    started = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    started = datetime.now(UTC).isoformat(timespec="seconds")
     try:
         if snapshot is not None:
             fetched = load_snapshot(snapshot, mode)
@@ -199,7 +199,7 @@ def run(store: Store, topic: Topic, *, days: int | None = None, snapshot: Path |
             start, end = choose_window(store, topic, days, today or date.today())
             fetched = fetch_live(topic, start, end, store, pubmed, trials)
     except Exception as exc:
-        store.record_failure(topic.key, started, datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        store.record_failure(topic.key, started, datetime.now(UTC).isoformat(timespec="seconds"),
                              mode, str(exc))
         raise
     synthetic = bool(fetched.details.get("synthetic"))

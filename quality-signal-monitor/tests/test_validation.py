@@ -1,10 +1,9 @@
 import pandas as pd
 import pytest
+from conftest import CURRENT, edit_csv
 
 from uwmc_monitor import sources, validation
 from uwmc_monitor.analysis import IdentityError, identify_hospital, load_release
-
-from conftest import CURRENT, edit_csv
 
 
 def test_normalize_columns_snake_case_and_aliases():

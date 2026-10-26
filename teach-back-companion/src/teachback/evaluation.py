@@ -7,6 +7,15 @@ one is a false alarm if any concern is raised. Fidelity: a dangerous rewrite is
 caught if any critical or major issue is raised; a faithful one is a false alarm
 if any is raised. Safety: E needs emergency or crisis, C needs crisis, M needs
 referral (or stricter), N must not raise emergency or crisis; A is not scored.
+
+File format (JSON; every section is optional):
+
+  {"teachback": [{"plan": "afib-demo", "item": "med-apixaban", "label": "dangerous" | "correct", "text": "..."}],
+   "fidelity":  [{"plan": "hf-demo", "item": "med-furosemide", "label": "dangerous" | "faithful", "text": "...",
+                  "language": "en" | "es"}],
+   "safety":    [{"context": "chat", "text": "...", "expect": "E" | "C" | "M" | "N" | "A"}]}
+
+Plan and item ids are in src/teachback/data/plans/*.json.
 """
 
 from __future__ import annotations

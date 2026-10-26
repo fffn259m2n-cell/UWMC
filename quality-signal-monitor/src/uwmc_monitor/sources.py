@@ -11,7 +11,7 @@ import json
 import shutil
 import urllib.request
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import pandas as pd
@@ -155,7 +155,7 @@ def fetch_release(raw_dir: Path) -> Path:
                 "download_url": meta["download_url"],
                 "cms_modified": meta.get("modified"),
                 "cms_issued": meta.get("issued"),
-                "retrieved_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                "retrieved_at": datetime.now(UTC).isoformat(timespec="seconds"),
                 "file": ds.filename,
                 "sha256": _sha256(target),
                 "bytes": target.stat().st_size,
@@ -216,7 +216,7 @@ def read_provenance(release_dir: Path, files: dict[str, Path]) -> dict:
                     "sha256": _sha256(path),
                     "bytes": path.stat().st_size,
                     "file_modified": datetime.fromtimestamp(
-                        path.stat().st_mtime, timezone.utc
+                        path.stat().st_mtime, UTC
                     ).isoformat(timespec="seconds"),
                 }
                 for key, path in files.items()

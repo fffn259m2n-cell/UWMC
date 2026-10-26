@@ -1,10 +1,9 @@
 import pandas as pd
 import pytest
+from conftest import CURRENT, PREVIOUS, edit_csv
 
 from uwmc_monitor import analysis, signals
 from uwmc_monitor.analysis import analyze, compare_to_national, load_release
-
-from conftest import CURRENT, PREVIOUS, edit_csv
 
 
 def comp_row(comp, mid):

@@ -4,12 +4,11 @@ Grouped by the review's findings. All inputs are synthetic.
 """
 
 import pytest
+from conftest import TODAY
 
 from teachback import chat, safety
 from teachback.fidelity import evaluate_item
 from teachback.teachback import check
-
-from conftest import TODAY
 
 
 # ---------------------------------------------------------------- 1. emergency wording

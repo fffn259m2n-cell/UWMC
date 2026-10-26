@@ -40,6 +40,7 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "serve":
             import uvicorn
+
             from .app import create_app
             if args.theme:
                 import os

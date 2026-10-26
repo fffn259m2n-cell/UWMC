@@ -54,7 +54,31 @@ Ask one clinician you know (resident, nurse, pharmacist or your mentor) to spend
 with the demo and [teach-back-companion/docs/clinical_review_checklist.md](teach-back-companion/docs/clinical_review_checklist.md).
 Fix what they find before showing it to UW Medicine leadership.
 
-### 1.5 Make the code reachable **[YOU decides; I can do the mechanics on request]**
+### 1.5 Independent review **[YOU]** (recommended before any UW contact)
+Ask one or two people who did not build this (a resident, nurse, pharmacist, health-literacy
+person, or a software-minded friend) to review it. Everything they need is in
+[REVIEW.md](REVIEW.md).
+
+1. Build the packet: `python review/make_review_packet.py` creates
+   `review/out/uwmc-review-packet-<date>-<commit>.zip` (about 1 MB: source, one-pagers,
+   synthetic samples, reviewer guide, findings template). It contains no real-data EP digest
+   and nothing from `data/`.
+2. Send it (or, if the repository is shared with them, just the link to REVIEW.md) with a
+   message like:
+
+   > Hi [name], I built three small independent prototypes using public data and fictional
+   > patients only (a CMS patient-experience monitor, an EP literature/trials digest, and a
+   > discharge teach-back checker). Before I show them to anyone at UW, I'd value an honest,
+   > critical review, ideally trying to break the teach-back tool. Everything you need is in
+   > the attached zip (start with START_HERE.txt); 30 to 60 minutes is plenty. No obligation,
+   > and "this isn't worth pursuing" is a useful answer too. Thank you!
+
+3. Collect findings (GitHub issue form "Independent review finding", the CSV, or email),
+   send them back here for fixing, and add their test cases as the next held-out set.
+4. Record in `teach-back-companion/docs/clinical_safety.md` (Review history) what was found
+   and fixed, naming the reviewer only with permission.
+
+### 1.6 Make the code reachable **[YOU decides; I can do the mechanics on request]**
 The repository is currently **private** and the work sits on branch
 `claude/uwmc-quality-signal-monitor-zfct6y`.
 1. **Merge to `main`** (I can open the pull request if you want).
@@ -187,7 +211,8 @@ obvious place to reply.
 |---|---|---|
 | 1 | Test everything (TESTING.md); send back issues; fixes made | You, then me |
 | 1 | Real CMS report + live EP run (1.2, 1.3) | You |
-| 2 | Clinician sanity check of Teach-Back (1.4); merge, rename, make public, release v1.0 (1.5) | You (+ me on request) |
+| 2 | Clinician sanity check (1.4); independent review packet sent (1.5) | You |
+| 2 to 3 | Fix review findings; merge, rename, make public, release v1.0 (1.6) | Me, then you |
 | 2 | Show EP Copilot to your PI (2.1) | You |
 | 3 | Quality Monitor email via warm introduction (2.2) | You |
 | 5 | Follow up once if no reply | You |
