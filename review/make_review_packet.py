@@ -52,7 +52,7 @@ def main() -> int:
         with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as z:
             with zipfile.ZipFile(src_zip) as s:
                 for info in s.infolist():
-                    if not info.is_dir():
+                    if not info.is_dir() and not info.filename.startswith("downloads/"):
                         z.writestr(f"source/{info.filename}", s.read(info))
             for name in ("REVIEW.md", "TESTING.md"):
                 z.write(ROOT / name, name)
