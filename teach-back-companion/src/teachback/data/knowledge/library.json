@@ -1,0 +1,141 @@
+{
+  "notice": "Draft general education text written for this prototype. Not yet reviewed by a clinician or a patient-education specialist. Source links point to public patient-education sites for further reading and must be checked before use.",
+  "topics": [
+    {
+      "id": "atrial-fibrillation", "kind": "condition", "title": "Atrial fibrillation (AFib)",
+      "aliases": ["afib", "a-fib", "atrial fibrillation", "irregular heartbeat"],
+      "levels": {
+        "simple": "AFib means the top parts of your heart sometimes beat in a fast, uneven way. This can make you feel tired, dizzy or out of breath, or you may feel nothing at all. AFib can let blood clots form in the heart, and a clot can cause a stroke. That is why many people with AFib take a blood thinner.",
+        "standard": "Atrial fibrillation is a common heart rhythm problem. The electrical signals in the upper chambers of the heart (the atria) become disorganized, so the heartbeat becomes irregular and often fast. Some people feel a racing or fluttering heartbeat, tiredness, dizziness or shortness of breath; others have no symptoms. Because blood can pool in the atria, clots can form and travel to the brain and cause a stroke. Treatment usually aims to control the heart rate or rhythm and to lower the risk of stroke.",
+        "detailed": "In atrial fibrillation, rapid and disorganized electrical activity in the atria replaces the normal signal from the heart's natural pacemaker. The atria quiver instead of squeezing, and the lower chambers (ventricles) beat irregularly. AFib can come and go (paroxysmal) or last longer (persistent). The main concerns are stroke, from clots that form in the atria, and, over time, weakening of the heart if the rate stays fast. Care plans usually address three things: stroke prevention, often with an anticoagulant (blood thinner); rate control, with medicines such as beta-blockers; and, for some people, rhythm control with medicines, cardioversion or catheter ablation. Which options fit a given person depends on their own situation and is decided with their care team."
+      },
+      "key_points": ["AFib is an irregular, often fast heartbeat.", "It raises the risk of stroke.", "Treatment focuses on heart rate, rhythm and stroke prevention."],
+      "questions_to_ask": ["What is my plan to lower my stroke risk?", "What heart rate should I watch for at home?", "Which symptoms mean I should call you, and which mean I should call 911?"],
+      "sources": [{"title": "MedlinePlus: Atrial Fibrillation", "url": "https://medlineplus.gov/atrialfibrillation.html", "verified": false}]
+    },
+    {
+      "id": "heart-failure", "kind": "condition", "title": "Heart failure",
+      "aliases": ["heart failure", "chf", "congestive heart failure", "hfref", "weak heart"],
+      "levels": {
+        "simple": "Heart failure means your heart is not pumping as well as it should. It does not mean your heart has stopped. Fluid can build up in your body. This can make your legs swell, make it hard to breathe, and make your weight go up quickly. Medicines, less salt and checking your weight every day can help.",
+        "standard": "Heart failure is a long-term condition in which the heart does not pump blood as well as the body needs. Fluid can back up into the lungs and build up in the legs and belly, causing shortness of breath, swelling and fast weight gain. 'Reduced ejection fraction' means a smaller share of blood is pumped out with each beat than normal. Medicines, limiting salt and fluid, and weighing yourself every day help keep fluid under control and catch problems early.",
+        "detailed": "Heart failure with reduced ejection fraction (HFrEF) means the left ventricle contracts weakly, so the share of blood ejected with each beat (the ejection fraction) is lower than normal. The body responds by holding on to salt and water, which can cause congestion: breathlessness, needing to sleep propped up, swelling of the legs or abdomen, and rapid weight gain. Several types of medicine are commonly used together; some relieve fluid (diuretics) and others help the heart over time. Daily weights are one of the earliest signs of fluid build-up, often before symptoms. A care team sets each person's medicines, salt and fluid targets, and the weight changes that should prompt a call."
+      },
+      "key_points": ["The heart pumps less well than normal.", "Fluid build-up causes swelling, breathlessness and weight gain.", "Daily weights help catch problems early."],
+      "questions_to_ask": ["How much weight gain should make me call?", "How much salt and fluid can I have each day?", "Which of my medicines help my heart over time?"],
+      "sources": [{"title": "MedlinePlus: Heart Failure", "url": "https://medlineplus.gov/heartfailure.html", "verified": false}]
+    },
+    {
+      "id": "pneumonia", "kind": "condition", "title": "Pneumonia",
+      "aliases": ["pneumonia", "lung infection", "chest infection"],
+      "levels": {
+        "simple": "Pneumonia is an infection in your lungs. It can cause a cough, fever and trouble breathing. Antibiotics treat pneumonia caused by bacteria. You may feel tired and keep coughing for a few weeks while you get better.",
+        "standard": "Pneumonia is an infection that inflames the small air sacs in one or both lungs. The sacs can fill with fluid, which causes cough, fever, chills, shortness of breath and chest pain when breathing. Pneumonia caused by bacteria is treated with antibiotics. Most people start to feel better within a few days, but tiredness and cough can last for weeks.",
+        "detailed": "Community-acquired pneumonia is a lung infection that starts outside the hospital. Bacteria, viruses and other germs can cause it. Inflammation fills the air sacs (alveoli) with fluid, which makes it harder for oxygen to reach the blood. Antibiotics are used for bacterial pneumonia, and finishing the prescribed course matters. Recovery varies: fever usually settles first, while cough and fatigue may take several weeks. A follow-up visit, and sometimes a follow-up chest X-ray, checks that the lungs have cleared. Not smoking helps the lungs heal."
+      },
+      "key_points": ["Pneumonia is a lung infection.", "Bacterial pneumonia is treated with antibiotics.", "Cough and tiredness can last for weeks."],
+      "questions_to_ask": ["When should I start to feel better?", "What should I do if my fever comes back?", "When can I go back to work or exercise?"],
+      "sources": [{"title": "MedlinePlus: Pneumonia", "url": "https://medlineplus.gov/pneumonia.html", "verified": false}]
+    },
+    {
+      "id": "apixaban", "kind": "medicine", "title": "Apixaban (Eliquis)",
+      "aliases": ["apixaban", "eliquis"],
+      "levels": {
+        "simple": "Apixaban is a blood thinner. It lowers the chance of a blood clot and a stroke. Because it thins your blood, you may bleed or bruise more easily. Missing doses can raise your risk of a clot.",
+        "standard": "Apixaban is an anticoagulant, often called a blood thinner. In atrial fibrillation it lowers the risk of clots forming in the heart and causing a stroke. It also makes bleeding more likely, so it is important to know the bleeding warning signs in your instructions. Tell every doctor, dentist and pharmacist that you take it, including before any procedure.",
+        "detailed": "Apixaban blocks a clotting protein called factor Xa, which slows clot formation. Its protective effect wears off within about a day of the last dose, which is one reason taking it regularly matters. The main risk is bleeding. Some medicines and supplements raise bleeding risk when combined with it, so check with a pharmacist before starting anything new. Never stop or change the dose without talking to the prescriber; your care team will tell you what to do about procedures or missed doses."
+      },
+      "key_points": ["Lowers the risk of clots and stroke.", "Raises the risk of bleeding.", "Tell every clinician and dentist you take it."],
+      "questions_to_ask": ["What should I do if I miss a dose?", "Which pain medicines are safe for me?", "What should I do before dental work or surgery?"],
+      "sources": [{"title": "MedlinePlus: Blood Thinners", "url": "https://medlineplus.gov/bloodthinners.html", "verified": false},
+                  {"title": "MedlinePlus: Drugs, Herbs and Supplements", "url": "https://medlineplus.gov/druginformation.html", "verified": false}]
+    },
+    {
+      "id": "metoprolol", "kind": "medicine", "title": "Metoprolol",
+      "aliases": ["metoprolol", "toprol", "beta blocker", "beta-blocker"],
+      "levels": {
+        "simple": "Metoprolol slows your heartbeat and lowers blood pressure. It can make you feel tired or dizzy at first. Do not stop it suddenly unless your care team tells you to.",
+        "standard": "Metoprolol is a beta-blocker. In atrial fibrillation it is used to slow a fast heart rate. Common side effects include tiredness, dizziness and cold hands. Extended-release (ER) tablets release the medicine slowly through the day, so they are swallowed whole. Stopping a beta-blocker suddenly can make the heart race.",
+        "detailed": "Metoprolol blocks the effect of adrenaline on the heart, which slows the heart rate and lowers blood pressure. Metoprolol succinate ER is a once-daily, extended-release form; crushing or chewing it releases the full dose at once. Side effects can include fatigue, dizziness, a slow pulse and, in some people, shortness of breath or low mood. Any change in dose, or stopping, should be planned with the prescriber."
+      },
+      "key_points": ["Slows the heart rate.", "ER tablets are swallowed whole.", "Do not stop suddenly without your care team."],
+      "questions_to_ask": ["What pulse is too slow for me?", "What should I do if I feel dizzy?"],
+      "sources": [{"title": "MedlinePlus: Drugs, Herbs and Supplements", "url": "https://medlineplus.gov/druginformation.html", "verified": false}]
+    },
+    {
+      "id": "furosemide", "kind": "medicine", "title": "Furosemide (Lasix)",
+      "aliases": ["furosemide", "lasix", "water pill", "diuretic"],
+      "levels": {
+        "simple": "Furosemide is a water pill. It makes you pee more so your body gets rid of extra fluid. Taking it in the morning helps you avoid getting up at night to pee.",
+        "standard": "Furosemide is a diuretic (water pill). It helps the kidneys remove extra salt and water, which reduces swelling and makes breathing easier in heart failure. You will urinate more for several hours after each dose. It can lower potassium and can make you dizzy when you stand up quickly.",
+        "detailed": "Furosemide is a loop diuretic that acts on the kidneys to increase salt and water loss. Its effect starts within about an hour of a tablet and lasts several hours, so morning dosing avoids night-time urination. Because it removes potassium and other salts, blood tests are used to check kidney function and electrolytes. Your care team sets the dose; do not change it on your own, even if your weight changes. Call them as your instructions say."
+      },
+      "key_points": ["A water pill that removes extra fluid.", "Taken in the morning.", "Blood tests check potassium and kidneys."],
+      "questions_to_ask": ["What should I do if I feel dizzy or very thirsty?", "Why do I need blood tests?"],
+      "sources": [{"title": "MedlinePlus: Drugs, Herbs and Supplements", "url": "https://medlineplus.gov/druginformation.html", "verified": false}]
+    },
+    {
+      "id": "sacubitril-valsartan", "kind": "medicine", "title": "Sacubitril/valsartan (Entresto)",
+      "aliases": ["sacubitril", "valsartan", "entresto", "sacubitril/valsartan"],
+      "levels": {
+        "simple": "Sacubitril/valsartan helps a weak heart work better over time. It can lower your blood pressure, so you might feel dizzy when you stand up.",
+        "standard": "Sacubitril/valsartan is a combination medicine used in heart failure with reduced ejection fraction. Over time it helps the heart and lowers the strain on it. Common effects include dizziness from lower blood pressure. Blood tests check kidney function and potassium.",
+        "detailed": "Sacubitril/valsartan combines a neprilysin inhibitor (sacubitril) with an angiotensin receptor blocker (valsartan). It is one of several medicine types used together in HFrEF. Possible effects include low blood pressure, raised potassium and changes in kidney function, which is why blood tests are scheduled. It must not be combined with certain other blood pressure medicines, and it is not used in pregnancy; your prescriber and pharmacist check this."
+      },
+      "key_points": ["Helps the heart over time.", "Can cause dizziness from lower blood pressure.", "Needs blood tests."],
+      "questions_to_ask": ["What should I do if I feel lightheaded?", "Which other medicines should I avoid with it?"],
+      "sources": [{"title": "MedlinePlus: Drugs, Herbs and Supplements", "url": "https://medlineplus.gov/druginformation.html", "verified": false}]
+    },
+    {
+      "id": "carvedilol", "kind": "medicine", "title": "Carvedilol (Coreg)",
+      "aliases": ["carvedilol", "coreg"],
+      "levels": {
+        "simple": "Carvedilol helps your heart work better over time and lowers blood pressure. Take it with food. It can make you dizzy or tired at first.",
+        "standard": "Carvedilol is a beta-blocker used in heart failure. Over months it can help the heart pump better. Taking it with food lowers the chance of dizziness. Do not stop it suddenly unless your care team tells you to.",
+        "detailed": "Carvedilol blocks beta and alpha receptors, slowing the heart and relaxing blood vessels. In HFrEF it is usually started at a low dose and increased slowly. Early side effects can include dizziness, tiredness and, for a short time, feeling more breathless. Taking it with food slows absorption and lessens dizziness. Dose changes are planned by the care team."
+      },
+      "key_points": ["Helps the heart over time.", "Take with food.", "Do not stop suddenly."],
+      "questions_to_ask": ["Will my dose change over time?", "What pulse or blood pressure is too low for me?"],
+      "sources": [{"title": "MedlinePlus: Drugs, Herbs and Supplements", "url": "https://medlineplus.gov/druginformation.html", "verified": false}]
+    },
+    {
+      "id": "amoxicillin-clavulanate", "kind": "medicine", "title": "Amoxicillin-clavulanate (Augmentin)",
+      "aliases": ["amoxicillin", "augmentin", "amoxicillin-clavulanate", "antibiotic"],
+      "levels": {
+        "simple": "This is an antibiotic. It kills the bacteria causing your pneumonia. Take every pill, even if you feel better. It can upset your stomach or cause loose stools. Taking it with food can help.",
+        "standard": "Amoxicillin-clavulanate is a penicillin-type antibiotic. Clavulanate helps amoxicillin work against more kinds of bacteria. Finishing the full course helps make sure the infection is gone. Diarrhea and upset stomach are common; taking it with food can help. A rash, hives, swelling or trouble breathing can be signs of an allergic reaction and need urgent care.",
+        "detailed": "Amoxicillin kills bacteria by blocking cell-wall formation; clavulanate stops some bacteria from breaking amoxicillin down. Stopping early can leave bacteria behind and allow the infection to return. Common effects are diarrhea, nausea and, in some people, yeast infections. Severe or bloody diarrhea, or signs of an allergic reaction, need prompt medical attention. Tell your care team if you have ever reacted to penicillin."
+      },
+      "key_points": ["An antibiotic for bacterial infection.", "Finish every pill.", "Allergy signs need urgent care."],
+      "questions_to_ask": ["What should I do if I get diarrhea?", "What if I miss a dose?"],
+      "sources": [{"title": "MedlinePlus: Antibiotics", "url": "https://medlineplus.gov/antibiotics.html", "verified": false}]
+    },
+    {
+      "id": "acetaminophen", "kind": "medicine", "title": "Acetaminophen (Tylenol)",
+      "aliases": ["acetaminophen", "tylenol", "paracetamol"],
+      "levels": {
+        "simple": "Acetaminophen (Tylenol) helps with pain and fever. Too much can hurt your liver. Many cold and flu medicines also contain it, so check labels.",
+        "standard": "Acetaminophen relieves pain and lowers fever. It is usually gentle on the stomach, but taking more than the maximum daily amount can seriously damage the liver. Many combination products (cold, flu and sleep medicines, some prescription pain pills) also contain acetaminophen, so count them toward your daily total.",
+        "detailed": "Acetaminophen acts mainly in the brain to reduce pain and fever. Liver injury is the key risk with too much, and the risk is higher with heavy alcohol use or liver disease. Your instructions give your dose, how often you may take it, and your daily maximum. Read the labels of all other medicines for 'acetaminophen' or 'APAP' to avoid doubling up."
+      },
+      "key_points": ["For pain and fever.", "Never exceed your daily maximum.", "Check other medicines for acetaminophen."],
+      "questions_to_ask": ["Which cold medicines are safe with my plan?", "What should I do if my fever does not go down?"],
+      "sources": [{"title": "MedlinePlus: Drugs, Herbs and Supplements", "url": "https://medlineplus.gov/druginformation.html", "verified": false}]
+    }
+  ],
+  "glossary": [
+    {"term": "blood thinner", "aliases": ["anticoagulant", "blood thinner", "blood thinners"], "definition": "A medicine that makes blood clots less likely to form. It does not actually make blood thinner, and it raises the chance of bleeding."},
+    {"term": "ejection fraction", "aliases": ["ejection fraction", "ef"], "definition": "The share of blood the main pumping chamber pushes out with each heartbeat. A lower number means the heart is pumping less strongly."},
+    {"term": "diuretic", "aliases": ["diuretic", "water pill"], "definition": "A medicine that helps the kidneys remove extra salt and water, so you urinate more."},
+    {"term": "sodium", "aliases": ["sodium", "salt"], "definition": "A mineral found in salt and many packaged foods. Too much makes the body hold on to fluid. Food labels list sodium in milligrams (mg)."},
+    {"term": "stroke", "aliases": ["stroke"], "definition": "Damage to part of the brain when its blood supply is blocked or a blood vessel bleeds. Sudden weakness on one side, a drooping face or trouble speaking can be signs. A stroke is an emergency: call 911."},
+    {"term": "palpitations", "aliases": ["palpitations", "palpitation", "fluttering"], "definition": "Feeling your heart racing, pounding, fluttering or skipping beats."},
+    {"term": "edema", "aliases": ["edema", "swelling", "oedema"], "definition": "Swelling caused by extra fluid in the body, often in the feet, ankles, legs or belly."},
+    {"term": "antibiotic", "aliases": ["antibiotic", "antibiotics"], "definition": "A medicine that kills bacteria or stops them from growing. Antibiotics do not work against viruses."},
+    {"term": "cardiologist", "aliases": ["cardiologist", "cardiology"], "definition": "A doctor who specializes in the heart and blood vessels."},
+    {"term": "basic metabolic panel", "aliases": ["basic metabolic panel", "bmp", "blood test"], "definition": "A common blood test that checks kidney function, blood sugar and salts such as sodium and potassium."},
+    {"term": "potassium", "aliases": ["potassium"], "definition": "A mineral the heart and muscles need. Some heart medicines raise or lower it, so blood tests check the level."},
+    {"term": "extended-release", "aliases": ["extended-release", "extended release", "er"], "definition": "A pill made to release medicine slowly over many hours. Crushing or chewing it can release too much at once."},
+    {"term": "tarry stools", "aliases": ["tarry stools", "black stools", "tarry"], "definition": "Black, sticky bowel movements. They can be a sign of bleeding in the stomach or intestines."}
+  ]
+}
