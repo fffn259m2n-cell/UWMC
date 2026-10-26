@@ -50,4 +50,6 @@ def get(url: str, params: dict | None = None, *, limiter: RateLimiter | None = N
             last = exc
         if attempt < retries:
             sleep(backoff * (2 ** attempt))
-    raise FetchError(f"Failed to fetch {full}: {last}")
+    host = urllib.parse.urlsplit(url)
+    raise FetchError(f"Could not reach {host.scheme}://{host.netloc}{host.path} after {retries + 1} attempts ({last}). "
+                     "Check the internet connection, or try the demo with --offline.")

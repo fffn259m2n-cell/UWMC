@@ -28,13 +28,23 @@ async function audit(name) {
   if (shots) await page.screenshot({ path: `${shots}/${name}.png`, fullPage: true });
 }
 async function shot(name) { if (shots) await page.screenshot({ path: `${shots}/${name}.png`, fullPage: true }); }
+// Polls with page.evaluate (not waitForFunction): some Playwright versions implement
+// waitForFunction with eval(), which the app's strict CSP correctly blocks.
+async function waitUntil(fn, arg, timeout = 8000) {
+  const end = Date.now() + timeout;
+  while (Date.now() < end) {
+    if (await page.evaluate(fn, arg)) return true;
+    await page.waitForTimeout(100);
+  }
+  throw new Error("timed out");
+}
 // Waits up to 8 s for the text (case-insensitive; CSS may upper-case labels).
 const expectText = async (sel, text, label) => {
   try {
-    await page.waitForFunction(([s, t]) => {
+    await waitUntil(([s, t]) => {
       const n = document.querySelector(s);
-      return n && n.innerText.toLowerCase().includes(t.toLowerCase());
-    }, [sel, text], { timeout: 8000 });
+      return !!n && n.innerText.toLowerCase().includes(t.toLowerCase());
+    }, [sel, text]);
   } catch (_) { problems.push(`${label}: expected "${text}"`); }
 };
 
@@ -71,7 +81,7 @@ await page.click("form button[type=submit]");
 await page.waitForSelector(".msg.bot");
 await expectText(".chat", "From your care plan", "chat grounding label");
 await page.click("text=Say it more simply");
-await page.waitForFunction(() => document.querySelectorAll(".msg.bot").length >= 2);
+await waitUntil(n => document.querySelectorAll(".msg.bot").length >= n, 2);
 await expectText(".chat", "you may bleed or bruise more easily", "chat simpler level");
 await page.fill("#ask-input", "I have chest pain right now");
 await page.click("form button[type=submit]");
@@ -79,7 +89,7 @@ await page.waitForSelector(".msg.bot .emergency-box");
 await expectText(".chat", "call 911 now", "chat emergency");
 await page.fill("#ask-input", "Can I stop my metoprolol?");
 await page.click("form button[type=submit]");
-await page.waitForFunction(() => document.querySelectorAll(".msg.bot").length >= 3);
+await waitUntil(n => document.querySelectorAll(".msg.bot").length >= n, 3);
 await expectText(".chat", "can't advise on starting, stopping", "chat medication-change refusal");
 await audit("06-ask");
 
