@@ -1,0 +1,17 @@
+/* Template for an adopting institution's brand team.
+ *
+ * Copy to themes/<name>.css, fill in values from your official brand guidelines, and run
+ *   TEACHBACK_THEME=<name> teachback serve
+ * Logos, wordmarks and brand colours are trademarks; apply them only with the brand
+ * owner's permission. This project ships with no institution's branding.
+ *
+ * Keep text contrast at 4.5:1 or more (WCAG AA) and re-run scripts/e2e_check.mjs.
+ */
+:root {
+  /* --accent: ;        primary brand colour (buttons, active navigation) */
+  /* --accent-ink: ;    text colour on the primary colour */
+  /* --accent-soft: ;   light tint of the primary colour */
+  /* --bg: ; --surface: ; --ink: ; --ink-2: ; --rule: ; */
+}
+/* body { font-family: "Your brand font", sans-serif; } */
+/* .logo { background: url("/static/themes/your-logo.svg") center/contain no-repeat; color: transparent; } */

@@ -1,0 +1,399 @@
+{
+  "notice": "SYNTHETIC benchmark for the fidelity evaluator. Each case is a rewrite of a synthetic plan item with known, deliberately introduced errors (or none). It measures the evaluator, not any clinical content. Cases from an independent adversarial review were added after the evaluator was revised to address them.",
+  "cases": [
+    {
+      "id": "clean-apixaban",
+      "plan": "afib-demo",
+      "item": "med-apixaban",
+      "expect": [],
+      "candidate": "Apixaban (Eliquis) thins your blood. Take one 5 mg tablet twice a day, roughly 12 hours apart. Do not stop it unless your cardiologist tells you to."
+    },
+    {
+      "id": "dose-changed",
+      "plan": "afib-demo",
+      "item": "med-apixaban",
+      "expect": [
+        "quantity_missing_or_changed",
+        "number_added"
+      ],
+      "candidate": "Apixaban is a blood thinner. Take one 2.5 mg pill two times a day, about 12 hours apart. Do not stop unless your cardiologist tells you to."
+    },
+    {
+      "id": "frequency-changed",
+      "plan": "afib-demo",
+      "item": "med-apixaban",
+      "expect": [
+        "quantity_missing_or_changed"
+      ],
+      "candidate": "Apixaban is a blood thinner. Take one 5 mg pill once a day. Do not stop unless your cardiologist tells you to."
+    },
+    {
+      "id": "negation-lost",
+      "plan": "afib-demo",
+      "item": "med-apixaban",
+      "expect": [
+        "negation_lost"
+      ],
+      "candidate": "Apixaban is a blood thinner. Take one 5 mg pill two times a day, about 12 hours apart. You can stop it once your heart rhythm is normal."
+    },
+    {
+      "id": "clean-bleeding",
+      "plan": "afib-demo",
+      "item": "ins-bleeding",
+      "expect": [],
+      "candidate": "Call the cardiology clinic if you see blood in your urine or have black stools. Call 911 if you vomit blood, get a severe headache, or bleeding will not stop after 10 minutes of pressing hard on it."
+    },
+    {
+      "id": "911-dropped",
+      "plan": "afib-demo",
+      "item": "warn-stroke",
+      "expect": [
+        "emergency_action_missing"
+      ],
+      "candidate": "Call the clinic if you have chest pain, faint, feel weak or numb on one side, have trouble speaking, or your face droops."
+    },
+    {
+      "id": "nsaid-allowed",
+      "plan": "afib-demo",
+      "item": "ins-pain-medicine",
+      "expect": [
+        "negation_lost"
+      ],
+      "candidate": "You can take ibuprofen (Advil) for pain. Acetaminophen (Tylenol) is also OK if you follow the package directions."
+    },
+    {
+      "id": "clean-nsaid",
+      "plan": "afib-demo",
+      "item": "ins-pain-medicine",
+      "expect": [],
+      "candidate": "Do not use ibuprofen (Advil, Motrin) or naproxen (Aleve) while on apixaban. For pain or fever, acetaminophen (Tylenol) is OK if you follow the package directions."
+    },
+    {
+      "id": "drug-added",
+      "plan": "afib-demo",
+      "item": "med-metoprolol",
+      "expect": [
+        "medicine_added"
+      ],
+      "candidate": "Metoprolol slows your heart. Take one 25 mg pill once a day in the morning, swallowed whole. Take it with a baby aspirin."
+    },
+    {
+      "id": "crush-allowed",
+      "plan": "afib-demo",
+      "item": "med-metoprolol",
+      "expect": [
+        "negation_lost"
+      ],
+      "candidate": "Metoprolol slows your heart. Take one 25 mg pill once a day in the morning. You may crush it if it is hard to swallow."
+    },
+    {
+      "id": "clean-weight",
+      "plan": "hf-demo",
+      "item": "warn-weight-gain",
+      "expect": [],
+      "candidate": "Call the heart failure clinic if you gain more than 2 pounds in one day or more than 5 pounds in one week, or if your legs or belly swell more."
+    },
+    {
+      "id": "threshold-changed",
+      "plan": "hf-demo",
+      "item": "warn-weight-gain",
+      "expect": [
+        "quantity_missing_or_changed",
+        "number_added"
+      ],
+      "candidate": "Call the heart failure clinic if you gain more than 3 pounds in one day or more than 5 pounds in one week."
+    },
+    {
+      "id": "week-rule-dropped",
+      "plan": "hf-demo",
+      "item": "warn-weight-gain",
+      "expect": [
+        "quantity_missing_or_changed"
+      ],
+      "candidate": "Call the heart failure clinic if you gain more than 2 pounds in one day."
+    },
+    {
+      "id": "with-food-dropped",
+      "plan": "hf-demo",
+      "item": "med-carvedilol",
+      "expect": [
+        "concept_missing"
+      ],
+      "candidate": "Carvedilol helps your heart. Take one 6.25 mg pill two times a day."
+    },
+    {
+      "id": "clean-fluid",
+      "plan": "hf-demo",
+      "item": "ins-sodium-fluid",
+      "expect": [],
+      "candidate": "Keep sodium (salt) to 2,000 mg or less each day, and keep all fluids to 2 liters, about 8 cups, or less each day."
+    },
+    {
+      "id": "fluid-changed",
+      "plan": "hf-demo",
+      "item": "ins-sodium-fluid",
+      "expect": [
+        "quantity_missing_or_changed",
+        "number_added"
+      ],
+      "candidate": "Eat no more than 2,000 mg of sodium a day. Drink no more than 3 liters (about 12 cups) of fluid a day."
+    },
+    {
+      "id": "clean-amox",
+      "plan": "pna-demo",
+      "item": "med-amox-clav",
+      "expect": [],
+      "candidate": "Amoxicillin-clavulanate is an antibiotic. Take one 875 mg/125 mg tablet twice a day with food for 5 more days, and finish every pill even if you feel better."
+    },
+    {
+      "id": "duration-changed",
+      "plan": "pna-demo",
+      "item": "med-amox-clav",
+      "expect": [
+        "quantity_missing_or_changed",
+        "number_added"
+      ],
+      "candidate": "Amoxicillin-clavulanate is an antibiotic. Take one 875 mg/125 mg tablet twice a day with food for 7 more days. Finish every pill."
+    },
+    {
+      "id": "max-dose-dropped",
+      "plan": "pna-demo",
+      "item": "med-acetaminophen",
+      "expect": [
+        "quantity_missing_or_changed"
+      ],
+      "candidate": "Acetaminophen (Tylenol) helps fever or pain. Take 2 pills (650 mg) every 6 hours if you need it."
+    },
+    {
+      "id": "smoking-dropped",
+      "plan": "pna-demo",
+      "item": "ins-recovery",
+      "expect": [
+        "instruction_missing"
+      ],
+      "candidate": "Rest and drink plenty of fluids. Your cough may last a few weeks."
+    },
+    {
+      "id": "es-clean-apixaban",
+      "plan": "afib-demo",
+      "item": "med-apixaban",
+      "language": "es",
+      "expect": [],
+      "candidate": "El apixabán es un anticoagulante. Tome una pastilla de 5 mg dos veces al día, con unas 12 horas de diferencia. No deje de tomarlo a menos que su cardiólogo se lo indique."
+    },
+    {
+      "id": "es-dose-changed",
+      "plan": "afib-demo",
+      "item": "med-apixaban",
+      "language": "es",
+      "expect": [
+        "quantity_missing_or_changed",
+        "number_added"
+      ],
+      "candidate": "El apixabán es un anticoagulante. Tome una pastilla de 10 mg dos veces al día, con unas 12 horas de diferencia. No deje de tomarlo a menos que su cardiólogo se lo indique."
+    },
+    {
+      "id": "es-911-dropped",
+      "plan": "hf-demo",
+      "item": "warn-911",
+      "language": "es",
+      "expect": [
+        "emergency_action_missing"
+      ],
+      "candidate": "Llame a la clínica si le falta mucho el aire, tiene dolor de pecho, se desmaya o no puede recuperar el aliento aun en reposo."
+    },
+    {
+      "id": "es-clean-911",
+      "plan": "hf-demo",
+      "item": "warn-911",
+      "language": "es",
+      "expect": [],
+      "candidate": "Llame al 911 si le falta mucho el aire, tiene dolor de pecho, se desmaya o no puede recuperar el aliento aun en reposo."
+    },
+    {
+      "id": "tablets-doubled",
+      "plan": "afib-demo",
+      "item": "med-apixaban",
+      "expect": [
+        "tablet_count_changed"
+      ],
+      "candidate": "Apixaban: take 2 tablets twice a day, about 12 hours apart. Do not stop unless your cardiologist tells you to."
+    },
+    {
+      "id": "extra-bedtime-dose",
+      "plan": "afib-demo",
+      "item": "med-apixaban",
+      "expect": [
+        "dose_added"
+      ],
+      "candidate": "Apixaban: take one 5 mg pill twice a day, 12 hours apart, plus one extra at bedtime. Do not stop unless your cardiologist tells you to."
+    },
+    {
+      "id": "ambiguous-frequency",
+      "plan": "afib-demo",
+      "item": "med-apixaban",
+      "expect": [
+        "frequency_changed"
+      ],
+      "candidate": "Apixaban: take one 5 mg pill twice a day or once a day, about 12 hours apart. Do not stop unless your cardiologist tells you to."
+    },
+    {
+      "id": "stop-without-verb",
+      "plan": "afib-demo",
+      "item": "med-apixaban",
+      "expect": [
+        "meaning_reversed"
+      ],
+      "candidate": "Apixaban: take one 5 mg pill twice a day, 12 hours apart. It is not necessary to keep taking apixaban once you feel better."
+    },
+    {
+      "id": "hr-direction-flipped",
+      "plan": "afib-demo",
+      "item": "warn-heart-rate",
+      "expect": [
+        "direction_changed"
+      ],
+      "candidate": "Call the cardiology clinic if your resting heart rate stays below 110 beats per minute, or if you are more short of breath."
+    },
+    {
+      "id": "911-negated",
+      "plan": "afib-demo",
+      "item": "warn-stroke",
+      "expect": [
+        "emergency_action_negated"
+      ],
+      "candidate": "Do not call 911 for chest pain, fainting, sudden weakness or numbness on one side, trouble speaking or a drooping face. Call the clinic."
+    },
+    {
+      "id": "signs-moved-to-clinic",
+      "plan": "afib-demo",
+      "item": "warn-stroke",
+      "expect": [
+        "emergency_sign_not_with_911"
+      ],
+      "candidate": "Call 911 for chest pain. Call the clinic if you faint, feel weak or numb on one side, have trouble speaking, or your face droops."
+    },
+    {
+      "id": "furosemide-second-dose",
+      "plan": "hf-demo",
+      "item": "med-furosemide",
+      "expect": [
+        "frequency_changed"
+      ],
+      "candidate": "Furosemide is a water pill. Take one 40 mg pill once a day in the morning and once at night."
+    },
+    {
+      "id": "thresholds-swapped",
+      "plan": "hf-demo",
+      "item": "warn-weight-gain",
+      "expect": [
+        "threshold_period_changed"
+      ],
+      "candidate": "Call the heart failure clinic if you gain more than 5 pounds in one day or more than 2 pounds in one week."
+    },
+    {
+      "id": "wait-instead-of-call",
+      "plan": "hf-demo",
+      "item": "warn-weight-gain",
+      "expect": [
+        "meaning_reversed",
+        "contradicts_instruction"
+      ],
+      "candidate": "If you gain more than 2 pounds in one day or 5 pounds in one week, wait for your next visit; do not call the clinic."
+    },
+    {
+      "id": "limit-became-minimum",
+      "plan": "hf-demo",
+      "item": "ins-sodium-fluid",
+      "expect": [
+        "direction_changed"
+      ],
+      "candidate": "Eat at least 2,000 mg of sodium (salt) a day. Drink at least 2 liters of fluid a day, about 8 cups."
+    },
+    {
+      "id": "max-became-minimum",
+      "plan": "pna-demo",
+      "item": "med-acetaminophen",
+      "expect": [
+        "direction_changed"
+      ],
+      "candidate": "Acetaminophen (Tylenol): take 2 pills (650 mg) every 6 hours if needed. Take at least 3,000 mg in 24 hours."
+    },
+    {
+      "id": "finish-negated",
+      "plan": "pna-demo",
+      "item": "med-amox-clav",
+      "expect": [
+        "meaning_reversed"
+      ],
+      "candidate": "Amoxicillin-clavulanate 875 mg/125 mg: one pill twice a day with food for 5 more days. It is okay not to finish the pills if you feel better."
+    },
+    {
+      "id": "es-stop-allowed",
+      "plan": "afib-demo",
+      "item": "med-apixaban",
+      "expect": [
+        "negation_possibly_lost",
+        "frequency_changed"
+      ],
+      "candidate": "El apixabán: tome una pastilla de 5 mg una vez al día. Puede dejar de tomar apixabán cuando se sienta mejor.",
+      "language": "es"
+    },
+    {
+      "id": "clean-2-times-daily",
+      "plan": "afib-demo",
+      "item": "med-apixaban",
+      "expect": [],
+      "candidate": "Apixaban: one 5 mg pill 2 times daily, about 12 hours apart. Do not stop unless your cardiologist tells you to."
+    },
+    {
+      "id": "clean-morning-night",
+      "plan": "afib-demo",
+      "item": "med-apixaban",
+      "expect": [],
+      "candidate": "Apixaban 5 mg: one in the morning and one at night, 12 hours apart. Do not stop unless your cardiologist tells you to."
+    },
+    {
+      "id": "clean-entresto-slash",
+      "plan": "hf-demo",
+      "item": "med-sacval",
+      "expect": [],
+      "candidate": "Entresto (sacubitril/valsartan) 24/26 mg: take one pill twice a day."
+    },
+    {
+      "id": "clean-max-one-day",
+      "plan": "pna-demo",
+      "item": "med-acetaminophen",
+      "expect": [],
+      "candidate": "Acetaminophen (Tylenol): 2 pills (650 mg) every 6 hours if needed. Never more than 3,000 mg in one day (24 hours)."
+    },
+    {
+      "id": "clean-nine-one-one",
+      "plan": "hf-demo",
+      "item": "warn-911",
+      "expect": [],
+      "candidate": "Call nine-one-one if you are very short of breath, have chest pain, faint, or cannot catch your breath when resting."
+    },
+    {
+      "id": "clean-nsaids-like",
+      "plan": "afib-demo",
+      "item": "ins-pain-medicine",
+      "expect": [],
+      "candidate": "Avoid pain pills called NSAIDs, like ibuprofen (Advil, Motrin) or naproxen (Aleve). Acetaminophen (Tylenol) is OK if you follow the package directions."
+    },
+    {
+      "id": "clean-stop-smoking",
+      "plan": "pna-demo",
+      "item": "ins-recovery",
+      "expect": [],
+      "candidate": "Rest and drink plenty of fluids. Please stop smoking. Your cough may last a few weeks."
+    },
+    {
+      "id": "clean-not-allowed",
+      "plan": "afib-demo",
+      "item": "med-metoprolol",
+      "expect": [],
+      "candidate": "Metoprolol (Toprol) 25 mg: one pill once a day in the morning. Swallow it whole; crushing or chewing is not allowed."
+    }
+  ]
+}

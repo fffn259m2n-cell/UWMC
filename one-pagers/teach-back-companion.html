@@ -1,0 +1,23 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Teach-Back Companion — one-page summary</title><link rel="stylesheet" href="_style.css"></head><body>
+<div class="kicker">Independent prototype · fictional patients only · for feedback</div>
+<h1>Teach-Back Companion and Instruction Fidelity Evaluator</h1>
+<p class="lede">EHR assistants now explain records to patients. This prototype targets the next two questions: <b>did the patient understand?</b> and <b>does the simplified or translated instruction still say the same thing?</b></p>
+<div class="grid">
+<div><h2>Teach-back (patient side)</h2><ul>
+<li>Each discharge instruction is shown verbatim beside a plain version.</li>
+<li>The patient explains it in their own words. The tool shows what they covered, what is missing, and possible misunderstandings ("I can stop the blood thinner when I feel better"), always quoting the original and pointing to the care team.</li>
+<li>Emergency, crisis and medication-change messages are screened first and sent to human help.</li></ul>
+<h2>Fidelity evaluator (care-team side)</h2><ul>
+<li>Checks any rewrite (human, AI or translated) against the original for doses, frequencies, tablet counts, limits, "do not" statements, 911 instructions, medicine names and reading level.</li>
+<li>Benchmark: {{BENCH}}</li></ul></div>
+<div><h2>Why it may matter</h2><ul>
+<li>Teach-back is recommended (AHRQ Health Literacy Toolkit, Tool 5) but time-consuming.</li>
+<li>A 2026 randomised trial in internal medicine found physician-reviewed, AI-generated patient discharge summaries increased patient activation (Rust et al., <i>Lancet Digit Health</i> 2026;8(6):100991). The fidelity evaluator is a candidate aid for that review step.</li></ul>
+<h2>Status and boundaries</h2><ul>
+<li>Measured on 390 cases written by an independent reviewer, before tuning: flagged 88% of dangerous teach-back explanations with no false alarms; recognised 87% of emergencies and 73% of crisis messages. <b>Not a safety net</b>; an aid for clinician-led teach-back.</li>
+<li>{{TBC_TESTS}} automated tests; browser and WCAG automated checks pass; five review and measurement rounds.</li>
+<li>Fictional patients; draft education text not yet clinician-reviewed; rule-based, not clinically validated.</li>
+<li>No EHR connection, no PHI, nothing typed is stored.</li></ul></div></div>
+<div class="box"><b>Try it (15 min):</b> open the repository in GitHub Codespaces; the demo opens in the browser. Or <code>pip install -e . &amp;&amp; teachback serve</code>.<br><b>Ask:</b> 20 minutes of feedback on whether this problem is worth solving at UW Medicine. This is not a pilot request.<br><b>Code:</b> {{REPO_URL}}/tree/main/teach-back-companion</div>
+<p class="note">Independent, unpaid prototype. Not affiliated with or endorsed by UW Medicine. Any real use would require a clinical sponsor and UW Medicine IT, privacy, security and clinical-safety review, plus an IRB determination for any evaluation. MIT license.</p>
+</body></html>

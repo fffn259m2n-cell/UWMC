@@ -1,0 +1,475 @@
+{
+  "id": "afib-demo",
+  "synthetic": true,
+  "notice": "SYNTHETIC DEMONSTRATION PLAN. Fictional patient. Not a clinical template and not reviewed by a clinician.",
+  "patient": {
+    "display_name": "Alex Rivera",
+    "age": 67,
+    "preferred_language": "English"
+  },
+  "discharge_offset_days": -1,
+  "care_team": [
+    {
+      "role": "Cardiology clinic",
+      "contact": "(000) 000-0000 — placeholder number"
+    },
+    {
+      "role": "Pharmacist",
+      "contact": "Your pharmacy — placeholder"
+    }
+  ],
+  "diagnoses": [
+    {
+      "id": "dx-afib",
+      "name": "Atrial fibrillation (AFib)",
+      "education_topic": "atrial-fibrillation",
+      "documented_note": "New diagnosis of paroxysmal atrial fibrillation. Heart rate controlled with metoprolol. Started apixaban to lower stroke risk."
+    }
+  ],
+  "items": [
+    {
+      "id": "med-apixaban",
+      "kind": "medication",
+      "title": "Apixaban 5 mg tablet",
+      "drug_names": [
+        "apixaban",
+        "Eliquis"
+      ],
+      "education_topic": "apixaban",
+      "original": "Apixaban 5 mg tablet. Take 1 tablet by mouth twice a day, about 12 hours apart. Do not stop taking apixaban unless your cardiologist tells you to.",
+      "plain": "Apixaban is a blood thinner. Take one 5 mg pill two times a day, about 12 hours apart. Keep taking it every day, even when you feel fine. Do not stop unless your cardiologist tells you to.",
+      "task": {
+        "type": "daily",
+        "label": "Take apixaban as written on your medicine label"
+      },
+      "facts": [
+        {
+          "id": "apx-dose",
+          "severity": "critical",
+          "statement": "Take 5 mg twice a day, about 12 hours apart.",
+          "concepts": [
+            [
+              "twice",
+              "two times",
+              "2 times",
+              "2x",
+              "morning and night",
+              "morning and evening",
+              "12 hours apart",
+              "every 12 hours"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 5,
+              "unit": "mg"
+            },
+            {
+              "value": 2,
+              "unit": "per_day"
+            },
+            {
+              "value": 12,
+              "unit": "hours"
+            }
+          ],
+          "misconceptions": []
+        },
+        {
+          "id": "apx-continue",
+          "severity": "critical",
+          "statement": "Do not stop apixaban unless your cardiologist says so.",
+          "concepts": [
+            [
+              "keep taking",
+              "keep on taking",
+              "continue",
+              "every day",
+              "each day",
+              "daily",
+              "unless my cardiologist",
+              "until my cardiologist",
+              "until the cardiologist",
+              "unless the doctor",
+              "until my doctor"
+            ]
+          ],
+          "action": {
+            "verbs": [
+              "stop",
+              "quit",
+              "skip"
+            ],
+            "polarity": "dont"
+          },
+          "misconceptions": [
+            {
+              "id": "stop-when-better",
+              "pattern": "\\b(stop|quit|come off)\\b[^.]*\\b(feel|feels|heart|rhythm|beat)\\b[^.]*\\b(better|normal|fine|ok|okay|regular)\\b",
+              "message": "Your instructions say to keep taking apixaban even when you feel well. Feeling better does not mean it is time to stop."
+            },
+            {
+              "id": "stop-when-done",
+              "pattern": "(?<!before i )(?<!before you )\\b(finish|finished|run out|used up)\\b[^.]*\\b(bottle|pills|prescription)\\b",
+              "message": "Your instructions do not list an end date for apixaban. Refill it before you run out and ask your care team before stopping."
+            }
+          ],
+          "coverage": "concepts_or_negated_action"
+        }
+      ]
+    },
+    {
+      "id": "med-metoprolol",
+      "kind": "medication",
+      "title": "Metoprolol succinate ER 25 mg tablet",
+      "drug_names": [
+        "metoprolol",
+        "Toprol"
+      ],
+      "education_topic": "metoprolol",
+      "original": "Metoprolol succinate ER 25 mg tablet. Take 1 tablet by mouth once a day in the morning. Swallow whole. Do not crush or chew.",
+      "plain": "Metoprolol slows your heart rate. Take one 25 mg pill once a day, in the morning. Swallow it whole. Do not crush it or chew it.",
+      "task": {
+        "type": "daily",
+        "label": "Take metoprolol as written on your medicine label"
+      },
+      "facts": [
+        {
+          "id": "met-dose",
+          "severity": "critical",
+          "statement": "Take 25 mg once a day in the morning.",
+          "concepts": [
+            [
+              "once",
+              "one time",
+              "1 time",
+              "every morning",
+              "each morning",
+              "in the morning"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 25,
+              "unit": "mg"
+            },
+            {
+              "value": 1,
+              "unit": "per_day"
+            }
+          ],
+          "misconceptions": []
+        },
+        {
+          "id": "met-whole",
+          "severity": "major",
+          "statement": "Swallow whole; do not crush or chew.",
+          "concepts": [
+            [
+              "whole"
+            ]
+          ],
+          "action": {
+            "verbs": [
+              "crush",
+              "chew",
+              "split",
+              "break",
+              "cut",
+              "halve",
+              "dissolve",
+              "mix"
+            ],
+            "polarity": "dont"
+          },
+          "coverage": "concepts_or_negated_action",
+          "misconceptions": []
+        }
+      ]
+    },
+    {
+      "id": "ins-bleeding",
+      "kind": "instruction",
+      "title": "Bleeding precautions",
+      "original": "While taking apixaban, call the cardiology clinic if you notice blood in your urine or black, tarry stools. Call 911 for vomiting blood, a severe headache, or bleeding that does not stop after 10 minutes of firm pressure.",
+      "plain": "Apixaban can make you bleed more easily. Call the cardiology clinic if your pee looks red or pink, or your poop is black. Call 911 if you throw up blood, have a very bad headache, or have bleeding that does not stop after pressing on it firmly for 10 minutes.",
+      "facts": [
+        {
+          "id": "bleed-clinic",
+          "severity": "major",
+          "statement": "Call the clinic for blood in urine or black stools.",
+          "concepts": [
+            [
+              "urine",
+              "pee",
+              "black stool",
+              "black poop",
+              "black stools",
+              "tarry"
+            ],
+            [
+              "clinic",
+              "call",
+              "doctor",
+              "care team"
+            ]
+          ],
+          "misconceptions": []
+        },
+        {
+          "id": "bleed-911",
+          "severity": "critical",
+          "emergency": true,
+          "statement": "Call 911 for vomiting blood, severe headache, or bleeding that does not stop after 10 minutes of pressure.",
+          "concepts": [
+            [
+              "911",
+              "emergency"
+            ],
+            [
+              "vomit",
+              "throw up",
+              "headache",
+              "does not stop",
+              "won't stop",
+              "doesn't stop"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 10,
+              "unit": "minutes"
+            }
+          ],
+          "misconceptions": [
+            {
+              "id": "wait-out-bleeding",
+              "pattern": "\\b(wait|sleep on it|see if it stops|until (my|the) (next )?appointment)\\b[^.]*\\b(bleed|bleeding|headache)\\b|\\b(bleed|bleeding|headache)\\b[^.]*\\b(wait|until (my|the) (next )?appointment)\\b",
+              "message": "Your instructions say to call 911 for bleeding that does not stop after 10 minutes of pressure, vomiting blood, or a severe headache. These should not wait for an appointment."
+            },
+            {
+              "id": "wait-and-see",
+              "pattern": "\\b(wait|waiting) (and see|to see|it out|a (bit|while|day))\\b|\\bsee if it (passes|goes away|gets better|stops)\\b|\\b(sleep it off|rest and see|lie down and see)\\b|\\bwait\\b[^.]{0,30}\\b(pass|passes|goes away|better|over)\\b",
+              "message": "Your instructions say to call 911 for these signs. They should not wait to see if they pass."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ins-pain-medicine",
+      "kind": "instruction",
+      "title": "Pain medicine while on apixaban",
+      "drug_names": [
+        "ibuprofen",
+        "Advil",
+        "Motrin",
+        "naproxen",
+        "Aleve",
+        "acetaminophen",
+        "Tylenol"
+      ],
+      "original": "Do not take ibuprofen (Advil, Motrin) or naproxen (Aleve) while taking apixaban. Acetaminophen (Tylenol) is OK for pain or fever if you follow the package directions.",
+      "plain": "Do not take ibuprofen (Advil, Motrin) or naproxen (Aleve). They can raise your risk of bleeding while you take apixaban. Acetaminophen (Tylenol) is OK for pain or fever. Follow the directions on the package.",
+      "facts": [
+        {
+          "id": "no-nsaids",
+          "severity": "critical",
+          "statement": "Do not take ibuprofen or naproxen.",
+          "concepts": [],
+          "action": {
+            "verbs": [
+              "take",
+              "use"
+            ],
+            "polarity": "dont",
+            "objects": [
+              "ibuprofen",
+              "advil",
+              "motrin",
+              "naproxen",
+              "aleve"
+            ]
+          },
+          "coverage": "negated_action",
+          "misconceptions": []
+        },
+        {
+          "id": "tylenol-ok",
+          "severity": "minor",
+          "statement": "Acetaminophen (Tylenol) is OK if you follow the package directions.",
+          "concepts": [
+            [
+              "acetaminophen",
+              "tylenol"
+            ]
+          ],
+          "misconceptions": []
+        }
+      ]
+    },
+    {
+      "id": "warn-stroke",
+      "kind": "warning",
+      "title": "Emergency warning signs",
+      "original": "Call 911 right away for chest pain, fainting, sudden weakness or numbness on one side of the body, trouble speaking, or a drooping face.",
+      "plain": "Call 911 right away if you have chest pain, you faint, one side of your body suddenly feels weak or numb, you have trouble talking, or one side of your face droops. These can be signs of a stroke or a heart problem.",
+      "facts": [
+        {
+          "id": "stroke-911",
+          "severity": "critical",
+          "emergency": true,
+          "statement": "Call 911 for chest pain, fainting, one-sided weakness, trouble speaking, or face drooping.",
+          "concepts": [
+            [
+              "911",
+              "ambulance",
+              "emergency"
+            ],
+            [
+              "chest pain",
+              "faint",
+              "weak",
+              "numb",
+              "speak",
+              "talk",
+              "droop",
+              "stroke",
+              "words",
+              "speech",
+              "slur"
+            ]
+          ],
+          "misconceptions": [
+            {
+              "id": "drive-self",
+              "pattern": "\\b(drive|driving) (myself|me|to the (er|hospital|emergency))\\b|\\b(someone|somebody|my \\w+|a friend|a neighbor|family) (to |could |can |will )?(drive|take|bring) me\\b|\\bhave (someone|somebody|my \\w+) (drive|take) (me|you)\\b|\\b(drive|take) (myself|me) in\\b",
+              "message": "Your instructions say to call 911 for these signs rather than getting yourself to the hospital."
+            },
+            {
+              "id": "call-clinic-instead",
+              "pattern": "\\bcall (the )?(clinic|office|cardiology)\\b[^.]*\\b(chest pain|faint|weak|numb|droop|stroke|speak|talk)",
+              "message": "For chest pain, fainting or stroke signs, your instructions say to call 911, not the clinic."
+            },
+            {
+              "id": "wait-and-see",
+              "pattern": "\\b(wait|waiting) (and see|to see|it out|a (bit|while|day))\\b|\\bsee if it (passes|goes away|gets better|stops)\\b|\\b(sleep it off|rest and see|lie down and see)\\b|\\bwait\\b[^.]{0,30}\\b(pass|passes|goes away|better|over)\\b",
+              "message": "Your instructions say to call 911 for these signs. They should not wait to see if they pass."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "warn-heart-rate",
+      "kind": "warning",
+      "title": "When to call the cardiology clinic",
+      "original": "Call the cardiology clinic if your heart rate stays above 110 beats per minute while resting, or if you feel more short of breath than usual.",
+      "plain": "Call the cardiology clinic if your resting heart rate stays over 110 beats a minute, or if you are more out of breath than usual.",
+      "facts": [
+        {
+          "id": "hr-110",
+          "severity": "major",
+          "statement": "Call the clinic if resting heart rate stays above 110 or breathing is worse.",
+          "concepts": [
+            [
+              "110"
+            ],
+            [
+              "clinic",
+              "call",
+              "doctor",
+              "cardiology"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 110,
+              "unit": "bpm"
+            }
+          ],
+          "misconceptions": [
+            {
+              "id": "not-resting",
+              "pattern": "\\b(exercis\\w*|working out|work out|walking|during activity|when i'?m active|being active)\\b",
+              "message": "Your instructions are about your heart rate while you are resting, not during exercise. Please check the instruction below."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "appt-cardiology",
+      "kind": "appointment",
+      "title": "Cardiology follow-up visit",
+      "appointment": {
+        "with": "Cardiology clinic (fictional provider)",
+        "days_after_discharge": 14,
+        "time": "10:30"
+      },
+      "original": "Follow up with the cardiology clinic in 2 weeks. Bring your medicine bottles to the visit.",
+      "plain": "See the cardiology clinic in 2 weeks. Bring all of your medicine bottles with you.",
+      "task": {
+        "type": "appointment",
+        "label": "Cardiology follow-up visit"
+      },
+      "facts": [
+        {
+          "id": "cardio-2wk",
+          "severity": "major",
+          "statement": "Cardiology follow-up in 2 weeks; bring medicine bottles.",
+          "concepts": [
+            [
+              "cardiology",
+              "heart doctor",
+              "heart clinic",
+              "cardiologist"
+            ],
+            [
+              "bottle",
+              "medicines",
+              "pills",
+              "medications"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 2,
+              "unit": "weeks"
+            }
+          ],
+          "misconceptions": []
+        }
+      ]
+    },
+    {
+      "id": "ins-activity",
+      "kind": "instruction",
+      "title": "Activity and alcohol",
+      "original": "You may return to your usual activities. Limit alcohol to no more than 1 drink a day.",
+      "plain": "You can go back to your usual activities. Have no more than 1 alcoholic drink a day.",
+      "facts": [
+        {
+          "id": "alcohol-1",
+          "severity": "minor",
+          "statement": "No more than 1 alcoholic drink a day.",
+          "concepts": [
+            [
+              "alcohol",
+              "drink",
+              "beer",
+              "wine"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 1,
+              "unit": "drinks"
+            }
+          ],
+          "misconceptions": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+/* High-contrast theme for low-vision users. */
+:root, :root[data-theme] {
+  --bg: #ffffff; --surface: #ffffff; --ink: #000000; --ink-2: #1a1a1a; --rule: #000000;
+  --accent: #0033aa; --accent-ink: #ffffff; --accent-soft: #e0e8ff;
+  --plan-bg: #e8f5e8; --plan-ink: #003300; --edu-bg: #e6eeff; --edu-ink: #001a66;
+  --warn-bg: #fff2cc; --warn-ink: #3d2600; --danger: #a00000; --danger-bg: #ffe5e5; --focus: #ff6600;
+}
+button, .card, textarea, input, select { border-width: 2px; }
+a { text-decoration: underline; }

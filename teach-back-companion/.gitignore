@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+build/
+dist/
+node_modules/
+# Local demo database (reminders and checklist only)
+/data/
+/[0-9][0-9]-*.png

@@ -1,0 +1,436 @@
+{
+  "id": "hf-demo",
+  "synthetic": true,
+  "notice": "SYNTHETIC DEMONSTRATION PLAN. Fictional patient. Not a clinical template and not reviewed by a clinician.",
+  "patient": {
+    "display_name": "Jordan Lee",
+    "age": 72,
+    "preferred_language": "English"
+  },
+  "discharge_offset_days": -1,
+  "care_team": [
+    {
+      "role": "Heart failure clinic",
+      "contact": "(000) 000-0000 — placeholder number"
+    },
+    {
+      "role": "Pharmacist",
+      "contact": "Your pharmacy — placeholder"
+    }
+  ],
+  "diagnoses": [
+    {
+      "id": "dx-hf",
+      "name": "Heart failure with reduced ejection fraction",
+      "education_topic": "heart-failure",
+      "documented_note": "Admitted with fluid overload. Discharge weight 82 kg (180.8 lb). Medicines adjusted; diuretic dose set for home."
+    }
+  ],
+  "items": [
+    {
+      "id": "ins-daily-weight",
+      "kind": "instruction",
+      "title": "Weigh yourself every morning",
+      "original": "Weigh yourself every morning after you urinate and before you eat breakfast. Write your weight down every day.",
+      "plain": "Every morning, weigh yourself after you pee and before you eat breakfast. Write the number down each day.",
+      "task": {
+        "type": "daily",
+        "label": "Morning weight check and log"
+      },
+      "facts": [
+        {
+          "id": "weigh-morning",
+          "severity": "major",
+          "statement": "Weigh every morning after urinating and before breakfast; write it down.",
+          "concepts": [
+            [
+              "weigh",
+              "weight",
+              "scale"
+            ],
+            [
+              "morning"
+            ],
+            [
+              "write",
+              "log",
+              "record",
+              "note"
+            ]
+          ],
+          "misconceptions": []
+        }
+      ]
+    },
+    {
+      "id": "warn-weight-gain",
+      "kind": "warning",
+      "title": "Call for weight gain",
+      "original": "Call the heart failure clinic if you gain more than 2 pounds in one day or more than 5 pounds in one week, or if your legs or belly are more swollen.",
+      "plain": "Call the heart failure clinic if your weight goes up more than 2 pounds in one day, or more than 5 pounds in one week. Also call if your legs or belly get more swollen.",
+      "facts": [
+        {
+          "id": "gain-2-5",
+          "severity": "critical",
+          "statement": "Call if weight goes up more than 2 pounds in a day or 5 pounds in a week.",
+          "concepts": [
+            [
+              "call",
+              "clinic",
+              "doctor",
+              "nurse"
+            ],
+            [
+              "day",
+              "overnight"
+            ],
+            [
+              "week"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 2,
+              "unit": "pounds"
+            },
+            {
+              "value": 5,
+              "unit": "pounds"
+            }
+          ],
+          "misconceptions": [
+            {
+              "id": "wait-for-visit",
+              "pattern": "\\b(wait|waiting|until|till|hold off|put off|watch it|keep an eye on it)\\b[^.]*\\b(appointment|visit|next week|few days|couple of days|couple days|a while|tomorrow)\\b",
+              "message": "Your instructions say to call the clinic when your weight goes up this much, rather than waiting for your next visit."
+            },
+            {
+              "id": "extra-water-pill",
+              "pattern": "\\b(take|double|extra|more)\\b[^.]*\\b(water pill|furosemide|lasix|diuretic)\\b",
+              "message": "Your instructions do not say to change your water pill dose on your own. Call the heart failure clinic; they will tell you what to do."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "med-furosemide",
+      "kind": "medication",
+      "title": "Furosemide 40 mg tablet",
+      "drug_names": [
+        "furosemide",
+        "Lasix"
+      ],
+      "education_topic": "furosemide",
+      "original": "Furosemide 40 mg tablet. Take 1 tablet by mouth once a day in the morning.",
+      "plain": "Furosemide is a water pill. It helps your body get rid of extra fluid. Take one 40 mg pill once a day, in the morning.",
+      "task": {
+        "type": "daily",
+        "label": "Take furosemide as written on your medicine label"
+      },
+      "facts": [
+        {
+          "id": "furo-dose",
+          "severity": "critical",
+          "statement": "Take 40 mg once a day in the morning.",
+          "concepts": [
+            [
+              "once",
+              "one time",
+              "1 time",
+              "every morning",
+              "each morning",
+              "in the morning"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 40,
+              "unit": "mg"
+            },
+            {
+              "value": 1,
+              "unit": "per_day"
+            }
+          ],
+          "misconceptions": []
+        }
+      ]
+    },
+    {
+      "id": "med-sacval",
+      "kind": "medication",
+      "title": "Sacubitril/valsartan 24 mg/26 mg tablet",
+      "drug_names": [
+        "sacubitril",
+        "valsartan",
+        "Entresto"
+      ],
+      "education_topic": "sacubitril-valsartan",
+      "original": "Sacubitril/valsartan 24 mg/26 mg tablet. Take 1 tablet by mouth twice a day.",
+      "plain": "Sacubitril/valsartan helps your heart pump better. Take one 24 mg/26 mg pill two times a day.",
+      "task": {
+        "type": "daily",
+        "label": "Take sacubitril/valsartan as written on your medicine label"
+      },
+      "facts": [
+        {
+          "id": "sv-dose",
+          "severity": "critical",
+          "statement": "Take one 24 mg/26 mg tablet twice a day.",
+          "concepts": [
+            [
+              "twice",
+              "two times",
+              "2 times",
+              "2x",
+              "morning and night",
+              "morning and evening"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 24,
+              "unit": "mg"
+            },
+            {
+              "value": 26,
+              "unit": "mg"
+            },
+            {
+              "value": 2,
+              "unit": "per_day"
+            }
+          ],
+          "misconceptions": []
+        }
+      ]
+    },
+    {
+      "id": "med-carvedilol",
+      "kind": "medication",
+      "title": "Carvedilol 6.25 mg tablet",
+      "drug_names": [
+        "carvedilol",
+        "Coreg"
+      ],
+      "education_topic": "carvedilol",
+      "original": "Carvedilol 6.25 mg tablet. Take 1 tablet by mouth twice a day with food.",
+      "plain": "Carvedilol helps your heart over time. Take one 6.25 mg pill two times a day, with food.",
+      "task": {
+        "type": "daily",
+        "label": "Take carvedilol as written on your medicine label"
+      },
+      "facts": [
+        {
+          "id": "carv-dose",
+          "severity": "critical",
+          "statement": "Take 6.25 mg twice a day with food.",
+          "concepts": [
+            [
+              "twice",
+              "two times",
+              "2 times",
+              "2x",
+              "morning and night",
+              "morning and evening",
+              "with breakfast and",
+              "breakfast and dinner",
+              "breakfast and supper"
+            ],
+            [
+              "food",
+              "meal",
+              "eat",
+              "breakfast",
+              "dinner",
+              "supper",
+              "meals"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 6.25,
+              "unit": "mg"
+            },
+            {
+              "value": 2,
+              "unit": "per_day"
+            }
+          ],
+          "misconceptions": []
+        }
+      ]
+    },
+    {
+      "id": "ins-sodium-fluid",
+      "kind": "instruction",
+      "title": "Salt and fluid limits",
+      "original": "Limit sodium (salt) to 2,000 mg a day. Limit all fluids to 2 liters (about 8 cups) a day.",
+      "plain": "Eat no more than 2,000 mg of sodium (salt) a day. Drink no more than 2 liters of fluid a day. That is about 8 cups.",
+      "facts": [
+        {
+          "id": "sodium-2000",
+          "severity": "major",
+          "statement": "No more than 2,000 mg of sodium a day.",
+          "concepts": [
+            [
+              "salt",
+              "sodium"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 2000,
+              "unit": "mg"
+            }
+          ],
+          "misconceptions": []
+        },
+        {
+          "id": "fluid-2l",
+          "severity": "major",
+          "statement": "No more than 2 liters (about 8 cups) of fluid a day.",
+          "concepts": [
+            [
+              "fluid",
+              "drink",
+              "water",
+              "liquid"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 2,
+              "unit": "liters"
+            },
+            {
+              "value": 8,
+              "unit": "cups"
+            }
+          ],
+          "misconceptions": []
+        }
+      ]
+    },
+    {
+      "id": "warn-911",
+      "kind": "warning",
+      "title": "Emergency warning signs",
+      "original": "Call 911 if you have severe shortness of breath, chest pain, fainting, or you cannot catch your breath while resting.",
+      "plain": "Call 911 if you are very short of breath, have chest pain, faint, or cannot catch your breath even when resting.",
+      "facts": [
+        {
+          "id": "hf-911",
+          "severity": "critical",
+          "emergency": true,
+          "statement": "Call 911 for severe breathlessness, chest pain or fainting.",
+          "concepts": [
+            [
+              "911",
+              "ambulance",
+              "emergency"
+            ],
+            [
+              "breath",
+              "breathe",
+              "chest pain",
+              "faint"
+            ]
+          ],
+          "misconceptions": [
+            {
+              "id": "drive-self",
+              "pattern": "\\b(drive|driving) (myself|me|to the (er|hospital|emergency))\\b|\\b(someone|somebody|my \\w+|a friend|a neighbor|family) (to |could |can |will )?(drive|take|bring) me\\b|\\bhave (someone|somebody|my \\w+) (drive|take) (me|you)\\b|\\b(drive|take) (myself|me) in\\b",
+              "message": "Your instructions say to call 911 for these signs rather than getting yourself to the hospital."
+            },
+            {
+              "id": "wait-and-see",
+              "pattern": "\\b(wait|waiting) (and see|to see|it out|a (bit|while|day))\\b|\\bsee if it (passes|goes away|gets better|stops)\\b|\\b(sleep it off|rest and see|lie down and see)\\b|\\bwait\\b[^.]{0,30}\\b(pass|passes|goes away|better|over)\\b",
+              "message": "Your instructions say to call 911 for these signs. They should not wait to see if they pass."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "appt-hf-clinic",
+      "kind": "appointment",
+      "title": "Heart failure clinic visit",
+      "appointment": {
+        "with": "Heart failure clinic (fictional provider)",
+        "days_after_discharge": 7,
+        "time": "09:00"
+      },
+      "original": "Heart failure clinic visit in 7 days. Bring your weight log.",
+      "plain": "Go to the heart failure clinic in 7 days. Bring the notebook where you wrote down your weight.",
+      "task": {
+        "type": "appointment",
+        "label": "Heart failure clinic visit"
+      },
+      "facts": [
+        {
+          "id": "hf-visit",
+          "severity": "major",
+          "statement": "Clinic visit in 7 days; bring weight log.",
+          "concepts": [
+            [
+              "clinic",
+              "visit",
+              "appointment"
+            ],
+            [
+              "weight",
+              "log",
+              "notebook"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 7,
+              "unit": "days"
+            }
+          ],
+          "misconceptions": []
+        }
+      ]
+    },
+    {
+      "id": "test-bmp",
+      "kind": "test",
+      "title": "Blood test (basic metabolic panel)",
+      "appointment": {
+        "with": "Outpatient lab",
+        "days_after_discharge": 7,
+        "time": null
+      },
+      "original": "Get a blood test (basic metabolic panel) in 1 week to check your kidneys and potassium.",
+      "plain": "Get a blood test in 1 week. It checks how your kidneys are working and your potassium level.",
+      "task": {
+        "type": "test",
+        "label": "Blood test (basic metabolic panel)"
+      },
+      "facts": [
+        {
+          "id": "bmp-1wk",
+          "severity": "major",
+          "statement": "Blood test in 1 week for kidneys and potassium.",
+          "concepts": [
+            [
+              "blood test",
+              "lab",
+              "blood work"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 1,
+              "unit": "weeks"
+            }
+          ],
+          "misconceptions": []
+        }
+      ]
+    }
+  ]
+}

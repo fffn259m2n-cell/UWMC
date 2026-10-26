@@ -1,0 +1,2 @@
+id,project,area,what_i_did_or_typed,what_i_expected,what_happened,severity (critical/major/minor),suggestion
+1,teach-back-companion,teach-back,"Apixaban: typed ""...""","A concern about stopping","No concern shown",critical,

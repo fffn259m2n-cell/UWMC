@@ -1,0 +1,21 @@
+HCAHPS Measure ID,HCAHPS Question,HCAHPS Answer Description,HCAHPS Answer Percent,Footnote,Start Date,End Date
+H_COMP_1_A_P,"Patients who reported that their nurses ""Always"" communicated well","Nurses ""always"" communicated well",79,,01/01/2025,12/31/2025
+H_COMP_1_U_P,"Patients who reported that their nurses ""Usually"" communicated well","Nurses ""usually"" communicated well",16,,01/01/2025,12/31/2025
+H_COMP_1_SN_P,"Patients who reported that their nurses ""Sometimes"" or ""Never"" communicated well","Nurses ""sometimes"" or ""never"" communicated well",5,,01/01/2025,12/31/2025
+H_COMP_2_A_P,"Patients who reported that their doctors ""Always"" communicated well","Doctors ""always"" communicated well",79,,01/01/2025,12/31/2025
+H_COMP_3_A_P,"Patients who reported that they ""Always"" received help as soon as they wanted","Patients ""always"" received help as soon as they wanted",64,,01/01/2025,12/31/2025
+H_COMP_5_A_P,"Patients who reported that staff ""Always"" explained about medicines before giving it to them","Staff ""always"" explained",62,,01/01/2025,12/31/2025
+H_COMP_6_Y_P,"Patients who reported that YES, they were given information about what to do during their recovery at home","Yes, staff ""did"" give patients this information",86,,01/01/2025,12/31/2025
+H_COMP_6_N_P,"Patients who reported that NO, they were not given information about what to do during their recovery at home","No, staff ""did not"" give patients this information",14,,01/01/2025,12/31/2025
+H_CLEAN_HSP_A_P,"Patients who reported that their room and bathroom were ""Always"" clean","Room was ""always"" clean",72,,01/01/2025,12/31/2025
+H_QUIET_HSP_A_P,"Patients who reported that the area around their room was ""Always"" quiet at night","""Always"" quiet at night",62,,01/01/2025,12/31/2025
+H_HSP_RATING_9_10,Patients who gave their hospital a rating of 9 or 10 on a scale from 0 (lowest) to 10 (highest),"Patients who gave a rating of ""9"" or ""10"" (high)",71,,01/01/2025,12/31/2025
+H_HSP_RATING_7_8,Patients who gave their hospital a rating of 7 or 8 on a scale from 0 (lowest) to 10 (highest),"Patients who gave a rating of ""7"" or ""8"" (medium)",20,,01/01/2025,12/31/2025
+H_HSP_RATING_0_6,Patients who gave their hospital a rating of 6 or lower on a scale from 0 (lowest) to 10 (highest),"Patients who gave a rating of ""6"" or lower (low)",9,,01/01/2025,12/31/2025
+H_RECMND_DY,"Patients who reported YES, they would definitely recommend the hospital","""YES"", patients would definitely recommend the hospital",69,,01/01/2025,12/31/2025
+H_RECMND_PY,"Patients who reported YES, they would probably recommend the hospital","""YES"", patients would probably recommend the hospital",25,,01/01/2025,12/31/2025
+H_RECMND_DN,"Patients who reported NO, they would probably not or definitely not recommend the hospital","""NO"", patients would not recommend the hospital (they probably would not or definitely would not recommend it)",6,,01/01/2025,12/31/2025
+H_SYNTH_COORD_A_P,"Patients who reported that staff ""Always"" worked together to coordinate their care (SYNTHETIC ITEM)","Staff ""always"" coordinated care",71,,01/01/2025,12/31/2025
+H_SYNTH_SYMPTOMS_Y_P,"Patients who reported YES, they were told which symptoms to watch for after leaving (SYNTHETIC ITEM)","Yes, given information about symptoms",83,,01/01/2025,12/31/2025
+H_CT_SA,"Patients who ""Strongly Agree"" they understood their care when they left the hospital","Patients who ""Strongly Agree"" they understood their care when they left the hospital",51,,01/01/2025,12/31/2025
+H_NEWSURVEY_X,Synthetic measure outside directionality rules,Synthetic,38,,01/01/2025,12/31/2025

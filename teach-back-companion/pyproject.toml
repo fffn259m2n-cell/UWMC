@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "teach-back-companion"
+version = "0.1.0"
+description = "Synthetic-data prototype: patient teach-back checks and instruction-fidelity evaluation for discharge instructions"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = ["fastapi>=0.110", "uvicorn>=0.27", "pydantic>=2.5"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "httpx>=0.27"]
+
+[project.scripts]
+teachback = "teachback.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+teachback = ["data/plans/*.json", "data/knowledge/*.json", "data/benchmark/*.json", "static/*", "static/themes/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

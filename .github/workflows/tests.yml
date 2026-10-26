@@ -1,0 +1,96 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff==0.16.9
+      - run: ruff check .
+
+  quality-signal-monitor:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    defaults:
+      run:
+        working-directory: quality-signal-monitor
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+      - name: Offline smoke run on synthetic fixtures
+        run: |
+          uwmc-monitor run --data-dir tests/fixtures/synthetic_current \
+            --previous-dir tests/fixtures/synthetic_previous --out output
+          test -s output/uwmc_quality_report.html
+
+  ep-research-copilot:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    defaults:
+      run:
+        working-directory: ep-research-copilot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+      - name: Offline smoke run on synthetic fixtures
+        run: |
+          ep-copilot run --offline
+          ep-copilot run --offline --fixtures tests/fixtures/snapshot_run2
+          test -s output/ep_research_digest.html
+
+  teach-back-companion:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    defaults:
+      run:
+        working-directory: teach-back-companion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+      - run: teachback check-content && teachback benchmark > /dev/null
+
+  teach-back-companion-browser:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: teach-back-companion
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: pip install -e .
+      - run: npm install --no-save playwright@1.49.1 axe-core@4.10.2 && npx playwright install --with-deps chromium
+      - name: End-to-end and accessibility check
+        run: |
+          teachback serve --port 8765 --db /tmp/demo.sqlite &
+          sleep 3
+          node scripts/e2e_check.mjs http://127.0.0.1:8765

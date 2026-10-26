@@ -1,0 +1,44 @@
+name: Independent review finding
+description: Report one problem found while reviewing (see REVIEW.md)
+labels: ["review"]
+body:
+  - type: markdown
+    attributes:
+      value: "Thank you. One finding per issue, please. Never include real patient information."
+  - type: dropdown
+    id: project
+    attributes:
+      label: Project
+      options: [teach-back-companion, ep-research-copilot, quality-signal-monitor, documentation or delivery]
+    validations: {required: true}
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: "critical = could lead to harm or a seriously wrong conclusion; major = wrong or misleading; minor = wording, layout, convenience"
+      options: [critical, major, minor]
+    validations: {required: true}
+  - type: textarea
+    id: steps
+    attributes:
+      label: What you did or typed
+      description: Screen or command, and the exact text if relevant
+    validations: {required: true}
+  - type: textarea
+    id: expected
+    attributes: {label: What you expected}
+    validations: {required: true}
+  - type: textarea
+    id: actual
+    attributes: {label: What happened}
+    validations: {required: true}
+  - type: textarea
+    id: suggestion
+    attributes: {label: Suggestion (optional)}
+  - type: checkboxes
+    id: phi
+    attributes:
+      label: Privacy
+      options:
+        - label: This report contains no real patient information.
+          required: true

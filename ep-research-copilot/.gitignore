@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+build/
+dist/
+
+# Local database and retrieved records (abstracts are third-party copyrighted text)
+data/*
+!data/README.md
+output/*
+!output/.gitkeep

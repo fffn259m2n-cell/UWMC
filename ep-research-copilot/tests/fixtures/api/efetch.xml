@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<PubmedArticleSet>
+<PubmedArticle><MedlineCitation><PMID>99000001</PMID><Article>
+<Journal><Title>Synthetic Journal of Electrophysiology</Title><JournalIssue><PubDate><Year>2026</Year><Month>Sep</Month></PubDate></JournalIssue></Journal>
+<ArticleTitle>[SYNTHETIC] Structured abstract record</ArticleTitle>
+<ELocationID EIdType="doi">10.0000/synthetic.eloc</ELocationID>
+<Abstract><AbstractText Label="BACKGROUND">Pulsed field ablation is new.</AbstractText><AbstractText Label="RESULTS">A total of 412 patients were randomized.</AbstractText></Abstract>
+<AuthorList><Author><LastName>Author</LastName><ForeName>Test</ForeName></Author><Author><CollectiveName>Synthetic Investigators</CollectiveName></Author></AuthorList>
+<Language>eng</Language>
+<PublicationTypeList><PublicationType>Journal Article</PublicationType><PublicationType>Randomized Controlled Trial</PublicationType></PublicationTypeList>
+<ArticleDate><Year>2026</Year><Month>09</Month><Day>15</Day></ArticleDate>
+</Article>
+<MeshHeadingList><MeshHeading><DescriptorName>Atrial Fibrillation</DescriptorName></MeshHeading></MeshHeadingList>
+<KeywordList><Keyword>pulsed field ablation</Keyword></KeywordList>
+</MedlineCitation>
+<PubmedData><History><PubMedPubDate PubStatus="entrez"><Year>2026</Year><Month>10</Month><Day>2</Day></PubMedPubDate></History>
+<ArticleIdList><ArticleId IdType="pubmed">99000001</ArticleId><ArticleId IdType="doi">10.0000/synthetic.0001</ArticleId></ArticleIdList></PubmedData>
+</PubmedArticle>
+<PubmedArticle><MedlineCitation><PMID>99000003</PMID><Article>
+<Journal><Title>Synthetic Journal</Title><JournalIssue><PubDate><MedlineDate>2026 Sep-Oct</MedlineDate></PubDate></JournalIssue></Journal>
+<ArticleTitle>[SYNTHETIC] Record without abstract or DOI</ArticleTitle>
+<Language>eng</Language><PublicationTypeList><PublicationType>Editorial</PublicationType></PublicationTypeList>
+</Article></MedlineCitation><PubmedData><ArticleIdList><ArticleId IdType="pubmed">99000003</ArticleId></ArticleIdList></PubmedData>
+</PubmedArticle>
+</PubmedArticleSet>

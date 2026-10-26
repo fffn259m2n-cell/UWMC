@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teach-Back Companion (synthetic demo)</title>
+<link rel="stylesheet" href="/static/styles.css">
+<script src="/static/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header>
+<div class="demo-strip" role="note">Demonstration with fictional patients only. Not connected to any health record. Not medical advice.</div>
+<div class="urgent-strip" role="note"><strong>Emergency? Call 911.</strong> Thoughts of suicide or self-harm? Call or text 988. This tool cannot respond to emergencies.</div>
+<div class="top">
+  <div class="brand">
+    <span class="logo" aria-hidden="true">✓</span>
+    <div><div class="name">Teach-Back Companion</div><div class="tag" id="patient-tag">Choose a demo patient</div></div>
+  </div>
+  <div class="top-actions">
+    <div class="textsize" role="group" aria-label="Text size">
+      <button type="button" id="text-smaller" aria-label="Smaller text">A−</button>
+      <button type="button" id="text-larger" aria-label="Larger text">A+</button>
+    </div>
+    <button type="button" class="help-btn" id="help-open">Get help</button>
+  </div>
+</div>
+</header>
+
+<nav class="tabs" id="tabs" aria-label="Sections" hidden>
+  <button type="button" data-view="health">My health</button>
+  <button type="button" data-view="medicines">My medicines</button>
+  <button type="button" data-view="plan">My care plan</button>
+  <button type="button" data-view="check">Check my understanding</button>
+  <button type="button" data-view="ask">Ask</button>
+  <button type="button" data-view="reminders">Reminders</button>
+  <button type="button" data-view="staff" class="staff-tab">For care teams</button>
+</nav>
+
+<main id="main" tabindex="-1"></main>
+<aside id="toasts" class="toasts" aria-live="assertive" aria-label="Reminders due"></aside>
+
+<dialog id="help" aria-labelledby="help-title">
+  <h2 id="help-title">Get help</h2>
+  <div class="emergency-box">
+    <p><strong>If you think this may be an emergency, call 911 now.</strong></p>
+    <p>If you are thinking about harming yourself, call or text <strong>988</strong>.</p>
+  </div>
+  <p>This companion cannot check symptoms or tell whether something is an emergency.</p>
+  <h3>Your care team</h3>
+  <ul id="help-team"><li>Choose a demo patient to see their care team.</li></ul>
+  <p class="muted">Need an interpreter? Your care team can arrange one at no cost.</p>
+  <button type="button" id="help-close" class="primary">Close</button>
+</dialog>
+
+<footer class="foot">
+  Independent open-source prototype. Not affiliated with or endorsed by UW Medicine. Fictional patients; draft education text not yet reviewed by clinicians.
+  <button type="button" id="reset-demo" class="linklike">Clear demo data</button>
+</footer>
+</body>
+</html>

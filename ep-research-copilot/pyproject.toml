@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ep-research-copilot"
+version = "0.1.0"
+description = "Literature discovery, abstract evidence extraction and trial tracking for cardiac electrophysiology research"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = ["jinja2>=3.1", "pyyaml>=6.0"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+ep-copilot = "ep_copilot.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+ep_copilot = ["templates/*.j2", "default_topics.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

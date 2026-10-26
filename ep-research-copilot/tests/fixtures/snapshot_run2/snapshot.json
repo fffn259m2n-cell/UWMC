@@ -1,0 +1,142 @@
+{
+  "synthetic": true,
+  "provenance": "synthetic fixture (invented records)",
+  "window": {
+    "start": "2026-09-30",
+    "end": "2026-10-31"
+  },
+  "pubmed_total": 3,
+  "articles": [
+    {
+      "pmid": "99000003",
+      "title": "[SYNTHETIC] Catheter ablation of atrial fibrillation: where next?",
+      "abstract": "Catheter ablation for atrial fibrillation continues to evolve; this editorial discusses pulsed field ablation and recurrence monitoring.",
+      "authors": [
+        "Test Author",
+        "Second Author"
+      ],
+      "journal": "Synthetic Journal of Electrophysiology",
+      "pub_date": "2026-09",
+      "entrez_date": "2026-10-01",
+      "doi": "",
+      "publication_types": [
+        "Editorial"
+      ],
+      "mesh_terms": [],
+      "keywords": [],
+      "language": "eng"
+    },
+    {
+      "pmid": "99000007",
+      "title": "[SYNTHETIC] Insertable cardiac monitor detection of AF recurrence after pulsed field ablation",
+      "abstract": "Insertable cardiac monitors were implanted in 88 participants after pulsed field ablation for AF. Over a mean follow-up of 18 months, recurrence detected by the insertable cardiac monitor was 22%.",
+      "authors": [
+        "Test Author",
+        "Second Author"
+      ],
+      "journal": "Synthetic Journal of Electrophysiology",
+      "pub_date": "2026-09",
+      "entrez_date": "2026-10-01",
+      "doi": "",
+      "publication_types": [
+        "Journal Article"
+      ],
+      "mesh_terms": [],
+      "keywords": [],
+      "language": "eng"
+    },
+    {
+      "pmid": "99000001",
+      "title": "[SYNTHETIC] Pulsed-field versus thermal ablation for paroxysmal atrial fibrillation: a randomized trial",
+      "abstract": "Background: Pulsed field ablation (PFA) is an alternative to thermal ablation. Methods: In this multicenter randomized trial, a total of 412 patients with paroxysmal atrial fibrillation were randomized 1:1 to PFA or radiofrequency ablation. Rhythm was assessed with 72-hour Holter monitoring. Results: During a median follow-up of 12 months, freedom from atrial arrhythmia was 78.2% with PFA versus 74.0% with radiofrequency ablation (HR 0.84, 95% CI 0.61-1.15; p = 0.27). Major complications occurred in 1.0% and 1.5%. Conclusions: PFA was noninferior. A limitation is the open-label design. NCT99000101.",
+      "authors": [
+        "Test Author",
+        "Second Author"
+      ],
+      "journal": "Synthetic Journal of Electrophysiology",
+      "pub_date": "2026-09",
+      "entrez_date": "2026-10-01",
+      "doi": "10.0000/synthetic.0001",
+      "publication_types": [
+        "Journal Article",
+        "Randomized Controlled Trial"
+      ],
+      "mesh_terms": [
+        "Atrial Fibrillation",
+        "Catheter Ablation"
+      ],
+      "keywords": [],
+      "language": "eng"
+    }
+  ],
+  "trials": [
+    {
+      "nct_id": "NCT99000101",
+      "brief_title": "[SYNTHETIC] PFA vs RF for Paroxysmal AF",
+      "official_title": "[SYNTHETIC] A Randomized Trial of Pulsed Field vs Radiofrequency Ablation",
+      "overall_status": "RECRUITING",
+      "study_type": "INTERVENTIONAL",
+      "phases": [
+        "NA"
+      ],
+      "conditions": [
+        "Atrial Fibrillation"
+      ],
+      "interventions": [
+        "Device: Pulsed field ablation",
+        "Device: RF ablation"
+      ],
+      "enrollment": 450,
+      "enrollment_type": "ESTIMATED",
+      "primary_outcomes": [
+        "Freedom from atrial arrhythmia | 12 months"
+      ],
+      "sponsor": "Synthetic University",
+      "start_date": "2025-01",
+      "primary_completion_date": "2027-06",
+      "completion_date": "2027-12",
+      "first_posted": "2024-11-01",
+      "last_update_posted": "2026-10-10",
+      "has_results": false,
+      "locations_count": 8,
+      "washington_sites": [
+        "Synthetic Medical Center, Seattle",
+        "Synthetic Clinic, Spokane"
+      ]
+    }
+  ],
+  "trials_total": 1,
+  "rechecked_trials": [
+    {
+      "nct_id": "NCT99000102",
+      "brief_title": "[SYNTHETIC] Posterior Wall Isolation in Persistent AF",
+      "overall_status": "COMPLETED",
+      "study_type": "INTERVENTIONAL",
+      "phases": [
+        "NA"
+      ],
+      "conditions": [
+        "Persistent Atrial Fibrillation"
+      ],
+      "interventions": [
+        "Procedure: PVI + PWI",
+        "Procedure: PVI"
+      ],
+      "enrollment": 300,
+      "enrollment_type": "ESTIMATED",
+      "primary_outcomes": [
+        "Recurrence | 12 months"
+      ],
+      "sponsor": "Synthetic Heart Institute",
+      "start_date": "2024-03",
+      "primary_completion_date": "2026-09",
+      "completion_date": "2027-03",
+      "last_update_posted": "2026-10-05",
+      "locations_count": 3,
+      "has_results": true
+    }
+  ],
+  "missing_trials": [
+    "NCT99000103"
+  ]
+}

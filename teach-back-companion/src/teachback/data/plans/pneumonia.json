@@ -1,0 +1,395 @@
+{
+  "id": "pna-demo",
+  "synthetic": true,
+  "notice": "SYNTHETIC DEMONSTRATION PLAN. Fictional patient. Not a clinical template and not reviewed by a clinician.",
+  "patient": {
+    "display_name": "Sam Okafor",
+    "age": 58,
+    "preferred_language": "English"
+  },
+  "discharge_offset_days": -1,
+  "care_team": [
+    {
+      "role": "Primary care clinic",
+      "contact": "(000) 000-0000 — placeholder number"
+    },
+    {
+      "role": "Pharmacist",
+      "contact": "Your pharmacy — placeholder"
+    }
+  ],
+  "diagnoses": [
+    {
+      "id": "dx-pna",
+      "name": "Community-acquired pneumonia",
+      "education_topic": "pneumonia",
+      "documented_note": "Right lower lobe pneumonia, improving on antibiotics. Oxygen no longer needed at discharge."
+    }
+  ],
+  "items": [
+    {
+      "id": "med-amox-clav",
+      "kind": "medication",
+      "title": "Amoxicillin-clavulanate 875 mg/125 mg tablet",
+      "drug_names": [
+        "amoxicillin",
+        "clavulanate",
+        "Augmentin"
+      ],
+      "education_topic": "amoxicillin-clavulanate",
+      "original": "Amoxicillin-clavulanate 875 mg/125 mg tablet. Take 1 tablet by mouth twice a day with food for 5 more days. Finish all of the pills, even if you feel better.",
+      "plain": "Amoxicillin-clavulanate (Augmentin) is an antibiotic. Take one 875 mg/125 mg pill two times a day, with food, for 5 more days. Take every pill, even if you feel better before they are gone.",
+      "task": {
+        "type": "daily",
+        "label": "Take amoxicillin-clavulanate as written on your medicine label"
+      },
+      "facts": [
+        {
+          "id": "amox-dose",
+          "severity": "critical",
+          "statement": "One tablet twice a day with food for 5 more days.",
+          "concepts": [
+            [
+              "twice",
+              "two times",
+              "2 times",
+              "2x",
+              "morning and night",
+              "morning and evening"
+            ],
+            [
+              "food",
+              "meal",
+              "eat"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 875,
+              "unit": "mg"
+            },
+            {
+              "value": 125,
+              "unit": "mg"
+            },
+            {
+              "value": 2,
+              "unit": "per_day"
+            },
+            {
+              "value": 5,
+              "unit": "days"
+            }
+          ],
+          "misconceptions": []
+        },
+        {
+          "id": "amox-finish",
+          "severity": "critical",
+          "statement": "Finish all of the pills even if you feel better.",
+          "concepts": [
+            [
+              "finish",
+              "all of the pills",
+              "every pill",
+              "all the pills",
+              "whole course",
+              "until they are gone",
+              "until gone"
+            ]
+          ],
+          "action": {
+            "verbs": [
+              "stop",
+              "quit"
+            ],
+            "polarity": "dont"
+          },
+          "coverage": "concepts_or_negated_action",
+          "misconceptions": [
+            {
+              "id": "stop-when-better",
+              "pattern": "\\b(stop|quit)\\b[^.]*\\b(feel|feeling|fever|cough)\\b[^.]*\\b(better|gone|fine|ok|okay|normal)\\b",
+              "message": "Your instructions say to finish all of the antibiotic pills, even if you feel better first."
+            },
+            {
+              "id": "save-pills",
+              "pattern": "\\b(save|keep)\\b[^.]*\\b(rest|extra|leftover)\\b",
+              "message": "Your instructions say to take all of the pills, not to save any for later."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "med-acetaminophen",
+      "kind": "medication",
+      "title": "Acetaminophen 325 mg tablets (as needed)",
+      "drug_names": [
+        "acetaminophen",
+        "Tylenol"
+      ],
+      "education_topic": "acetaminophen",
+      "original": "Acetaminophen 325 mg tablets. Take 2 tablets (650 mg) by mouth every 6 hours as needed for fever or pain. Do not take more than 3,000 mg in 24 hours.",
+      "plain": "Acetaminophen (Tylenol) can help fever or pain. If you need it, take 2 pills (650 mg) and wait at least 6 hours before the next dose. Never take more than 3,000 mg in 24 hours.",
+      "facts": [
+        {
+          "id": "apap-dose",
+          "severity": "critical",
+          "statement": "650 mg every 6 hours as needed.",
+          "concepts": [
+            [
+              "6 hours",
+              "six hours"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 650,
+              "unit": "mg"
+            },
+            {
+              "value": 6,
+              "unit": "hours"
+            }
+          ],
+          "misconceptions": []
+        },
+        {
+          "id": "apap-max",
+          "severity": "critical",
+          "statement": "Never more than 3,000 mg in 24 hours.",
+          "concepts": [
+            [
+              "3,000",
+              "3000",
+              "three thousand"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 3000,
+              "unit": "mg"
+            },
+            {
+              "value": 24,
+              "unit": "hours"
+            }
+          ],
+          "misconceptions": []
+        }
+      ]
+    },
+    {
+      "id": "ins-recovery",
+      "kind": "instruction",
+      "title": "Recovery at home",
+      "original": "Rest and drink plenty of fluids. Do not smoke. Your cough may last for a few weeks as you recover.",
+      "plain": "Rest and drink plenty of fluids. Do not smoke. Your cough may last a few weeks while you get better.",
+      "facts": [
+        {
+          "id": "no-smoking",
+          "severity": "major",
+          "statement": "Do not smoke.",
+          "concepts": [],
+          "coverage": "negated_action",
+          "action": {
+            "verbs": [
+              "smoke",
+              "smoking",
+              "vape",
+              "vaping",
+              "vapes",
+              "e-cigarette",
+              "e-cigarettes",
+              "vape pen",
+              "cigarette",
+              "cigarettes",
+              "cigs",
+              "cigar"
+            ],
+            "polarity": "dont"
+          },
+          "misconceptions": [
+            {
+              "id": "cut-down",
+              "pattern": "\\b(cut(ting)? (back|down)|fewer|a few|half a pack|less)\\b[^.]{0,30}\\b(cigarettes?|smok\\w*|packs?|cigs)\\b|\\b(packs?|cigarettes?|smok\\w*|cigs)\\b[^.]{0,30}\\b(cut(ting)? (back|down)|fewer|less|half)\\b",
+              "message": "Your instructions say not to smoke at all while you recover. Cutting down is a good step, and your care team can help you stop completely."
+            }
+          ]
+        },
+        {
+          "id": "rest-fluids",
+          "severity": "minor",
+          "statement": "Rest and drink plenty of fluids.",
+          "concepts": [
+            [
+              "rest",
+              "sleep"
+            ],
+            [
+              "fluid",
+              "drink",
+              "water"
+            ]
+          ],
+          "misconceptions": []
+        }
+      ]
+    },
+    {
+      "id": "warn-pna-clinic",
+      "kind": "warning",
+      "title": "When to call your clinic",
+      "original": "Call your primary care clinic if you still have a fever above 101°F (38.3°C) after 3 days of antibiotics, or if your cough gets worse.",
+      "plain": "Call your primary care clinic if you still have a fever over 101°F (38.3°C) after 3 days of antibiotics, or if your cough gets worse.",
+      "facts": [
+        {
+          "id": "fever-101",
+          "severity": "major",
+          "statement": "Call if fever above 101°F after 3 days of antibiotics, or cough worse.",
+          "concepts": [
+            [
+              "fever",
+              "temperature"
+            ],
+            [
+              "call",
+              "clinic",
+              "doctor"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 101,
+              "unit": "fahrenheit"
+            },
+            {
+              "value": 3,
+              "unit": "days"
+            }
+          ],
+          "misconceptions": []
+        }
+      ]
+    },
+    {
+      "id": "warn-pna-911",
+      "kind": "warning",
+      "title": "Emergency warning signs",
+      "original": "Call 911 if you have trouble breathing, your lips or fingertips turn blue or gray, or you become confused.",
+      "plain": "Call 911 if it is hard to breathe, your lips or fingertips look blue or gray, or you get confused.",
+      "facts": [
+        {
+          "id": "pna-911",
+          "severity": "critical",
+          "emergency": true,
+          "statement": "Call 911 for trouble breathing, blue or gray lips, or confusion.",
+          "concepts": [
+            [
+              "911",
+              "ambulance",
+              "emergency"
+            ],
+            [
+              "breath",
+              "breathe",
+              "blue",
+              "gray",
+              "grey",
+              "confus"
+            ]
+          ],
+          "misconceptions": [
+            {
+              "id": "drive-self",
+              "pattern": "\\b(drive|driving) (myself|me|to the (er|hospital|emergency))\\b|\\b(someone|somebody|my \\w+|a friend|a neighbor|family) (to |could |can |will )?(drive|take|bring) me\\b|\\bhave (someone|somebody|my \\w+) (drive|take) (me|you)\\b|\\b(drive|take) (myself|me) in\\b",
+              "message": "Your instructions say to call 911 for these signs rather than getting yourself to the hospital."
+            },
+            {
+              "id": "wait-and-see",
+              "pattern": "\\b(wait|waiting) (and see|to see|it out|a (bit|while|day))\\b|\\bsee if it (passes|goes away|gets better|stops)\\b|\\b(sleep it off|rest and see|lie down and see)\\b|\\bwait\\b[^.]{0,30}\\b(pass|passes|goes away|better|over)\\b",
+              "message": "Your instructions say to call 911 for these signs. They should not wait to see if they pass."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "appt-pcp",
+      "kind": "appointment",
+      "title": "Primary care follow-up",
+      "appointment": {
+        "with": "Primary care clinic (fictional provider)",
+        "days_after_discharge": 7,
+        "time": "14:00"
+      },
+      "original": "See your primary care clinic in 1 week.",
+      "plain": "See your primary care clinic in 1 week.",
+      "task": {
+        "type": "appointment",
+        "label": "Primary care follow-up"
+      },
+      "facts": [
+        {
+          "id": "pcp-1wk",
+          "severity": "major",
+          "statement": "Primary care visit in 1 week.",
+          "concepts": [
+            [
+              "primary care",
+              "clinic",
+              "doctor",
+              "visit",
+              "appointment"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 1,
+              "unit": "weeks"
+            }
+          ],
+          "misconceptions": []
+        }
+      ]
+    },
+    {
+      "id": "test-cxr",
+      "kind": "test",
+      "title": "Follow-up chest X-ray",
+      "appointment": {
+        "with": "Imaging department",
+        "days_after_discharge": 42,
+        "time": null
+      },
+      "original": "Get a follow-up chest X-ray in 6 weeks.",
+      "plain": "Get another chest X-ray in 6 weeks.",
+      "task": {
+        "type": "test",
+        "label": "Follow-up chest X-ray"
+      },
+      "facts": [
+        {
+          "id": "cxr-6wk",
+          "severity": "major",
+          "statement": "Chest X-ray in 6 weeks.",
+          "concepts": [
+            [
+              "x-ray",
+              "xray",
+              "x ray"
+            ]
+          ],
+          "quantities": [
+            {
+              "value": 6,
+              "unit": "weeks"
+            }
+          ],
+          "misconceptions": []
+        }
+      ]
+    }
+  ]
+}
