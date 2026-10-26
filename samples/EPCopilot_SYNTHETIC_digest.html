@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[SYNTHETIC] EP Research Copilot: AF Ablation Evidence Update</title>
+<style>
+:root { --bg:#fcfcfb; --surface:#fff; --ink:#0b0b0b; --ink-2:#52514e; --rule:#e4e3df; --accent:#2a78d6;
+  --hi-bg:#e7f0fb; --hi-ink:#184f95; --warn-bg:#fff4e0; --warn-ink:#7a4b00; --bad-bg:#fde8e8; --bad-ink:#8a1c1c;
+  --ok-bg:#e6f4ea; --ok-ink:#1e5b2e; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg:#1a1a19; --surface:#222221; --ink:#f0efec; --ink-2:#c3c2b7; --rule:#3a3a38; --accent:#3987e5;
+  --hi-bg:#17263a; --hi-ink:#9ec5f4; --warn-bg:#3a2c10; --warn-ink:#f3c56b; --bad-bg:#3d1c1c; --bad-ink:#f2a3a3;
+  --ok-bg:#16301d; --ok-ink:#a8dcb5; } }
+* { box-sizing: border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.5 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; }
+main { max-width:1100px; margin:0 auto; padding:28px 16px 64px; }
+a { color:var(--accent); }
+h1 { font-size:26px; margin:0 0 4px; } h2 { font-size:18px; margin:34px 0 10px; padding-top:12px; border-top:1px solid var(--rule); }
+h3 { font-size:15px; margin:18px 0 8px; }
+.sub,.muted { color:var(--ink-2); }
+nav { display:flex; flex-wrap:wrap; gap:6px 14px; margin:12px 0; font-size:13px; }
+.banner { padding:12px 14px; border-radius:6px; margin:10px 0; }
+.banner.synthetic { background:var(--bad-bg); color:var(--bad-ink); font-weight:600; border:2px solid currentColor; }
+.banner.note { background:var(--hi-bg); color:var(--hi-ink); } .banner.warn { background:var(--warn-bg); color:var(--warn-ink); }
+.tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin:12px 0; }
+.tile { background:var(--surface); border:1px solid var(--rule); border-radius:6px; padding:10px 12px; }
+.tile b { display:block; font-size:24px; } .tile span { color:var(--ink-2); font-size:12px; }
+.table-wrap { overflow-x:auto; }
+table { border-collapse:collapse; width:100%; font-size:12.5px; background:var(--surface); }
+th,td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--rule); vertical-align:top; }
+th { color:var(--ink-2); background:var(--bg); font-weight:600; position:sticky; top:0; }
+.tag { display:inline-block; font-size:11px; padding:1px 6px; border-radius:3px; margin:1px 2px 1px 0; background:var(--bg); border:1px solid var(--rule); }
+.p-high { background:var(--hi-bg); color:var(--hi-ink); border-color:transparent; font-weight:700; }
+.p-review { background:var(--warn-bg); color:var(--warn-ink); border-color:transparent; font-weight:700; }
+.p-medium { font-weight:600; } .p-low { color:var(--ink-2); }
+.new { background:var(--ok-bg); color:var(--ok-ink); border-color:transparent; }
+.subst { background:var(--warn-bg); color:var(--warn-ink); border-color:transparent; }
+details summary { cursor:pointer; color:var(--accent); font-size:12px; }
+blockquote { margin:4px 0 8px; padding:4px 10px; border-left:3px solid var(--rule); color:var(--ink-2); font-size:12px; }
+input[type=search] { width:100%; max-width:420px; padding:7px 10px; border:1px solid var(--rule); border-radius:6px; background:var(--surface); color:var(--ink); font:inherit; }
+.filters { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:8px 0; }
+select { padding:6px; border-radius:6px; border:1px solid var(--rule); background:var(--surface); color:var(--ink); font:inherit; }
+code { font-size:12px; } pre { white-space:pre-wrap; background:var(--surface); border:1px solid var(--rule); padding:8px; border-radius:6px; font-size:12px; }
+footer { margin-top:40px; color:var(--ink-2); font-size:12px; }
+@media print { nav,.filters { display:none; } th { position:static; } details { display:block; } }
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>EP Research Copilot: AF Ablation Evidence Update</h1>
+  <p class="sub">PubMed entries 2026-09-01 to 2026-10-01 &middot;
+    ClinicalTrials.gov tracked trials &middot; generated 2026-10-26T17:13:11+00:00 &middot; run #1</p>
+  
+  <div class="banner synthetic">SYNTHETIC TEST DATA. These records were invented to test the software. They are not real
+    publications or trials. Do not cite or share.</div>
+  
+  
+  <div class="banner note">This tool supports research surveillance and literature organization. It does not perform a systematic review, provide medical advice, or establish clinical practice recommendations. Independent, unofficial project; not affiliated with or endorsed by UW Medicine.
+    Extraction is from abstracts only and every item needs human review before use.</div>
+  <nav>
+    <a href="#overview">Overview</a><a href="#literature">Literature</a><a href="#extraction">Evidence extraction</a>
+    <a href="#trials">Trials</a><a href="#review">Review queue</a><a href="#methods">Methods &amp; limitations</a><a href="#sources">Sources</a>
+  </nav>
+</header>
+
+
+
+
+
+
+
+
+
+<section id="overview">
+  <h2>Overview</h2>
+  <div class="tiles">
+    <div class="tile"><b>7</b><span>PubMed records retrieved (of 7 matching)</span></div>
+    <div class="tile"><b>6</b><span>new since last run</span></div>
+    <div class="tile"><b>4</b><span>in configured scope</span></div>
+    <div class="tile"><b>2</b><span>high review priority</span></div>
+    <div class="tile"><b>1</b><span>uncertain (no abstract)</span></div>
+    <div class="tile"><b>3</b><span>trials tracked</span></div>
+    <div class="tile"><b>3 / 0</b><span>new / changed trials this run</span></div>
+    <div class="tile"><b>1</b><span>tracked trials with a Washington State site</span></div>
+  </div>
+  <p class="muted">This is the first run for this topic, so every record is new and no trial changes can exist yet.
+  Later runs compare against this baseline.</p>
+  
+</section>
+
+<section id="literature">
+  <h2>Literature (6)</h2>
+  <p class="muted">Sorted by review priority, then new records first. Priority reflects topic relevance only; it does not rate study quality.
+    <b>high</b>: in scope and matches 2+ topic categories; <b>medium</b>: in scope, 1 category; <b>low</b>: in scope with no category, or outside scope (kept, not discarded);
+    <b>review</b>: no abstract, screened on title and indexing only.</p>
+  <div class="filters">
+    <input type="search" id="q" placeholder="Filter by word, PMID, journal…" aria-label="Filter literature">
+    <label>Priority <select id="pf"><option value="">all</option><option>high</option><option>review</option><option>medium</option><option>low</option></select></label>
+    <label><input type="checkbox" id="nf"> new only</label>
+    <span class="muted" id="count"></span>
+  </div>
+  <div class="table-wrap"><table id="lit">
+    <thead><tr><th>Priority</th><th>Article</th><th>Topics</th><th>Design (descriptive)</th><th>Key extracted items</th></tr></thead>
+    <tbody>
+    
+    <tr data-priority="high" data-new="1">
+      <td><span class="tag p-high">high</span><br><span class="tag new">new</span></td>
+      <td><a href="https://pubmed.ncbi.nlm.nih.gov/99000001/">[SYNTHETIC] Pulsed-field versus thermal ablation for paroxysmal atrial fibrillation: a randomized trial</a><br>
+        <span class="muted">Test Author et al. &middot; Synthetic Journal of Electrophysiology &middot; 2026-09 &middot; PMID 99000001 &middot; <a href="https://doi.org/10.0000/synthetic.0001">DOI</a></span>
+        </td>
+      <td><span class="tag">AF ablation outcomes</span><span class="tag">Pulsed-field ablation</span><span class="tag">Rhythm monitoring</span><span class="tag">Procedural safety</span></td>
+      <td>Randomized controlled trial</td>
+      <td>
+        n = 412<br>
+        Follow-up: 12 months<br>
+        Registered: <a href="https://clinicaltrials.gov/study/NCT99000101">NCT99000101</a> <br>
+        <details><summary>13 quoted item(s)</summary>
+          <div><b>study design stated</b>: multicenter<blockquote>“Methods: In this multicenter randomized trial, a total of 412 patients with paroxysmal atrial fibrillation were randomized 1:1 to PFA or radiofrequency ablation.”</blockquote></div><div><b>study design stated</b>: randomized trial<blockquote>“Methods: In this multicenter randomized trial, a total of 412 patients with paroxysmal atrial fibrillation were randomized 1:1 to PFA or radiofrequency ablation.”</blockquote></div><div><b>sample size</b>: 412<blockquote>“Methods: In this multicenter randomized trial, a total of 412 patients with paroxysmal atrial fibrillation were randomized 1:1 to PFA or radiofrequency ablation.”</blockquote></div><div><b>intervention</b>: Pulsed-field ablation<blockquote>“Background: Pulsed field ablation (PFA) is an alternative to thermal ablation.”</blockquote></div><div><b>intervention</b>: Radiofrequency ablation<blockquote>“Methods: In this multicenter randomized trial, a total of 412 patients with paroxysmal atrial fibrillation were randomized 1:1 to PFA or radiofrequency ablation.”</blockquote></div><div><b>comparator</b>: randomized 1:1 to<blockquote>“Methods: In this multicenter randomized trial, a total of 412 patients with paroxysmal atrial fibrillation were randomized 1:1 to PFA or radiofrequency ablation.”</blockquote></div><div><b>follow up</b>: 12 months<blockquote>“Results: During a median follow-up of 12 months, freedom from atrial arrhythmia was 78.2% with PFA versus 74.0% with radiofrequency ablation (HR 0.84, 95% CI 0.61-1.15; p = 0.27).”</blockquote></div><div><b>outcome statements</b>: freedom from atrial arrhythmia was 78.2%<blockquote>“Results: During a median follow-up of 12 months, freedom from atrial arrhythmia was 78.2% with PFA versus 74.0% with radiofrequency ablation (HR 0.84, 95% CI 0.61-1.15; p = 0.27).”</blockquote></div><div><b>effect estimates</b>: HR 0.84, 95% CI 0.61-1.15<blockquote>“Results: During a median follow-up of 12 months, freedom from atrial arrhythmia was 78.2% with PFA versus 74.0% with radiofrequency ablation (HR 0.84, 95% CI 0.61-1.15; p = 0.27).”</blockquote></div><div><b>p values</b>: p = 0.27<blockquote>“Results: During a median follow-up of 12 months, freedom from atrial arrhythmia was 78.2% with PFA versus 74.0% with radiofrequency ablation (HR 0.84, 95% CI 0.61-1.15; p = 0.27).”</blockquote></div><div><b>outcome statements</b>: complications occurred in 1.0%<blockquote>“Major complications occurred in 1.0% and 1.5%.”</blockquote></div><div><b>limitations</b>: stated in abstract<blockquote>“A limitation is the open-label design.”</blockquote></div><div><b>trial registration</b>: NCT99000101<blockquote>“NCT99000101.”</blockquote></div>
+        </details></td>
+    </tr>
+    
+    <tr data-priority="high" data-new="1">
+      <td><span class="tag p-high">high</span><br><span class="tag new">new</span></td>
+      <td><a href="https://pubmed.ncbi.nlm.nih.gov/99000002/">[SYNTHETIC] Predictors of recurrence after cryoballoon pulmonary vein isolation</a><br>
+        <span class="muted">Test Author et al. &middot; Synthetic Journal of Electrophysiology &middot; 2026-09 &middot; PMID 99000002</span>
+        </td>
+      <td><span class="tag">AF recurrence</span><span class="tag">Repeat ablation</span></td>
+      <td>Registry / observational cohort (from abstract wording)</td>
+      <td>
+        n = 1250<br>
+        
+        
+        <details><summary>8 quoted item(s)</summary>
+          <div><b>study design stated</b>: retrospective<blockquote>“This retrospective single-center cohort included 1,250 consecutive patients undergoing cryoballoon pulmonary vein isolation for atrial fibrillation.”</blockquote></div><div><b>study design stated</b>: single-center<blockquote>“This retrospective single-center cohort included 1,250 consecutive patients undergoing cryoballoon pulmonary vein isolation for atrial fibrillation.”</blockquote></div><div><b>study design stated</b>: cohort<blockquote>“This retrospective single-center cohort included 1,250 consecutive patients undergoing cryoballoon pulmonary vein isolation for atrial fibrillation.”</blockquote></div><div><b>sample size</b>: 1250<blockquote>“This retrospective single-center cohort included 1,250 consecutive patients undergoing cryoballoon pulmonary vein isolation for atrial fibrillation.”</blockquote></div><div><b>intervention</b>: Cryoballoon ablation<blockquote>“This retrospective single-center cohort included 1,250 consecutive patients undergoing cryoballoon pulmonary vein isolation for atrial fibrillation.”</blockquote></div><div><b>intervention</b>: Pulmonary vein isolation<blockquote>“This retrospective single-center cohort included 1,250 consecutive patients undergoing cryoballoon pulmonary vein isolation for atrial fibrillation.”</blockquote></div><div><b>outcome statements</b>: Recurrence at 2 years occurred in 31%<blockquote>“Recurrence at 2 years occurred in 31% of patients.”</blockquote></div><div><b>effect estimates</b>: aHR 1.42, 95% CI 1.10 to 1.83<blockquote>“Left atrial volume was associated with recurrence (aHR 1.42, 95% CI 1.10 to 1.83).”</blockquote></div>
+        </details></td>
+    </tr>
+    
+    <tr data-priority="review" data-new="1">
+      <td><span class="tag p-review">review</span><br><span class="tag new">new</span></td>
+      <td><a href="https://pubmed.ncbi.nlm.nih.gov/99000003/">[SYNTHETIC] Catheter ablation of atrial fibrillation: where next?</a><br>
+        <span class="muted">Test Author et al. &middot; Synthetic Journal of Electrophysiology &middot; 2026-09 &middot; PMID 99000003</span>
+        <br><span class="muted">No abstract in PubMed.</span></td>
+      <td><span class="muted">none</span></td>
+      <td>Editorial / comment / letter</td>
+      <td>
+        
+        
+        
+        <span class="muted">nothing to extract</span></td>
+    </tr>
+    
+    <tr data-priority="medium" data-new="1">
+      <td><span class="tag p-medium">medium</span><br><span class="tag new">new</span></td>
+      <td><a href="https://pubmed.ncbi.nlm.nih.gov/99000006/">[SYNTHETIC] Esophageal injury after radiofrequency ablation for atrial fibrillation</a><br>
+        <span class="muted">Test Author et al. &middot; Synthetic Journal of Electrophysiology &middot; 2026-09 &middot; PMID 99000006</span>
+        </td>
+      <td><span class="tag">Procedural safety</span></td>
+      <td>Case report</td>
+      <td>
+        
+        
+        
+        <details><summary>1 quoted item(s)</summary>
+          <div><b>intervention</b>: Radiofrequency ablation<blockquote>“We report a case of esophageal injury after radiofrequency catheter ablation for atrial fibrillation detected by endoscopy on day three.”</blockquote></div>
+        </details></td>
+    </tr>
+    
+    <tr data-priority="low" data-new="1">
+      <td><span class="tag p-low">low</span><br><span class="tag new">new</span></td>
+      <td><a href="https://pubmed.ncbi.nlm.nih.gov/99000004/">[SYNTHETIC] Substrate mapping for ventricular tachycardia ablation</a><br>
+        <span class="muted">Test Author et al. &middot; Synthetic Journal of Electrophysiology &middot; 2026-09 &middot; PMID 99000004</span>
+        <br><span class="muted">Electrophysiology terms present but not all scope groups matched</span></td>
+      <td><span class="muted">none</span></td>
+      <td>Not determined</td>
+      <td>
+        n = 64<br>
+        
+        
+        <details><summary>1 quoted item(s)</summary>
+          <div><b>sample size</b>: 64<blockquote>“We describe 64 patients undergoing ventricular tachycardia ablation with a new mapping approach.”</blockquote></div>
+        </details></td>
+    </tr>
+    
+    <tr data-priority="low" data-new="1">
+      <td><span class="tag p-low">low</span><br><span class="tag new">new</span></td>
+      <td><a href="https://pubmed.ncbi.nlm.nih.gov/99000005/">[SYNTHETIC] Dietary sodium and blood pressure in older adults</a><br>
+        <span class="muted">Test Author et al. &middot; Synthetic Journal of Electrophysiology &middot; 2026-09 &middot; PMID 99000005</span>
+        <br><span class="muted">No scope terms matched</span></td>
+      <td><span class="muted">none</span></td>
+      <td>Not determined</td>
+      <td>
+        
+        
+        
+        <span class="muted">no items matched</span></td>
+    </tr>
+    
+    </tbody>
+  </table></div>
+</section>
+
+<section id="extraction">
+  <h2>Evidence extraction</h2>
+  <p class="muted">Abstract-only, rule-based. Each value is shown with the sentence it came from (see quoted items above and
+    <code>evidence_quotes.csv</code>); a blank cell means the abstract did not state it in a recognizable form, not that the study lacks it.
+    Effect estimates are copied verbatim, never recalculated. Extraction accuracy has not been measured until a reviewer completes <code>docs/validation.md</code>.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>PMID</th><th>Design terms stated</th><th>n</th><th>Interventions</th><th>Follow-up</th><th>Outcome statements</th><th>Effect estimates</th><th>Limitations stated</th></tr></thead>
+    <tbody>
+    
+    <tr><td><a href="https://pubmed.ncbi.nlm.nih.gov/99000001/">99000001</a></td><td>multicenter; randomized trial</td><td>412</td>
+      <td>Pulsed-field ablation; Radiofrequency ablation</td><td>12 months</td><td>freedom from atrial arrhythmia was 78.2%; complications occurred in 1.0%</td><td>HR 0.84, 95% CI 0.61-1.15</td><td>yes</td></tr>
+    
+    <tr><td><a href="https://pubmed.ncbi.nlm.nih.gov/99000002/">99000002</a></td><td>retrospective; single-center; cohort</td><td>1250 <span title="sample_size: Several counts reported (140, 1250); check which is the study population.">*</span></td>
+      <td>Cryoballoon ablation; Pulmonary vein isolation</td><td></td><td>Recurrence at 2 years occurred in 31%</td><td>aHR 1.42, 95% CI 1.10 to 1.83</td><td></td></tr>
+    
+    <tr><td><a href="https://pubmed.ncbi.nlm.nih.gov/99000003/">99000003</a></td><td></td><td></td>
+      <td></td><td></td><td></td><td></td><td></td></tr>
+    
+    <tr><td><a href="https://pubmed.ncbi.nlm.nih.gov/99000006/">99000006</a></td><td></td><td></td>
+      <td>Radiofrequency ablation</td><td></td><td></td><td></td><td></td></tr>
+    
+    </tbody>
+  </table></div>
+  <p class="muted">* several participant counts appear in the abstract; check which describes the study population.</p>
+</section>
+
+<section id="trials">
+  <h2>Clinical trials (3 tracked)</h2>
+  <p class="muted">Registry metadata only. A status or completion date describes the registration, not results; “Results posted” reflects the registry flag.
+    Changes are classed as <b>substantive</b> (status, enrollment, outcomes, interventions, dates, results flag, Washington sites) or <b>administrative</b> (titles, sponsor name, update dates, site count).</p>
+  <h3>Changes since the previous run (0)</h3>
+  <p>No changes detected (baseline run).</p>
+
+  
+  <h3>Tracked trials with a Washington State site (1)</h3>
+  <ul><li><a href="https://clinicaltrials.gov/study/NCT99000101">NCT99000101</a> [SYNTHETIC] PFA vs RF for Paroxysmal AF &middot; RECRUITING &middot; Synthetic Medical Center, Seattle</li></ul>
+  
+
+  <h3>All tracked trials</h3>
+  <details open><summary>Show 3 trials</summary>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Trial</th><th>Status</th><th>Type / phase</th><th class="num">Enrollment</th><th>Interventions</th><th>Primary outcome(s)</th><th>Sponsor</th><th>Primary completion</th><th>This run</th></tr></thead>
+    <tbody>
+    
+    <tr><td><a href="https://clinicaltrials.gov/study/NCT99000101">NCT99000101</a><br><span class="muted">[SYNTHETIC] PFA vs RF for Paroxysmal AF</span></td><td>RECRUITING</td>
+      <td>INTERVENTIONAL / NA</td><td>400 estimated</td>
+      <td>Device: Pulsed field ablation; Device: RF ablation</td><td>Freedom from atrial arrhythmia | 12 months</td><td>Synthetic University</td><td>2027-06</td>
+      <td><span class="tag new">new</span></td></tr>
+    
+    <tr><td><a href="https://clinicaltrials.gov/study/NCT99000102">NCT99000102</a><br><span class="muted">[SYNTHETIC] Posterior Wall Isolation in Persistent AF</span></td><td>ACTIVE_NOT_RECRUITING</td>
+      <td>INTERVENTIONAL / NA</td><td>300 estimated</td>
+      <td>Procedure: PVI + PWI; Procedure: PVI</td><td>Recurrence | 12 months</td><td>Synthetic Heart Institute</td><td>2026-09</td>
+      <td><span class="tag new">new</span></td></tr>
+    
+    <tr><td><a href="https://clinicaltrials.gov/study/NCT99000103">NCT99000103</a><br><span class="muted">[SYNTHETIC] Wearable Monitoring After Ablation</span></td><td>NOT_YET_RECRUITING</td>
+      <td>OBSERVATIONAL</td><td>150 estimated</td>
+      <td>Device: Smartwatch ECG</td><td>AF burden | 6 months</td><td>Synthetic College</td><td></td>
+      <td><span class="tag new">new</span></td></tr>
+    
+    </tbody>
+  </table></div></details>
+  
+  <h3>Trials cited in this period's abstracts</h3>
+  <ul><li><a href="https://clinicaltrials.gov/study/NCT99000101">NCT99000101</a> in PMID <a href="https://pubmed.ncbi.nlm.nih.gov/99000001/">99000001</a> </li></ul>
+  
+</section>
+
+<section id="review">
+  <h2>Review queue</h2>
+  <p><code>review_queue.csv</code> lists every record with its suggested priority and the reason. Fill in <code>reviewer_decision</code>
+    (<code>include</code>, <code>exclude</code> or <code>unsure</code>) and <code>reviewer_notes</code>, then run
+    <code>ep-copilot import-reviews review_queue.csv</code> and <code>ep-copilot evaluate</code> to measure screening precision and recall.
+    Reviewer decisions are stored separately and never overwritten by the tool.</p>
+</section>
+
+<section id="methods">
+  <h2>Methods &amp; limitations</h2>
+  <ul>
+    <li>PubMed is searched by <b>Entrez date</b> (when a record entered PubMed), so older articles indexed this period are included; publication dates are shown separately.</li>
+    <li>Screening uses configured keyword rules over title, abstract, keywords and MeSH terms. Records are never dropped; out-of-scope ones are labelled.</li>
+    <li>Extraction reads abstracts only, keeps the verbatim sentence for every value, and leaves a field empty when it is not explicitly stated. It does not assess bias, quality or clinical significance.</li>
+    <li>Trial changes are detected by comparing stored snapshots field by field, not only the registry's last-update date. Tracked trials that drop out of the status filter are re-read individually.</li>
+    <li>Abstracts and registry text remain the property of their publishers and sponsors; outputs link to sources rather than republishing them.</li>
+    <li>Screening precision/recall and extraction accuracy are unmeasured until a person reviews a sample.</li>
+  </ul>
+</section>
+
+<section id="sources">
+  <h2>Sources &amp; queries</h2>
+  <p><b>PubMed</b> (NCBI E-utilities, https://eutils.ncbi.nlm.nih.gov/entrez/eutils/), Entrez date 2026-09-01 to 2026-10-01:</p>
+  <pre>("Atrial Fibrillation"[MeSH Terms] OR "atrial fibrillation"[Title/Abstract]) AND ("Catheter Ablation"[MeSH Terms] OR "catheter ablation"[Title/Abstract] OR "pulsed field ablation"[Title/Abstract] OR "pulsed-field ablation"[Title/Abstract] OR "cryoballoon"[Title/Abstract] OR "radiofrequency ablation"[Title/Abstract] OR "pulmonary vein isolation"[Title/Abstract]) AND (recurrence[Title/Abstract] OR outcomes[Title/Abstract] OR follow-up[Title/Abstract] OR efficacy[Title/Abstract] OR safety[Title/Abstract])</pre>
+  <p><b>ClinicalTrials.gov</b> (API v2, https://clinicaltrials.gov/api/v2/studies): condition “atrial fibrillation”, intervention “catheter ablation OR pulsed field ablation OR cryoballoon OR radiofrequency ablation OR pulmonary vein isolation”,
+    statuses NOT_YET_RECRUITING, RECRUITING, ENROLLING_BY_INVITATION, ACTIVE_NOT_RECRUITING; 3 of 3 returned.</p>
+  <p class="muted">Mode: offline-fixture. Provenance: synthetic fixture (invented records). Run started 2026-10-26T17:13:11+00:00, finished 2026-10-26T17:13:11+00:00.</p>
+</section>
+
+<footer>EP Research Copilot 0.1.0 &middot; MIT-licensed code &middot; Data from the U.S. National Library of Medicine (PubMed) and ClinicalTrials.gov.</footer>
+</main>
+<script>
+(function () {
+  var q = document.getElementById("q"), pf = document.getElementById("pf"), nf = document.getElementById("nf"),
+      rows = document.querySelectorAll("#lit tbody tr"), count = document.getElementById("count");
+  function apply() {
+    var term = q.value.toLowerCase(), p = pf.value, onlyNew = nf.checked, shown = 0;
+    rows.forEach(function (r) {
+      var ok = (!term || r.textContent.toLowerCase().indexOf(term) >= 0) &&
+               (!p || r.dataset.priority === p) && (!onlyNew || r.dataset.new === "1");
+      r.style.display = ok ? "" : "none"; if (ok) shown++;
+    });
+    count.textContent = shown + " of " + rows.length + " shown";
+  }
+  [q, pf, nf].forEach(function (el) { el.addEventListener("input", apply); });
+  apply();
+})();
+</script>
+</body>
+</html>

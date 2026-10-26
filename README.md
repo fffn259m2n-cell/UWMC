@@ -35,6 +35,9 @@ tests on Python 3.11 to 3.13.
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Adding topics, measures, plans and rules; checks to run before a commit |
 | [REVIEW.md](REVIEW.md) | Independent reviewers: access, what to look for, how to report (`python review/make_review_packet.py` builds a zip to send) |
 | [DELIVERY_PLAN.md](DELIVERY_PLAN.md) | How to hand these over to UW Medicine teams |
+| [samples/](samples/) | Sample outputs on synthetic data (open in a browser) |
+| [one-pagers/pdf/](one-pagers/pdf/) | One-page PDF summary of each project |
+| [downloads/](downloads/) | Everything in one zip, and the reviewer packet |
 
 ## Before sharing anything
 
