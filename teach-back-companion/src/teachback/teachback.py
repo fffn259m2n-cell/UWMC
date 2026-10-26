@@ -24,6 +24,31 @@ EXTRA_DOSE = (r"\b(?:second|2nd|another|extra|additional|1 more|one more)\s+(?:\
               r"|\bdouble (?:up|the dose|my dose|it)\b|\btake (?:more|2|two|extra)\b")
 
 
+READ_AGAIN = "Please read the instruction below again, and ask your care team if you are unsure."
+PATIENT_MESSAGES = {
+    "time_of_day_changed": "You mentioned a different time of day than your instructions give.",
+    "frequency_changed": "How often you described taking it may not match your instructions.",
+    "food_changed": "Your instructions say to take it with food.",
+    "stop_condition_added": "Your instructions do not give a reason or a time to stop, skip or pause this medicine.",
+    "dose_added": "Your instructions do not say to take extra.",
+    "tablet_count_changed": "The number of tablets you mentioned may not match your instructions.",
+    "doses_combined": "Your instructions say to take the doses separately, as written.",
+    "strength_swapped": "The strength you mentioned may not match your instructions.",
+    "warning_normalised": "Your instructions treat this as a reason to call, not as something normal.",
+    "action_delayed": "Your instructions say to call when this happens, without waiting.",
+    "instruction_dropped": "Your instructions ask you to do this; they do not make it optional.",
+    "emergency_sign_not_with_911": "For this sign, your instructions say to call 911.",
+    "alternative_to_911": "For these signs, your instructions say to call 911.",
+    "limit_loosened": "Your instructions set a limit here.",
+    "limit_reversed": "Your instructions say to drink plenty of fluids.",
+    "direction_changed": "Your instructions are about your weight going up.",
+    "period_changed": "The time period you mentioned for this limit may not match your instructions.",
+    "or_changed_to_and": "Your instructions say that either one of these is a reason to call.",
+}
+# Checks that repeat what a plan-specific misunderstanding message already says.
+OVERLAPPING = {"stop_condition_added", "emergency_sign_not_with_911", "alternative_to_911", "action_delayed", "dose_added"}
+
+
 @dataclass
 class Concern:
     fact_id: str
@@ -165,11 +190,14 @@ def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
                 f"but in your instructions it is a {'maximum' if 'upper' in want else 'minimum'}. Please check the instruction below.")
 
     # 7) Meaning changes shared with the fidelity evaluator (time of day, food, stop
-    #    conditions, emergency signs without 911, limits and periods).
+    #    conditions, emergency signs without 911, limits and periods), in patient wording.
     target = next((f for f in item.facts if f.emergency), None) or next(
         (f for f in item.facts if f.severity == "critical"), item.facts[0])
+    already = bool(res.concerns)
     for ch in consistency.compare(item, said, patient=True):
-        concern(target, "contradiction", f"{ch.message} Please read the instruction below again, and ask your care team if you are unsure.")
+        if already and ch.check in OVERLAPPING:
+            continue   # a plan-specific message already covers this
+        concern(target, "contradiction", f"{PATIENT_MESSAGES.get(ch.check, ch.message)} {READ_AGAIN}")
     # 8) Medicines this instruction does not mention.
     from .fidelity import COMMON_DRUGS
     src = text.normalize(item.original)
