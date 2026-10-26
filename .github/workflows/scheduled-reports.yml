@@ -6,9 +6,8 @@ name: scheduled-reports
 #   digest shows what changed since the previous month.
 # Results are attached to the run as downloadable artifacts (Actions -> this workflow -> a run).
 # To run now: Actions -> scheduled-reports -> Run workflow.
-# Note: the EP digest quotes publishers' abstracts. If this repository is made public,
-# artifacts can be downloaded by anyone with access; keep the repository private or remove
-# the EP artifact upload before publishing.
+# Note: the EP digest quotes publishers' abstracts. It is uploaded only while the repository
+# is private; a public repository gets the trial tables and run counts only.
 
 on:
   schedule:
@@ -99,12 +98,30 @@ jobs:
             echo '```'
             cat run.txt 2>/dev/null || echo "run did not produce output"
             echo '```'
-            echo "Download the **ep-copilot-digest** artifact below. It quotes publishers' abstracts: share privately."
+            if [ "${{ github.event.repository.private }}" = "true" ]; then
+              echo "Download the **ep-copilot-digest** artifact below. It quotes publishers' abstracts: share privately."
+            else
+              echo "This repository is public, so only the trial tables are attached (**ep-copilot-trials**). For the full digest with abstract quotes, run \`ep-copilot run --days 30\` on your own computer."
+            fi
           } >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
-        if: always()
+      # The digest and evidence files quote publishers' abstracts. Upload them only while the
+      # repository is private; a public repository gets the trial tables and run counts only.
+      - name: Upload full digest (private repository only)
+        if: always() && github.event.repository.private
+        uses: actions/upload-artifact@v4
         with:
           name: ep-copilot-digest
           path: ep-research-copilot/output/
+          retention-days: 30
+          if-no-files-found: warn
+      - name: Upload trial tables only (public repository; no abstracts)
+        if: always() && !github.event.repository.private
+        uses: actions/upload-artifact@v4
+        with:
+          name: ep-copilot-trials
+          path: |
+            ep-research-copilot/output/trials.csv
+            ep-research-copilot/output/trial_changes.csv
+            ep-research-copilot/output/run_metadata.json
           retention-days: 30
           if-no-files-found: warn
