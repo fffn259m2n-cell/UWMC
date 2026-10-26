@@ -135,3 +135,19 @@ def test_fetch_network_failure_gives_offline_instructions(monkeypatch, tmp_path)
     monkeypatch.setattr(sources, "_get", fail)
     with pytest.raises(sources.SourceError, match="Download the CSV manually"):
         sources.fetch_release(tmp_path)
+
+
+def test_teachback_insights_section(tmp_path):
+    csv_path = tmp_path / "ins.csv"
+    csv_path.write_text(
+        "plan,item,title,hcahps_domain,hcahps_label,attempts,flagged,flagged_rate,top_concern_1,top_concern_2,top_concern_3,synthetic\n"
+        "hf-demo,med-furosemide,Furosemide 40 mg tablet,medicines,Communication about medicines,10,4,0.4,a different time of day (3),,,yes\n",
+        encoding="utf-8")
+    assert cli.main(["run", "--data-dir", str(CURRENT), "--out", str(tmp_path / "o"),
+                     "--teachback-insights", str(csv_path)]) == 0
+    html = (tmp_path / "o" / "uwmc_quality_report.html").read_text(encoding="utf-8")
+    assert "Furosemide 40 mg tablet" in html and "4 of 10 (40%)" in html and "Synthetic teach-back data" in html
+    bad = tmp_path / "bad.csv"
+    bad.write_text("a,b\n1,2\n", encoding="utf-8")
+    assert cli.main(["run", "--data-dir", str(CURRENT), "--out", str(tmp_path / "o2"),
+                     "--teachback-insights", str(bad)]) == 2

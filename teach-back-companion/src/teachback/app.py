@@ -40,6 +40,18 @@ class EvaluateIn(BaseModel):
     language: str | None = Field(default=None, pattern=r"^(en|es|non-en)$")
 
 
+class DraftIn(BaseModel):
+    id: str | None = Field(default=None, max_length=80)
+    plan: str = Field(max_length=80)
+    item: str = Field(max_length=80)
+    text: str = Field(min_length=1, max_length=4000)
+    language: str | None = Field(default=None, pattern=r"^(en|es|non-en)$")
+
+
+class GateIn(BaseModel):
+    drafts: list[DraftIn] = Field(min_length=1, max_length=200)
+
+
 class ReminderIn(BaseModel):
     item_id: str = Field(max_length=80)
     remind_at: datetime
@@ -138,6 +150,16 @@ def create_app(db_path: Path | None = None, today: date | None = None) -> FastAP
     def evaluate(pid: str, body: EvaluateIn):
         p = plan_or_404(pid)
         return evaluate_item(p, item_or_404(p, body.item_id), body.candidate, body.language).to_dict()
+
+    @app.post("/api/gate")
+    def gate_drafts(body: GateIn):
+        from . import gate
+        return gate.run([d.model_dump() for d in body.drafts])
+
+    @app.get("/api/insights")
+    def insights_demo():
+        from . import insights
+        return insights.run(insights.bundled_cohort())
 
     @app.get("/api/benchmark")
     def run_benchmark():

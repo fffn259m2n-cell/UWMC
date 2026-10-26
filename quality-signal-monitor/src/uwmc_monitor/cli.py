@@ -37,6 +37,8 @@ def build_parser() -> argparse.ArgumentParser:
         p = sub.add_parser(name, help=help_)
         _common(p)
         if name in ("report", "run"):
+            p.add_argument("--teachback-insights", type=Path,
+                           help="CSV from 'teachback insights --csv' to show beside the discharge measures")
             p.add_argument("--pdf", action="store_true",
                            help="Also export PDF (needs WeasyPrint or a local Chrome/Chromium)")
         if name == "run":
@@ -73,7 +75,8 @@ def main(argv: list[str] | None = None) -> int:
             return 1 if failures else 0
         paths = reporting.write_tables(result, args.out)
         if args.command in ("report", "run"):
-            paths.update(reporting.write_report(result, args.out, pdf=args.pdf))
+            tb = reporting.read_teachback_insights(args.teachback_insights) if args.teachback_insights else None
+            paths.update(reporting.write_report(result, args.out, pdf=args.pdf, teachback_insights=tb))
             if args.pdf and "pdf" not in paths:
                 print("PDF not written: install WeasyPrint or Chrome/Chromium, or print the HTML to PDF.")
         comp = result.comparison

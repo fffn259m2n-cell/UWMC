@@ -141,7 +141,7 @@ def _env() -> Environment:
     return env
 
 
-def render_html(result, narrator: narrative.Narrator | None = None) -> str:
+def render_html(result, narrator: narrative.Narrator | None = None, teachback_insights: list[dict] | None = None) -> str:
     synthetic = bool(result.current.provenance.get("synthetic"))
     facts = narrative.build_facts(result)
     summary = (narrator or narrative.TemplateNarrator()).summarize(facts)
@@ -194,14 +194,30 @@ def render_html(result, narrator: narrative.Narrator | None = None) -> str:
         findings=findings_frame(result.findings),
         charts=charts,
         rules=metadata(result)["rules"],
+        teachback=teachback_insights or [],
     )
 
 
-def write_report(result, out_dir: Path, narrator=None, pdf: bool = False) -> dict[str, Path]:
+def read_teachback_insights(path: Path) -> list[dict]:
+    """Rows written by `teachback insights --csv` (Teach-Back Companion), grouped by HCAHPS domain."""
+    import csv
+    with Path(path).open(newline="", encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
+    need = {"title", "hcahps_label", "attempts", "flagged", "flagged_rate"}
+    if rows and not need <= rows[0].keys():
+        raise ValueError(f"{path} is not a teach-back insights CSV (missing {sorted(need - rows[0].keys())})")
+    for r in rows:
+        r["attempts"], r["flagged"], r["flagged_rate"] = int(r["attempts"]), int(r["flagged"]), float(r["flagged_rate"])
+        r["top"] = [r.get(f"top_concern_{i}", "") for i in (1, 2, 3) if r.get(f"top_concern_{i}")]
+    return sorted(rows, key=lambda r: (r["hcahps_label"], -r["flagged_rate"]))
+
+
+def write_report(result, out_dir: Path, narrator=None, pdf: bool = False,
+                 teachback_insights: list[dict] | None = None) -> dict[str, Path]:
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     html_path = out_dir / "uwmc_quality_report.html"
-    html_path.write_text(render_html(result, narrator), encoding="utf-8")
+    html_path.write_text(render_html(result, narrator, teachback_insights), encoding="utf-8")
     written = {"html": html_path}
     if pdf:
         pdf_path = export_pdf(html_path)

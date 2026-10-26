@@ -220,3 +220,12 @@ def test_connector_import_script(tmp_path):
     assert snap["articles"][0]["pub_date"] == "2026-10-21" and snap["articles"][0]["authors"] == ["A B"]
     assert snap["trials"][0]["phases"] == [] and snap["synthetic"] is False
     assert "washington_sites" in snap["fields_unavailable"]["trials"]
+
+
+def test_digest_alerts_results_and_washington_sites(store, topic, tmp_path):
+    pipeline.run(store, topic, snapshot=RUN1, mode="offline-fixture")
+    r = pipeline.run(store, topic, snapshot=RUN2, mode="offline-fixture")
+    html = reporting.write_outputs(r, store, tmp_path)["digest"].read_text(encoding="utf-8")
+    alerts = html[html.index('id="alerts"'):html.index('id="literature"')]
+    assert "Trials that posted results" in alerts and "NCT99000102" in alerts
+    assert "Washington State site changes" in alerts and "Spokane" in alerts
