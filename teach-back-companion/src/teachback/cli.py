@@ -4,6 +4,7 @@
   teachback evaluate PLAN_ID ITEM_ID FILE [--language en|es|non-en]
   teachback benchmark
   teachback check-content
+  teachback evaluate-set eval/dev_set.json [--show-misses]
 """
 
 from __future__ import annotations
@@ -30,6 +31,9 @@ def main(argv: list[str] | None = None) -> int:
     e.add_argument("--language", choices=["en", "es", "non-en"])
     sub.add_parser("benchmark", help="Run the evaluator on the synthetic benchmark")
     sub.add_parser("check-content", help="Validate bundled plans and education library")
+    es = sub.add_parser("evaluate-set", help="Score the checks against a labelled evaluation set")
+    es.add_argument("file", type=Path)
+    es.add_argument("--show-misses", action="store_true")
     args = p.parse_args(argv)
 
     from .plans import ContentError, load_plans
@@ -60,6 +64,13 @@ def main(argv: list[str] | None = None) -> int:
             r = run()
             print(json.dumps(r, indent=2))
             return 0 if r["detected"] == r["seeded_errors"] and r["false_alarms"] == 0 else 1
+        elif args.command == "evaluate-set":
+            from .evaluation import score
+            r = score(args.file)
+            summary = {k: r[k] for k in ("teachback", "fidelity", "safety")}
+            print(json.dumps(summary, indent=2))
+            if args.show_misses:
+                print(json.dumps({"misses": r["misses"], "false_alarms": r["false_alarms"]}, indent=2, ensure_ascii=False))
         elif args.command == "check-content":
             from . import knowledge
             plans = load_plans()

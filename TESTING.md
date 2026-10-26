@@ -52,7 +52,7 @@ Start it (Option B only; Codespaces starts it for you):
 | 2 | Click **Simple**, then **More detail** | The explanation changes reading level; the care-plan note stays the same | |
 | 3 | **My medicines** | Each medicine shows the original instruction (green) beside a plain version (blue) | |
 | 4 | **Check my understanding**, pick *Apixaban*, type: `I take it twice a day and I can stop when my heart feels normal again.` | "Points to check with your care team", explaining you should keep taking it even when you feel well, with the original instruction quoted | |
-| 5 | Same item, type: `I take one 5 mg pill twice a day, 12 hours apart, and I keep taking it every day.` | A green message: your explanation included the main points | |
+| 5 | Same item, type: `I take one 5 mg pill twice a day, 12 hours apart, and I keep taking it every day.` | A neutral message: the tool recognized the main points and found no conflicts, but says this does not confirm understanding and to review with the care team | |
 | 6 | Pick *Pain medicine while on apixaban*, type: `No problem taking ibuprofen with it.` | A concern that the instruction says not to take ibuprofen | |
 | 7 | Pick *Emergency warning signs*, type: `If my face droops I will drive myself to the ER.` | A concern: call 911 rather than getting yourself to hospital | |
 | 8 | Try your own explanations, right and wrong | Write down anything it gets wrong | |

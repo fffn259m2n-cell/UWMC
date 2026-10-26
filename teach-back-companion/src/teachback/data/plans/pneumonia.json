@@ -197,7 +197,12 @@
             "verbs": [
               "smoke",
               "smoking",
-              "vape"
+              "vape",
+              "vaping",
+              "vapes",
+              "e-cigarette",
+              "e-cigarettes",
+              "vape pen"
             ],
             "polarity": "dont"
           },

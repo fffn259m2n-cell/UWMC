@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 from dataclasses import asdict, dataclass, field
 
-from . import text
+from . import consistency, text
 from .models import CarePlan, Fact, Item
 
 MAX_INPUT = 2000
@@ -42,6 +42,8 @@ class TeachBackResult:
     summary: str = ""
     follow_up: str = ""
     safety: dict | None = None
+    limits: str = ("This is an automatic check of wording. It can miss misunderstandings and cannot confirm that "
+                   "you understood. Please go over your instructions with your nurse, pharmacist or care team.")
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -105,7 +107,7 @@ def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
     said = (said or "")[:MAX_INPUT]
     res = TeachBackResult(item_id=item.id)
     norm = text.normalize(said)
-    if len(re.findall(r"[a-z]{2,}", norm)) < 3:
+    if len(re.findall(r"[a-z]{2,}", norm)) < 3 and not text.numbers(said):
         res.summary = "Try saying the instruction in your own words, in a sentence or two."
         res.not_mentioned = [{"fact_id": f.id, "statement": f.statement, "severity": f.severity} for f in item.facts]
         return res
@@ -143,7 +145,7 @@ def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
         f = item.facts[0]
         if not any(c.kind == "contradiction" for c in res.concerns):
             for verb, negated in text.action_mentions(said, SKIP_VERBS):
-                if not negated:
+                if not negated and not re.search(rf"\b(if|when|in case) (i|you) {re.escape(verb)}", norm):
                     concern(f, "contradiction",
                             f"Your explanation mentions “{verb}”, but your instructions do not say to skip or stop "
                             "this medicine. Please check with your care team or pharmacist before changing how you take it.")
@@ -162,6 +164,29 @@ def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
                 f"You described {_fmt(value)} {_unit_label(unit)} as a {'minimum' if 'lower' in got else 'maximum'}, "
                 f"but in your instructions it is a {'maximum' if 'upper' in want else 'minimum'}. Please check the instruction below.")
 
+    # 7) Meaning changes shared with the fidelity evaluator (time of day, food, stop
+    #    conditions, emergency signs without 911, limits and periods).
+    target = next((f for f in item.facts if f.emergency), None) or next(
+        (f for f in item.facts if f.severity == "critical"), item.facts[0])
+    for ch in consistency.compare(item, said, patient=True):
+        concern(target, "contradiction", f"{ch.message} Please read the instruction below again, and ask your care team if you are unsure.")
+    # 8) Medicines this instruction does not mention.
+    from .fidelity import COMMON_DRUGS
+    src = text.normalize(item.original)
+    known = COMMON_DRUGS | plan.drug_names
+    # Brand and generic names of a medicine this instruction already names are not "new".
+    for other in plan.items:
+        names = {n.lower() for n in other.drug_names}
+        if any(re.search(rf"(?<![a-z]){re.escape(n)}(?![a-z])", text.normalize(item.original)) for n in names):
+            known -= names
+    for d in sorted(known):
+        if re.search(rf"(?<![a-z]){re.escape(d)}(?![a-z])", norm) and d not in src \
+                and d not in {n.lower() for n in item.drug_names} and not text.is_negated(norm, norm.index(d)):
+            concern(target, "contradiction",
+                    f"You mentioned {d}. This instruction does not mention it. Please check with your care team "
+                    "or pharmacist before taking any medicine that is not in your instructions.")
+            break
+
     for fact in item.facts:
         flagged = any(c.fact_id == fact.id for c in res.concerns)
         entry = {"fact_id": fact.id, "statement": fact.statement, "severity": fact.severity}
@@ -178,9 +203,11 @@ def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
                        "it is exactly why we check. Please look at the points below.")
         res.follow_up = "Ask your care team about these points before you leave or at your next call."
     elif res.not_mentioned:
-        res.summary = "Thank you. You covered some of the main points. A few were not mentioned yet."
+        res.summary = ("Thank you. The tool recognized some of the main points, and a few were not mentioned yet. "
+                       "No conflicts were found automatically, but that does not mean there are none.")
         res.follow_up = "You can read the instruction again and try once more, or ask your care team."
     else:
-        res.summary = "Thank you. Your explanation included the main points of this instruction."
+        res.summary = ("Thank you. The tool recognized the main points of this instruction and found no conflicts "
+                       "automatically. That does not confirm your understanding; please still review it with your care team.")
         res.follow_up = "If anything is still unclear, your care team is happy to go over it again."
     return res

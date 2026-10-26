@@ -110,7 +110,7 @@
             },
             {
               "id": "stop-when-done",
-              "pattern": "\\b(finish|finished|run out|used up)\\b[^.]*\\b(bottle|pills|prescription)\\b",
+              "pattern": "(?<!before i )(?<!before you )\\b(finish|finished|run out|used up)\\b[^.]*\\b(bottle|pills|prescription)\\b",
               "message": "Your instructions do not list an end date for apixaban. Refill it before you run out and ask your care team before stopping."
             }
           ],
@@ -176,7 +176,9 @@
               "split",
               "break",
               "cut",
-              "halve"
+              "halve",
+              "dissolve",
+              "mix"
             ],
             "polarity": "dont"
           },
@@ -383,7 +385,13 @@
               "unit": "bpm"
             }
           ],
-          "misconceptions": []
+          "misconceptions": [
+            {
+              "id": "not-resting",
+              "pattern": "\\b(exercis\\w*|working out|work out|walking|during activity|when i'?m active|being active)\\b",
+              "message": "Your instructions are about your heart rate while you are resting, not during exercise. Please check the instruction below."
+            }
+          ]
         }
       ]
     },

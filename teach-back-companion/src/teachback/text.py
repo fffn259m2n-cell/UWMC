@@ -25,7 +25,7 @@ NEGATORS = (
     "not", "never", "no", "none", "nothing", "nor", "don't", "dont", "doesn't", "doesnt", "didn't",
     "didnt", "shouldn't", "shouldnt", "can't", "cant", "cannot", "mustn't", "mustnt", "won't", "wont",
     "wouldn't", "wouldnt", "isn't", "isnt", "aren't", "arent", "wasn't", "couldn't", "needn't",
-    "shan't", "avoid", "without", "nunca", "sin",
+    "shan't", "avoid", "without", "neither", "nunca", "sin",
 )
 # Multi-word avoidance phrases, rewritten to "not" before counting.
 NEGATOR_PHRASES = re.compile(
@@ -34,7 +34,9 @@ NEGATOR_PHRASES = re.compile(
     r"|wait (?:and see|to see)|steer clear of|stopp?(?:ed|ing|s)? (?=(?:taking|using|smoking|vaping|drinking|eating)\b)"
     r"|quit(?:s|ting)? (?=(?:taking|using|smoking|vaping|drinking)\b)|give up|gave up|stay clear of)")
 # "tell you to stop", "unless your cardiologist says to stop": the action is someone else's decision.
-AUTHORITY_BEFORE = re.compile(r"\b(?:tells?|told|asks?|asked|says?|said|lets?|instructs?)\s+(?:you|me|us|them)?\s*(?:to\s+)?$")
+AUTHORITY_BEFORE = re.compile(r"\b(?:tells?|told|asks?|asked|says?|said|lets?|instructs?)\s+(?:you|me|us|them)?\s*(?:to\s+)?$"
+                              r"|\b(?:decides?|decided|chooses|says|tells me)\s+(?:if|when|whether)\s+(?:i|you|we)\s+(?:can\s+|should\s+)?$")
+AUTHORITY_AFTER = re.compile(r"^\s*(?:it\s+|taking it\s+)?(?:if|when|unless)\s+(?:my|your|the)\s+(?:cardiologist|doctor|care team|heart doctor|provider|nurse)\s+(?:tells|says|asks)")
 # Phrases that contain a negator but do not negate what follows.
 NOT_NEGATING = re.compile(
     r"\b(?:no problem(?:s)?(?: with)?|not a problem|no issues?(?: with)?|no trouble(?: with)?|"
@@ -42,15 +44,22 @@ NOT_NEGATING = re.compile(
     r"never (?:have|had) (?:any )?(?:issues|problems|trouble)(?: with)?|no worries|no doubt|"
     r"no more than|not more than|not exceed|no later than|not sure|no matter|"
     r"(?:not|never|won'?t|don'?t|do not|wouldn'?t|will not|can'?t) (?:stop|quit)(?:ping|ped)? (?:taking|using)|"
-    r"(?:do not|don't|dont|never|not)\s+(?:take|use|have|drink|eat|go|give)?\s*(?:more than|over|above|beyond|exceed)|"
+    r"(?:do not|don't|dont|never|not)\s+(?:[a-z]+\s+){0,2}(?:more than|over|above|beyond|exceed)|"
     r"(?:do not|don't|never|not) let (?:it|this|your \w+) (?:go|get) (?:over|above))\b")
 NEGATION_WINDOW = 5  # words before the target
 LIST_WORDS = (r"(?:\bor\b|\band\b|\bnor\b|\blike\b|\bsuch as\b|\bincluding\b|\bfor example\b|\be\.?g\.?|\bnsaids?\b"
               r"|\balso (?:sold|known) as\b|\balso called\b|\bknown as\b|\bwhich is\b|\bbrand names?\b|\bsold as\b|\bor any\b|[\s(),/:])")
 # Negation that follows the target: "Smoking is not allowed", "crushing is not ok".
-POST_NEGATION = re.compile(r"^\s*(?:it\s+|that\s+|them\s+)?(?:(?:or|and)\s+[a-z]+\s+)?(?:is|are)\s+(?:not\s*(?:$|[.,;!]|okay\b|ok\b|good\b|for me\b))|^\s*(?:it\s+|that\s+|them\s+)?(?:(?:or|and)\s+[a-z]+\s+)?(?:is|are)\s+(?:not\s+(?:allowed|ok|okay|safe|permitted|recommended)|forbidden|prohibited|unsafe)\b")
+POST_NEGATION = re.compile(r"^\s*(?:it\s+|that\s+|them\s+)?(?:(?:or|and)\s+[a-z]+\s+)?(?:is|are)\s+(?:not\s*(?:$|[.,;!]|okay\b|ok\b|good\b|for me\b))|^\s*(?:it\s+|that\s+|them\s+)?(?:(?:or|and)\s+[a-z]+\s+)?(?:is|are)\s+(?:not\s+(?:allowed|ok|okay|safe|permitted|recommended)|forbidden|prohibited|unsafe)\b"
+                           r"|^(?:\s*(?:,|and|or)?\s*[a-z]{2,15}){0,3}?\s+(?:are|is)\s+(?:a\s+)?(?:off[- ]limits|no[- ]go|no|out|bad for me|not safe)\b"
+                           r"|^(?:\s*(?:,|and|or)?\s*[a-z]{2,15}){0,3}?\s*:\s*(?:never|no|nope|not for me)\b"
+                           r"|^(?:\s*(?:,|and|or)?\s*[a-z]{2,15}){0,3}?\s+(?:i|you)\s+(?:must not|mustn'?t|can'?t|cannot|shouldn'?t|should not|won'?t|don'?t|do not|never)\s+(?:take|use|have)\b"
+                           r"|^\s*(?:it\s+|that\s+)?(?:could|can|would|will|may|might)\s+(?:cause|raise|lead|give|increase|put)\b|^\s*(?:it\s+)?(?:is|are)\s+(?:dangerous|risky)\b")
 # Permission that follows the target: "ibuprofen is fine", "Advil is OK for me".
-POST_PERMISSION = re.compile(r"^\s*(?:is|are)\s+(?:also\s+|totally\s+|just\s+)?(?:fine|ok|okay|good|safe|allowed|alright|all right)\b|^\s*works\b")
+POST_PERMISSION = re.compile(r"^\s*(?:is|are)\s+(?:also\s+|totally\s+|just\s+)?(?:fine|ok|okay|good|safe|allowed|alright|all right)\b|^\s*works\b"
+                             r"|^\s*[:-]?\s*(?:ok|okay|fine|yes)\b")
+# "I don't drink more than 8 cups": the negation belongs to the limit, not to drinking.
+LIMIT_AFTER = re.compile(r"^\s*(?:[a-z]+\s+){0,2}?(?:more than|over|above|beyond|past)\b")
 
 
 def normalize(text: str) -> str:
@@ -64,6 +73,7 @@ def normalize(text: str) -> str:
 
 
 def _words_to_digits(t: str) -> str:
+    t = re.sub(r"\b(for|in|within|after|over) (?:a|an|one) (day|week|month)\b", r"\1 1 \2", t)
     for w, n in sorted(WORD_NUMBERS.items(), key=lambda kv: -len(kv[0])):
         t = re.sub(rf"\b{w}\b", str(n), t)
     return t
@@ -88,7 +98,7 @@ WEAK_FREQUENCY = (
 UNIT_PATTERNS = (
     ("mg", r"(\d[\d,]*(?:\.\d+)?)\s*(?:mg|milligrams?)\b"),
     ("mg", r"(\d[\d,]*(?:\.\d+)?)\s*(?:mg)?\s*/\s*\d[\d,]*(?:\.\d+)?\s*mg\b"),          # first of "24/26 mg"
-    ("tablets", r"(\d+)\s*(?:tablets?|pills?|capsules?|tabs?)\b"),
+    ("tablets", r"(?<![\d/.,])(\d{1,2})\s*(?:tablets?|pills?|capsules?|tabs?|tabletas?|pastillas?)\b"),
     ("hours", r"(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)\b"),
     ("minutes", r"(\d+)\s*(?:minutes?|mins?)\b"),
     ("days", r"(\d+)\s*(?:more\s+)?days?\b"),
@@ -192,7 +202,10 @@ def phrase_states(text: str, phrase: str) -> list[bool]:
         return [False for _ in find_phrase(t, phrase)]   # a condition phrase is not itself negated
     for start, end in find_phrase(t, phrase):
         neg = is_negated(t, start)
-        if POST_NEGATION.match(t[end:]):
+        after = re.sub(r"\([^)]*\)", " ", t[end:])
+        if neg and (LIMIT_AFTER.match(after) or POST_PERMISSION.match(after)):
+            neg = False
+        elif POST_NEGATION.match(after):
             neg = not neg
         states.append(neg)
     return states
@@ -248,7 +261,7 @@ def action_mentions(text: str, verbs: list[str], objects: list[str] | None = Non
                 stripped = trailing_list.sub(" ", before)
                 # A list joined by commas belongs to the preceding clause, so drop list commas only.
                 neg = is_negated(stripped, len(stripped))
-                after = t[m.end():]
+                after = re.sub(r"\([^)]*\)", " ", re.sub(r"^[^()]*\)", " ", t[m.end():]))
                 if POST_PERMISSION.match(re.sub(r"^[^a-z]*(?:\([^)]*\))?", "", after)):
                     neg = False
                 elif POST_NEGATION.match(after):
@@ -257,7 +270,8 @@ def action_mentions(text: str, verbs: list[str], objects: list[str] | None = Non
         return found
     for verb in verbs:
         for m in re.finditer(rf"(?<![a-z]){re.escape(verb)}(?:s|ed|ing|ping|ped|d)?(?![a-z])", t):
-            neg = is_negated(t, m.start()) or bool(AUTHORITY_BEFORE.search(t[:m.start()]))
+            neg = is_negated(t, m.start()) or bool(AUTHORITY_BEFORE.search(t[:m.start()])) \
+                or bool(re.search(r"\bonly\s*$", t[:m.start()]) and AUTHORITY_AFTER.match(t[m.end():]))
             if POST_NEGATION.match(t[m.end():]):
                 neg = True
             found.append((verb, neg))
@@ -281,8 +295,8 @@ DIRECTION_BEFORE = (
     ("above", r"(?:more than|above|over|greater than|higher than|exceeds?|faster than)\s*$"),
     ("below", r"(?:below|under|less than|lower than|fewer than|slower than)\s*$"),
 )
-DIRECTION_AFTER = (("upper", r"^[^.;]{0,45}?\b(?:or less|or fewer|or under|at most|or below|a day at most)\b"),
-                   ("lower", r"^[^.;]{0,45}?\b(?:or more|or higher|or above|at least)\b(?!\s+than)"))
+DIRECTION_AFTER = (("upper", r"^[^.;]{0,45}?\b(?:or less|or fewer|or under|at most|or below|a day at most|is the (?:max|maximum|most|limit))\b"),
+                   ("lower", r"^[^.;]{0,45}?\b(?:or more|or higher|or above|at least|is the (?:minimum|least))\b(?!\s+than)"))
 DIRECTION_GROUP = {"upper": "upper", "below": "upper", "lower": "lower", "above": "lower"}
 DIRECTIONAL_UNITS = {"mg", "liters", "cups", "bpm", "fahrenheit", "celsius", "pounds", "drinks"}
 

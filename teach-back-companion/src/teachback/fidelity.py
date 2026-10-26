@@ -20,7 +20,7 @@ from __future__ import annotations
 import re
 from dataclasses import asdict, dataclass, field
 
-from . import readability, text
+from . import consistency, readability, text
 from .models import CarePlan, Item
 
 # Medicine names the evaluator recognises when looking for *added* medicines.
@@ -34,6 +34,7 @@ COMMON_DRUGS = {
     "entresto", "amlodipine", "atorvastatin", "metformin", "insulin", "prednisone", "amoxicillin",
     "augmentin", "azithromycin", "doxycycline", "levofloxacin", "ceftriaxone", "cefdinir", "ondansetron",
     "oxycodone", "hydrocodone", "tramadol", "potassium", "dapagliflozin", "empagliflozin", "eliquis",
+    "nyquil", "dayquil", "excedrin", "benadryl", "sudafed", "pseudoephedrine", "diphenhydramine",
 }
 ENGLISH_MARKERS = {"the", "and", "you", "your", "a", "an", "of", "to", "if", "or", "in", "is", "it", "on",
                    "take", "call", "day", "with", "for", "get", "do", "not", "this", "that", "be", "are", "after"}
@@ -73,8 +74,10 @@ class FidelityReport:
         if c["major"]:
             return "revise: major issues found"
         if self.not_assessed:
-            return "no automated issues found in the checks that ran; human review still required"
-        return "no automated issues found; clinician review still required"
+            return ("no issues flagged by the checks that ran; this is not evidence the text is correct, "
+                    "and a qualified human review is still required")
+        return ("no issues flagged by the automated checks; this is not evidence the text is correct, "
+                "and clinician review is still required")
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -220,6 +223,12 @@ def evaluate_item(plan: CarePlan, item: Item, candidate: str, language: str | No
             add("critical", "direction_changed", None,
                 f"“{value:g} {UNIT_WORDS.get(unit, unit)}” is described as a {'/'.join(sorted(got))} bound; "
                 f"the original gives a {'/'.join(sorted(want))} bound.")
+
+    # Meaning changes shared with teach-back (time of day, food, stop conditions, 911 alternatives, limits).
+    present = {i.check for i in rep.issues}
+    for ch in consistency.compare(item, candidate, patient=False):
+        if ch.check not in present:
+            add("major" if ch.check in ("limit_softened",) else "critical", ch.check, ch.fact_id, ch.message)
 
     # Medicine names: every source medicine still named; nothing new introduced.
     known = COMMON_DRUGS | plan.drug_names

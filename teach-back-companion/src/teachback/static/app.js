@@ -181,16 +181,17 @@ function teachBackResult(r) {
   if (r.safety && (r.safety.level === "emergency" || r.safety.level === "crisis")) {
     wrap.append(el("div", { class: "emergency-box", role: "alert" }, el("p", {}, el("strong", {}, r.safety.message))));
   }
-  const cls = r.concerns.length ? "result-concern" : r.not_mentioned.length ? "result-review" : "result-good";
+  const cls = r.concerns.length ? "result-concern" : "result-review";  // never a reassuring "all good" colour
   wrap.append(el("p", { class: cls }, r.summary));
   if (r.concerns.length) {
     wrap.append(el("h2", {}, "Points to check with your care team"));
     for (const c of r.concerns) wrap.append(el("div", { class: "card" }, el("p", {}, c.message),
       sourceTag("care_plan"), el("blockquote", {}, c.original)));
   }
-  if (r.covered.length) wrap.append(el("h3", {}, "You mentioned"), el("ul", { class: "clean" }, r.covered.map(f => el("li", {}, f.statement))));
+  if (r.covered.length) wrap.append(el("h3", {}, "Points the tool recognized"), el("ul", { class: "clean" }, r.covered.map(f => el("li", {}, f.statement))));
   if (r.not_mentioned.length) wrap.append(el("h3", {}, "Not mentioned yet"), el("ul", { class: "clean" }, r.not_mentioned.map(f => el("li", {}, f.statement))));
   if (r.follow_up) wrap.append(el("p", { class: "muted" }, r.follow_up));
+  if (r.limits) wrap.append(el("p", { class: "notice" }, r.limits));
   return wrap;
 }
 

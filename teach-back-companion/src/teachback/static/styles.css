@@ -31,6 +31,7 @@ body { margin: 0; background: var(--bg); color: var(--ink); font: 1rem/1.55 -app
 button { font: inherit; min-height: 44px; padding: 8px 14px; border-radius: 10px; border: 1px solid var(--rule); background: var(--surface); color: var(--ink); cursor: pointer; }
 button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
 button.linklike { background: none; border: none; color: var(--accent); text-decoration: underline; min-height: auto; padding: 0 4px; }
+.urgent-strip { background: var(--danger-bg); color: var(--danger); text-align: center; font-size: .9rem; padding: 6px 12px; border-bottom: 1px solid var(--danger); }
 .help-btn { background: var(--danger); color: #fff; border-color: var(--danger); font-weight: 700; }
 .tabs { display: flex; gap: 6px; overflow-x: auto; padding: 8px 16px; background: var(--surface); border-bottom: 1px solid var(--rule); }
 .tabs button { white-space: nowrap; border-color: transparent; }
