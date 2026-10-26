@@ -59,8 +59,9 @@ publication types; they are prompts to read the source, not conclusions.
 
 **Automatic monthly runs:** `.github/workflows/scheduled-reports.yml` runs the copilot on
 GitHub each month, keeps the database between runs for change tracking, and attaches the
-digest to the run. The digest quotes abstracts, so keep the repository private or remove that
-upload before making it public.
+digest to the run. Because the digest quotes abstracts, it is attached only while the
+repository is private; a public repository gets the trial tables only, and the full digest is
+made by running the copilot on your own computer.
 
 ## Commands
 
