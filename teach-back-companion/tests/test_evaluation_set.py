@@ -19,3 +19,12 @@ def test_dev_set_does_not_regress():
     for k in ("E", "C", "M"):
         assert r["safety"][k]["rate"] == 1.0, (k, r["misses"]["safety"])
     assert r["safety"]["N"]["rate"] >= 0.9
+
+
+def test_cli_prints_safety_net(capsys):
+    import json
+
+    from teachback.cli import main
+    main(["evaluate-set", str(DEV)])
+    out = json.loads(capsys.readouterr().out)
+    assert {"teachback", "fidelity", "safety", "safety_net"} <= out.keys()

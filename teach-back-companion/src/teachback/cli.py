@@ -68,7 +68,7 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "evaluate-set":
             from .evaluation import score
             r = score(args.file)
-            summary = {k: r[k] for k in ("teachback", "fidelity", "safety")}
+            summary = {k: r[k] for k in ("teachback", "fidelity", "safety", "safety_net")}
             print(json.dumps(summary, indent=2))
             if args.show_misses:
                 print(json.dumps({"misses": r["misses"], "false_alarms": r["false_alarms"]}, indent=2, ensure_ascii=False))
