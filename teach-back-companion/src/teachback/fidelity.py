@@ -105,40 +105,8 @@ def _has_quantity(candidate_numbers, value, unit) -> bool:
     return any(n.unit == unit and n.value == value for n in candidate_numbers)
 
 
-DIRECTION_BEFORE = (
-    ("max", r"(no more than|not more than|never (?:take |have |drink |eat )?more than|(?:do not|don't) (?:take|have|drink|eat|use) more than"
-            r"|limit\w*\b.{0,30}?\bto|up to|at most|maximum(?: of)?|max\.?|not to exceed|keep\b.{0,30}?\bto)\s*$"),
-    ("min", r"(at least|minimum(?: of)?|no less than|no fewer than)\s*$"),
-    ("above", r"(more than|above|over|greater than|higher than|exceeds?|faster than)\s*$"),
-    ("below", r"(below|under|less than|lower than|fewer than|slower than)\s*$"),
-)
-DIRECTION_AFTER = (("max", r"^\s*\S*\s*(?:\([^)]*\)\s*)?(?:or less|or fewer|or under|at most|or below)"),
-                   ("min", r"^\s*\S*\s*(?:\([^)]*\)\s*)?(?:or more|or higher|or above|at least)"))
-DIRECTIONAL_UNITS = {"mg", "liters", "cups", "bpm", "fahrenheit", "celsius", "pounds", "drinks"}
-
-
 def _digits(s: str) -> str:
     return text._words_to_digits(text.normalize(s))
-
-
-def _directions(s: str) -> dict[tuple[str, float], set[str]]:
-    """(unit, value) -> direction words around it: max/min (limits) or above/below (thresholds)."""
-    t = _digits(s)
-    out: dict[tuple[str, float], set[str]] = {}
-    for n in text.numbers(s):
-        if n.unit not in DIRECTIONAL_UNITS:
-            continue
-        sentence_start = max(t.rfind(".", 0, n.span[0]), t.rfind(";", 0, n.span[0])) + 1
-        before = t[max(sentence_start, n.span[0] - 60):n.span[0]]
-        after = t[n.span[1]:n.span[1] + 30]
-        for label, pat in DIRECTION_BEFORE:
-            if re.search(pat, before):
-                out.setdefault((n.unit, n.value), set()).add(label)
-                break
-        for label, pat in DIRECTION_AFTER:
-            if re.search(pat, after):
-                out.setdefault((n.unit, n.value), set()).add(label)
-    return out
 
 
 def _threshold_periods(s: str) -> set[tuple[float, str]]:
@@ -236,7 +204,7 @@ def evaluate_item(plan: CarePlan, item: Item, candidate: str, language: str | No
         for n in cand_nums:
             if n.unit == "tablets" and n.value not in src_tabs:
                 add("critical", "tablet_count_changed", None, f"“{n.value:g} tablet(s)” does not match the original.")
-        dose_add = (r"\b(?:extra|additional|double|another|1 more|one more)\s+(?:\d+ mg\s+)?(?:doses?|pills?|tablets?|capsules?|ones?)\b"
+        dose_add = (r"\b(?:extra|additional|double|another|1 more|one more|second|2nd)\s+(?:\d+ mg\s+)?(?:doses?|pills?|tablets?|capsules?|ones?)\b"
                     r"|\bdouble (?:up|the dose|your dose|it)\b|\b(?:1|one) extra\b")
         if english and re.search(dose_add, _digits(candidate)) and not re.search(dose_add, _digits(src)):
             add("critical", "dose_added", None, "The candidate mentions an extra or additional dose that the original does not.")
@@ -248,12 +216,10 @@ def evaluate_item(plan: CarePlan, item: Item, candidate: str, language: str | No
             f"({', '.join(f'{v:g} pounds per {p}' for v, p in sorted(cand_pairs - src_pairs))}).")
 
     if english:
-        src_dir, cand_dir = _directions(src), _directions(candidate)
-        for key, labels in cand_dir.items():
-            if key in src_dir and labels and not labels & src_dir[key]:
-                add("critical", "direction_changed", None,
-                    f"“{key[1]:g} {UNIT_WORDS.get(key[0], key[0])}” is described as "
-                    f"{'/'.join(sorted(labels))}; the original says {'/'.join(sorted(src_dir[key]))}.")
+        for unit, value, got, want in text.direction_conflicts(src, candidate):
+            add("critical", "direction_changed", None,
+                f"“{value:g} {UNIT_WORDS.get(unit, unit)}” is described as a {'/'.join(sorted(got))} bound; "
+                f"the original gives a {'/'.join(sorted(want))} bound.")
 
     # Medicine names: every source medicine still named; nothing new introduced.
     known = COMMON_DRUGS | plan.drug_names

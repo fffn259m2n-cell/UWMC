@@ -25,20 +25,30 @@ NEGATORS = (
     "not", "never", "no", "none", "nothing", "nor", "don't", "dont", "doesn't", "doesnt", "didn't",
     "didnt", "shouldn't", "shouldnt", "can't", "cant", "cannot", "mustn't", "mustnt", "won't", "wont",
     "wouldn't", "wouldnt", "isn't", "isnt", "aren't", "arent", "wasn't", "couldn't", "needn't",
-    "shan't", "avoid", "without", "stop", "quit", "nunca", "sin",
+    "shan't", "avoid", "without", "nunca", "sin",
 )
+# Multi-word avoidance phrases, rewritten to "not" before counting.
+NEGATOR_PHRASES = re.compile(
+    r"\b(?:stay (?:off|away from)|keep (?:off|away from)|hold off(?: on)?|put off|instead of|rather than"
+    r"|skip(?:ping)? (?=(?:911|calling|the call|the er|the hospital|going)\b)|forget about (?=(?:911|calling)\b)"
+    r"|wait (?:and see|to see)|steer clear of|stopp?(?:ed|ing|s)? (?=(?:taking|using|smoking|vaping|drinking|eating)\b)"
+    r"|quit(?:s|ting)? (?=(?:taking|using|smoking|vaping|drinking)\b)|give up|gave up|stay clear of)")
+# "tell you to stop", "unless your cardiologist says to stop": the action is someone else's decision.
+AUTHORITY_BEFORE = re.compile(r"\b(?:tells?|told|asks?|asked|says?|said|lets?|instructs?)\s+(?:you|me|us|them)?\s*(?:to\s+)?$")
 # Phrases that contain a negator but do not negate what follows.
 NOT_NEGATING = re.compile(
     r"\b(?:no problem(?:s)?(?: with)?|not a problem|no issues?(?: with)?|no trouble(?: with)?|"
     r"(?:do|does|did)n'?t mind|(?:do|does|did) not mind|not only|can'?t wait to|cannot wait to|"
     r"never (?:have|had) (?:any )?(?:issues|problems|trouble)(?: with)?|no worries|no doubt|"
     r"no more than|not more than|not exceed|no later than|not sure|no matter|"
+    r"(?:not|never|won'?t|don'?t|do not|wouldn'?t|will not|can'?t) (?:stop|quit)(?:ping|ped)? (?:taking|using)|"
     r"(?:do not|don't|dont|never|not)\s+(?:take|use|have|drink|eat|go|give)?\s*(?:more than|over|above|beyond|exceed)|"
     r"(?:do not|don't|never|not) let (?:it|this|your \w+) (?:go|get) (?:over|above))\b")
 NEGATION_WINDOW = 5  # words before the target
-LIST_WORDS = r"(?:\bor\b|\band\b|\blike\b|\bsuch as\b|\bincluding\b|\bfor example\b|\be\.?g\.?|\bnsaids?\b|[\s(),/:])"
+LIST_WORDS = (r"(?:\bor\b|\band\b|\bnor\b|\blike\b|\bsuch as\b|\bincluding\b|\bfor example\b|\be\.?g\.?|\bnsaids?\b"
+              r"|\balso (?:sold|known) as\b|\balso called\b|\bknown as\b|\bwhich is\b|\bbrand names?\b|\bsold as\b|\bor any\b|[\s(),/:])")
 # Negation that follows the target: "Smoking is not allowed", "crushing is not ok".
-POST_NEGATION = re.compile(r"^\s*(?:(?:or|and)\s+[a-z]+\s+)?(?:is|are)\s+(?:not\s+(?:allowed|ok|okay|safe|permitted|recommended)|forbidden|prohibited|unsafe)\b")
+POST_NEGATION = re.compile(r"^\s*(?:it\s+|that\s+|them\s+)?(?:(?:or|and)\s+[a-z]+\s+)?(?:is|are)\s+(?:not\s*(?:$|[.,;!]|okay\b|ok\b|good\b|for me\b))|^\s*(?:it\s+|that\s+|them\s+)?(?:(?:or|and)\s+[a-z]+\s+)?(?:is|are)\s+(?:not\s+(?:allowed|ok|okay|safe|permitted|recommended)|forbidden|prohibited|unsafe)\b")
 # Permission that follows the target: "ibuprofen is fine", "Advil is OK for me".
 POST_PERMISSION = re.compile(r"^\s*(?:is|are)\s+(?:also\s+|totally\s+|just\s+)?(?:fine|ok|okay|good|safe|allowed|alright|all right)\b|^\s*works\b")
 
@@ -66,7 +76,8 @@ FREQUENCY = (
     (r"\b(?:twice|2 times|two times)\s+(?:a|per|each|every)\s+day\b|\b(?:twice|2 times) daily\b|\b2x\s*(?:a\s+)?day\b|\bbid\b"
      r"|\bevery 12 hours\b|\b(?:in the |every |each )?mornings? and (?:again )?(?:at |in the |every |each )?(?:nights?|evenings?|bedtime)\b"
      r"|\b1 in the morning and 1 (?:at night|in the evening|at bedtime)\b|\band again (?:at|in the) (?:night|evening|bedtime)\b"
-     r"|\b(?:and|plus) (?:1|another|once|1 more) (?:at|in the) (?:night|evening|bedtime)\b|\b2 veces al dia\b", 2),
+     r"|\b(?:and|plus) (?:1|another|once|1 more) (?:at|in the) (?:night|evening|bedtime)\b|\b2 veces al dia\b"
+     r"|\b(?:a )?(?:second|2nd) (?:one|1|dose|pill|tablet)\b", 2),
     (r"\b(?:three times|3 times|thrice)\s+(?:a|per|each|every)\s+day\b|\b3 times daily\b|\btid\b|\b3 veces al dia\b", 3),
     (r"\b(?:4 times|four times)\s+(?:a|per|each|every)\s+day\b|\b4 times daily\b|\bqid\b", 4),
 )
@@ -149,27 +160,36 @@ def find_phrase(text: str, phrase: str) -> list[tuple[int, int]]:
     return [m.span() for m in _phrase_regex(phrase).finditer(t)]
 
 
-CLAUSE_BREAK = re.compile(r"[.;!?,]|\bbut\b|\bunless\b|\buntil\b|\bexcept\b|\bso\b|\bthen\b|\bhowever\b|\binstead\b")
+# Clauses end at sentence punctuation, at contrast words, and at a comma that starts a new
+# clause ("…, I'll use Aleve"). Other commas (lists, asides, appositives) do not end a clause.
+CLAUSE_BREAK = re.compile(
+    r"[.;!?]|\bbut\b|\bunless\b|\buntil\b|\btill\b|\bexcept\b|\bhowever\b|\botherwise\b"
+    r"|,\s*(?=(?:i|i'll|i'm|i'd|i've|i will|i can|you|we|it's|only|then|so|and then|and i|after that)\b)")
 
 
 def is_negated(text: str, start: int, window: int = NEGATION_WINDOW) -> bool:
-    """True if an odd number of negators appears in the same clause within `window` words before `start`.
+    """True if a negator appears in the same clause within `window` words before `start`.
 
-    Clauses end at punctuation and at "but / unless / until / so / then".
-    "not stop" counts two negators and so reads as affirming what follows.
+    A negator carries across a list ("do not stop or skip", "no ibuprofen and no naproxen").
+    "stop"/"quit" negate only directly before an action ("stop taking", "quit smoking").
     """
     t = normalize(text)
     clause = CLAUSE_BREAK.split(t[:start])[-1]
     clause = NOT_NEGATING.sub(" ", clause)
+    if re.search(r"\b(?:stopp?(?:ed|ing|s)?|quit(?:s|ting)?|give up|gave up|cut out|skip(?:ping)?|forget about"
+                 r"|hold off on|instead of|rather than|not bother(?: with| calling)?)\s*$", clause):
+        return True   # "stop smoking", "skip 911": the target itself is being stopped or avoided
+    clause = NEGATOR_PHRASES.sub(" not ", clause)
     words = re.findall(r"[a-z']+", clause)[-window:]
-    count = sum(1 for w in words if w in NEGATORS)
-    return count % 2 == 1
+    return any(w in NEGATORS for w in words)
 
 
 def phrase_states(text: str, phrase: str) -> list[bool]:
     """Negation state (True = negated) of each occurrence of a phrase."""
     t = normalize(text)
     states = []
+    if re.match(r"(?:unless|until|till|except|but)\b", normalize(phrase)):
+        return [False for _ in find_phrase(t, phrase)]   # a condition phrase is not itself negated
     for start, end in find_phrase(t, phrase):
         neg = is_negated(t, start)
         if POST_NEGATION.match(t[end:]):
@@ -237,7 +257,7 @@ def action_mentions(text: str, verbs: list[str], objects: list[str] | None = Non
         return found
     for verb in verbs:
         for m in re.finditer(rf"(?<![a-z]){re.escape(verb)}(?:s|ed|ing|ping|ped|d)?(?![a-z])", t):
-            neg = is_negated(t, m.start())
+            neg = is_negated(t, m.start()) or bool(AUTHORITY_BEFORE.search(t[:m.start()]))
             if POST_NEGATION.match(t[m.end():]):
                 neg = True
             found.append((verb, neg))
@@ -246,3 +266,47 @@ def action_mentions(text: str, verbs: list[str], objects: list[str] | None = Non
 
 def sentences(text: str) -> list[str]:
     return [s.strip() for s in re.split(r"(?<=[.!?])\s+", text or "") if s.strip()]
+
+
+# ---------------------------------------------------------------- limit and threshold direction
+# A number's direction: an upper limit ("no more than 2 liters", "keep under 2,000 mg",
+# "never go over"), a lower limit ("at least"), or a threshold ("above 110", "below 110").
+# "upper" covers max limits and "below" thresholds; "lower" covers min limits and "above".
+DIRECTION_BEFORE = (
+    ("upper", r"(?:no more than|not more than|never (?:take |have |drink |eat |go |get )?(?:more than|over|above|beyond)"
+              r"|(?:not|never|don'?t|do not)\b[^.]{0,25}\b(?:more than|over|above|exceed\w*|beyond)"
+              r"|limit\w*\b.{0,30}?\bto|up to|at most|maximum(?: of)?|max\.?|not to exceed|keep\b.{0,30}?\b(?:to|under|below|less than)"
+              r"|(?:the )?most (?:you can|you may|is)\b.{0,30})\s*$"),
+    ("lower", r"(?:at least|minimum(?: of)?|no less than|no fewer than)\s*$"),
+    ("above", r"(?:more than|above|over|greater than|higher than|exceeds?|faster than)\s*$"),
+    ("below", r"(?:below|under|less than|lower than|fewer than|slower than)\s*$"),
+)
+DIRECTION_AFTER = (("upper", r"^[^.;]{0,45}?\b(?:or less|or fewer|or under|at most|or below|a day at most)\b"),
+                   ("lower", r"^[^.;]{0,45}?\b(?:or more|or higher|or above|at least)\b(?!\s+than)"))
+DIRECTION_GROUP = {"upper": "upper", "below": "upper", "lower": "lower", "above": "lower"}
+DIRECTIONAL_UNITS = {"mg", "liters", "cups", "bpm", "fahrenheit", "celsius", "pounds", "drinks"}
+
+
+def directions(s: str) -> dict[tuple[str, float], set[str]]:
+    """(unit, value) -> {"upper"/"lower"} direction groups stated around that number."""
+    t = _words_to_digits(normalize(s))
+    out: dict[tuple[str, float], set[str]] = {}
+    for n in numbers(s):
+        if n.unit not in DIRECTIONAL_UNITS:
+            continue
+        sentence_start = max(t.rfind(".", 0, n.span[0]), t.rfind(";", 0, n.span[0])) + 1
+        before = t[max(sentence_start, n.span[0] - 60):n.span[0]]
+        after = t[n.span[1]:n.span[1] + 60]
+        for label, pat in DIRECTION_BEFORE:
+            if re.search(pat, before):
+                out.setdefault((n.unit, n.value), set()).add(DIRECTION_GROUP[label])
+                break
+        for label, pat in DIRECTION_AFTER:
+            if re.search(pat, after):
+                out.setdefault((n.unit, n.value), set()).add(label)
+    return out
+
+
+def direction_conflicts(source: str, candidate: str) -> list[tuple[str, float, set, set]]:
+    src, cand = directions(source), directions(candidate)
+    return [(k[0], k[1], labels, src[k]) for k, labels in cand.items() if k in src and labels and not labels & src[k]]

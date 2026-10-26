@@ -80,7 +80,8 @@
               "value": 5,
               "unit": "days"
             }
-          ]
+          ],
+          "misconceptions": []
         },
         {
           "id": "amox-finish",
@@ -151,7 +152,8 @@
               "value": 6,
               "unit": "hours"
             }
-          ]
+          ],
+          "misconceptions": []
         },
         {
           "id": "apap-max",
@@ -173,7 +175,8 @@
               "value": 24,
               "unit": "hours"
             }
-          ]
+          ],
+          "misconceptions": []
         }
       ]
     },
@@ -197,7 +200,8 @@
               "vape"
             ],
             "polarity": "dont"
-          }
+          },
+          "misconceptions": []
         },
         {
           "id": "rest-fluids",
@@ -213,7 +217,8 @@
               "drink",
               "water"
             ]
-          ]
+          ],
+          "misconceptions": []
         }
       ]
     },
@@ -248,7 +253,8 @@
               "value": 3,
               "unit": "days"
             }
-          ]
+          ],
+          "misconceptions": []
         }
       ]
     },
@@ -282,8 +288,13 @@
           "misconceptions": [
             {
               "id": "drive-self",
-              "pattern": "\\b(drive|driving) (myself|me|to the (er|hospital|emergency))\\b",
+              "pattern": "\\b(drive|driving) (myself|me|to the (er|hospital|emergency))\\b|\\b(someone|somebody|my \\w+|a friend|a neighbor|family) (to |could |can |will )?(drive|take|bring) me\\b|\\bhave (someone|somebody|my \\w+) (drive|take) (me|you)\\b|\\b(drive|take) (myself|me) in\\b",
               "message": "Your instructions say to call 911 for these signs rather than getting yourself to the hospital."
+            },
+            {
+              "id": "wait-and-see",
+              "pattern": "\\b(wait|waiting) (and see|to see|it out|a (bit|while|day))\\b|\\bsee if it (passes|goes away|gets better|stops)\\b|\\b(sleep it off|rest and see|lie down and see)\\b|\\bwait\\b[^.]{0,30}\\b(pass|passes|goes away|better|over)\\b",
+              "message": "Your instructions say to call 911 for these signs. They should not wait to see if they pass."
             }
           ]
         }
@@ -323,7 +334,8 @@
               "value": 1,
               "unit": "weeks"
             }
-          ]
+          ],
+          "misconceptions": []
         }
       ]
     },
@@ -359,7 +371,8 @@
               "value": 6,
               "unit": "weeks"
             }
-          ]
+          ],
+          "misconceptions": []
         }
       ]
     }

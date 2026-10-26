@@ -17,7 +17,11 @@ from .models import CarePlan, Fact, Item
 MAX_INPUT = 2000
 # Durations compared in days, so "2 months" conflicts with "2 weeks".
 DURATION_DAYS = {"days": 1, "weeks": 7, "months": 30}
-SKIP_VERBS = ["skip", "stop taking", "stop", "quit", "miss"]
+SKIP_VERBS = ["skip", "stop taking", "quit taking", "miss", "leave it out", "leave out", "go without", "come off",
+              "go off", "get off", "done with it", "leave the rest", "throw away", "throw out", "won't need it",
+              "no longer need"]
+EXTRA_DOSE = (r"\b(?:second|2nd|another|extra|additional|1 more|one more)\s+(?:\d+ mg\s+)?(?:one|1|dose|pill|tablet|capsule)s?\b"
+              r"|\bdouble (?:up|the dose|my dose|it)\b|\btake (?:more|2|two|extra)\b")
 
 
 @dataclass
@@ -134,15 +138,29 @@ def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
         for c in _number_mismatches(item, fact, said):
             concern(fact, c.kind, c.message)
 
-    # 5) Skipping or stopping a medicine when the plan says nothing of the kind.
-    if item.kind == "medication" and not any(f.action for f in item.facts):
-        for verb, negated in text.action_mentions(said, SKIP_VERBS):
-            if not negated:
-                f = item.facts[0]
-                concern(f, "contradiction",
-                        f"Your explanation mentions “{verb}”, but your instructions do not say to skip or stop "
-                        "this medicine. Please check with your care team or pharmacist before changing how you take it.")
-                break
+    # 5) Skipping, stopping or adding doses of a medicine when the plan says nothing of the kind.
+    if item.kind == "medication":
+        f = item.facts[0]
+        if not any(c.kind == "contradiction" for c in res.concerns):
+            for verb, negated in text.action_mentions(said, SKIP_VERBS):
+                if not negated:
+                    concern(f, "contradiction",
+                            f"Your explanation mentions “{verb}”, but your instructions do not say to skip or stop "
+                            "this medicine. Please check with your care team or pharmacist before changing how you take it.")
+                    break
+        digits = text._words_to_digits(norm)
+        m = re.search(EXTRA_DOSE, digits)
+        if m and not text.is_negated(digits, m.start()) and not re.search(EXTRA_DOSE, text._words_to_digits(text.normalize(item.original))):
+            concern(f, "contradiction",
+                    "Your explanation mentions an extra dose. Your instructions do not say to take extra. "
+                    "Please ask your care team or pharmacist before taking more than prescribed.")
+
+    # 6) A limit read the wrong way ("at least 2 liters" when 2 liters is the most allowed).
+    for unit, value, got, want in text.direction_conflicts(item.original, said):
+        f = next((fa for fa in item.facts if any(q.unit == unit and q.value == value for q in fa.quantities)), item.facts[0])
+        concern(f, "number_mismatch",
+                f"You described {_fmt(value)} {_unit_label(unit)} as a {'minimum' if 'lower' in got else 'maximum'}, "
+                f"but in your instructions it is a {'maximum' if 'upper' in want else 'minimum'}. Please check the instruction below.")
 
     for fact in item.facts:
         flagged = any(c.fact_id == fact.id for c in res.concerns)

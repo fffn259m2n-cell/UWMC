@@ -72,7 +72,8 @@
               "value": 12,
               "unit": "hours"
             }
-          ]
+          ],
+          "misconceptions": []
         },
         {
           "id": "apx-continue",
@@ -156,7 +157,8 @@
               "value": 1,
               "unit": "per_day"
             }
-          ]
+          ],
+          "misconceptions": []
         },
         {
           "id": "met-whole",
@@ -178,7 +180,8 @@
             ],
             "polarity": "dont"
           },
-          "coverage": "concepts_or_negated_action"
+          "coverage": "concepts_or_negated_action",
+          "misconceptions": []
         }
       ]
     },
@@ -208,7 +211,8 @@
               "doctor",
               "care team"
             ]
-          ]
+          ],
+          "misconceptions": []
         },
         {
           "id": "bleed-911",
@@ -240,6 +244,11 @@
               "id": "wait-out-bleeding",
               "pattern": "\\b(wait|sleep on it|see if it stops|until (my|the) (next )?appointment)\\b[^.]*\\b(bleed|bleeding|headache)\\b|\\b(bleed|bleeding|headache)\\b[^.]*\\b(wait|until (my|the) (next )?appointment)\\b",
               "message": "Your instructions say to call 911 for bleeding that does not stop after 10 minutes of pressure, vomiting blood, or a severe headache. These should not wait for an appointment."
+            },
+            {
+              "id": "wait-and-see",
+              "pattern": "\\b(wait|waiting) (and see|to see|it out|a (bit|while|day))\\b|\\bsee if it (passes|goes away|gets better|stops)\\b|\\b(sleep it off|rest and see|lie down and see)\\b|\\bwait\\b[^.]{0,30}\\b(pass|passes|goes away|better|over)\\b",
+              "message": "Your instructions say to call 911 for these signs. They should not wait to see if they pass."
             }
           ]
         }
@@ -280,7 +289,8 @@
               "aleve"
             ]
           },
-          "coverage": "negated_action"
+          "coverage": "negated_action",
+          "misconceptions": []
         },
         {
           "id": "tylenol-ok",
@@ -291,7 +301,8 @@
               "acetaminophen",
               "tylenol"
             ]
-          ]
+          ],
+          "misconceptions": []
         }
       ]
     },
@@ -327,13 +338,18 @@
           "misconceptions": [
             {
               "id": "drive-self",
-              "pattern": "\\b(drive|driving) (myself|me|to the (er|hospital|emergency))\\b",
+              "pattern": "\\b(drive|driving) (myself|me|to the (er|hospital|emergency))\\b|\\b(someone|somebody|my \\w+|a friend|a neighbor|family) (to |could |can |will )?(drive|take|bring) me\\b|\\bhave (someone|somebody|my \\w+) (drive|take) (me|you)\\b|\\b(drive|take) (myself|me) in\\b",
               "message": "Your instructions say to call 911 for these signs rather than getting yourself to the hospital."
             },
             {
               "id": "call-clinic-instead",
               "pattern": "\\bcall (the )?(clinic|office|cardiology)\\b[^.]*\\b(chest pain|faint|weak|numb|droop|stroke|speak|talk)",
               "message": "For chest pain, fainting or stroke signs, your instructions say to call 911, not the clinic."
+            },
+            {
+              "id": "wait-and-see",
+              "pattern": "\\b(wait|waiting) (and see|to see|it out|a (bit|while|day))\\b|\\bsee if it (passes|goes away|gets better|stops)\\b|\\b(sleep it off|rest and see|lie down and see)\\b|\\bwait\\b[^.]{0,30}\\b(pass|passes|goes away|better|over)\\b",
+              "message": "Your instructions say to call 911 for these signs. They should not wait to see if they pass."
             }
           ]
         }
@@ -366,7 +382,8 @@
               "value": 110,
               "unit": "bpm"
             }
-          ]
+          ],
+          "misconceptions": []
         }
       ]
     },
@@ -409,7 +426,8 @@
               "value": 2,
               "unit": "weeks"
             }
-          ]
+          ],
+          "misconceptions": []
         }
       ]
     },
@@ -437,7 +455,8 @@
               "value": 1,
               "unit": "drinks"
             }
-          ]
+          ],
+          "misconceptions": []
         }
       ]
     }

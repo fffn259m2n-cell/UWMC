@@ -19,14 +19,18 @@ from . import text
 EMERGENCY = (
     ("chest pain", r"\bchest\b[^.]{0,25}\b(pain|pains|pressure|tight|tightness|heavy|heaviness|hurts?|hurting|squeez\w*|crush\w*)\b"
                    r"|\b(pain|pressure|tightness|heaviness|weight)\b[^.]{0,20}\b(in|on) (my|the) chest\b|\bheart attack\b"),
-    ("breathing", r"\b(can'?t|cannot|can not|hard to|trouble|difficulty|struggling to|struggle to|unable to|barely|hurts to)\s+(breathe|breath|breathing|catch my breath)\b"
+    ("breathing", r"\b(can'?t|cannot|can not|hard to|trouble|difficulty|struggling to|struggle to|unable to|barely|hardly|hurts to)\s+(breathe|breath|breathing|catch my breath)\b"
+                  r"|\b(can'?t|cannot) get (enough )?(air|a breath)\b|\bout of breath\b[^.]{0,25}\b(sitting|resting|lying|doing nothing|at rest)\b"
                   r"|\b(gasping|choking|suffocating)\b|\bshort of breath\b[^.]{0,20}\b(resting|rest|lying|worse|bad|severe)\b"
                   r"|\b(lips|fingers?|fingertips|face) (are |is |look |looks |turning |turned )?(blue|gray|grey)\b"),
     ("stroke signs", r"\b(face|mouth|smile)\b[^.]{0,15}\bdroop\w*|\bslurr\w*|\b(can'?t|cannot|trouble|hard to) (speak|talk|get my words out|move my)\b"
-                     r"|\b(one side|left side|right side|my arm|my leg|arm|leg|half of my body)\b[^.]{0,15}\b(weak|numb|dead|tingl\w*|can'?t move)\b|\bstroke\b"),
+                     r"|\b(one side|left side|right side|my arm|my leg|arm|leg|half of my body)\b[^.]{0,15}\b(weak|numb|dead|tingl\w*|can'?t move)\b|\bstroke\b"
+                     r"|\b(face|arm|leg|hand)\b[^.]{0,15}\bnumb\b|\bnumb\b[^.]{0,15}\bone side\b|\b(can'?t|cannot|unable to) (lift|raise|move) my (arm|leg|hand)\b"
+                     r"|\b(speech|words?|talking)\b[^.]{0,12}\b(garbled|slurred|jumbled|strange|wrong)\b|\b(can'?t|cannot) see (out of|with)\b|\b(sudden\w*|lost) (vision|sight)\b|\bblind in one eye\b"),
     ("fainting", r"\b(faint(ed|ing)?|pass(ed|ing)? out|black(ed|ing)? out|unconscious|collaps(e|ed|ing)|keel(ed)? over)\b|\bgoing to (faint|pass out)\b"),
     ("bleeding", r"\b(vomit\w*|throw\w* up|threw up|cough\w* up)\b[^.]{0,10}\bblood\b|\bblood\b[^.]{0,10}\b(in|from) (my )?(vomit|throw[- ]up|spit|mouth|stool)\b"
                  r"|\bbleed\w*\b[^.]{0,40}\b(won'?t|will not|doesn'?t|does not|can'?t|cannot|not) stop\w*|\b(heavy|severe|a lot of|lots of) bleeding\b|\bbleed\w* a lot\b"
+                 r"|\b(won'?t|will not|can'?t|cannot|doesn'?t|does not) stop (the )?bleed\w*|\bbleed\w* (heavily|badly|nonstop|non-stop)\b|\bnot stopping\b[^.]{0,20}\bbleed"
                  r"|\b(severe|worst|terrible|sudden|very bad|awful)\b[^.]{0,15}\bheadache\b"),
     ("confusion", r"\b(very |suddenly |really )?confused\b|\bconfusion\b|\bdon'?t know where i am\b"),
     ("seizure", r"\bseizure|convuls|\bfit\b(?= (now|again))"),
@@ -35,7 +39,8 @@ EMERGENCY = (
     ("allergic reaction", r"\b(throat|tongue|lips|face)\b[^.]{0,10}\b(swell\w*|swollen|closing|tight)\b|\banaphyla|\bhives all over\b"),
 )
 SELF_HARM = (r"\b(kill(ing)? myself|suicid\w*|end(ing)? my life|end(ing)? it( all)?|hurt(ing)? myself|self[- ]harm"
-             r"|(don'?t|do not) want to (live|be alive|be here)|want to die|wish i (was|were) dead|better off dead)\b")
+             r"|(don'?t|do not) want to (live|be alive|be here|wake up|go on)|want to die|wish i (was|were) dead|better off dead"
+             r"|no reason to (live|go on)|can'?t go on|nothing to live for|take my (own )?life)\b")
 
 # Medicine vocabulary used to recognise medication questions.
 MED_WORDS = (r"\b(pills?|tablets?|capsules?|meds?|medicines?|medications?|doses?|dosage|prescriptions?|water pill|blood thinner"
@@ -43,18 +48,23 @@ MED_WORDS = (r"\b(pills?|tablets?|capsules?|meds?|medicines?|medications?|doses?
              r"|amoxicillin|augmentin|clavulanate|acetaminophen|tylenol|ibuprofen|advil|motrin|naproxen|aleve|aspirin|nsaids?"
              r"|warfarin|insulin|spironolactone|potassium)\b")
 CHANGE_WORDS = (r"\b(stop|stopped|stopping|quit|skip|skipped|skipping|miss|missed|forgot|forget|ran out|run out|running out"
-                r"|double|doubled|doubling|extra|another|more|less|half|halve|cut|split|crush|instead|change|changing|switch"
-                r"|increase|decrease|lower|raise|reduce|adjust|mix|combine|together|with my|along with|2 \w+ today|two \w+ today"
-                r"|anymore|any more|going to stop|don'?t want to take|didn'?t take|did not take|don'?t take|do not take|not take)\b")
-ASKING_TO_TAKE = (r"\b(can|could|should|may|do) i (take|use|have|give)\b|\b(is|are) (it|they|\w+) (ok|okay|safe|fine|alright|all right)\b"
-                  r"|\b(is it|it's|is that) (ok|okay|safe|fine|alright|all right) (to|if)\b")
+                r"|double|doubled|doubling|extra|another|half|halve|cut|split|crush|instead|change|changing|switch"
+                r"|increase|decrease|lower|raise|reduce|adjust|mix|combine|together|along with"
+                r"|take more|more (pills|doses|of)|2 \w+ today|two \w+ today|second (one|dose|pill)"
+                r"|anymore|any more|going to stop|don'?t want to take|didn'?t take|did not take|don'?t take|do not take"
+                r"|not take|not taking|without (my|the|taking)|leave (it|them) out|go off|come off)\b")
+ASKING_TO_TAKE = (r"\b(can|could|should|may) i (take|use|have|give|mix)\b[^.?]*\b(with|and|if|instead|while|for|today|tonight|now)\b"
+                  r"|\b(can|could|should|may) i (take|use) (an? |some |any )?(ibuprofen|advil|motrin|naproxen|aleve|aspirin|nsaids?|tylenol|acetaminophen)\b"
+                  r"|\b(is|are) (it|they|\w+) (ok|okay|safe|fine|alright|all right)\b|\b(is it|it's|is that) (ok|okay|safe|fine|alright|all right) (to|if)\b")
 DIAGNOSIS = (r"\bdo i have\b", r"\bwhat'?s wrong with me\b", r"\bdiagnos(e|is) me\b",
              r"\bis (this|it|my \w+) (cancer|serious|normal|dangerous)\b", r"\bam i (dying|going to die|ok|okay)\b")
 RESULTS = (r"\bmy (potassium|sodium|blood pressure|bp|heart rate|pulse|ef|ejection fraction|lab|labs|result|results|test|weight|oxygen) "
            r"(is|was|came back|reading|level)\b",)
-EDUCATIONAL = r"^\s*(what (is|are|does)|tell me about|explain|how (do|does|can)|what are the signs|signs of|describe)\b"
-CONDITIONAL = r"\b(if|when|whenever|in case|should i (ever )?(get|have|feel))\b"
-FIRST_PERSON = r"\b(i|i'm|im|my|me|i've|i'd)\b"
+EDUCATIONAL = r"^\s*(what (is|are|does)|tell me (about|more)|explain|how (do|does|can) (you|a|an|the|people)|what are the signs|signs of|describe)\b"
+CONDITIONAL = r"\b(if|in case|should i (ever )?(get|have|feel))\b"
+FIRST_PERSON = r"\b(i|i'm|im|my|i've|i'd|mine)\b"
+PRESENT = r"\b(this|now|right now|currently|today|tonight|still|at the moment|keeps?|keep on|again)\b"
+PAST_ONLY = r"\b(\d+|a|one|two|few|several|many|some) (years?|months?|weeks?) ago\b|\blast (year|month)\b|\bin the past\b|\byears ago\b"
 
 
 @dataclass
@@ -77,15 +87,25 @@ MEDICATION_MESSAGE = ("I can't advise on starting, stopping, skipping, doubling 
 
 
 def _live_match(t: str, pattern: str, context: str) -> re.Match | None:
-    """First match that is not negated (and, in teach-back, not inside a condition)."""
+    """First match that is not a plain denial, a past event, or (in teach-back) a plan description.
+
+    Missing a real emergency is worse than a false alarm, so only a negator that directly
+    governs the symptom ("no chest pain", "I don't have chest pain") suppresses a match.
+    """
+    present = bool(re.search(PRESENT, t))
     for m in re.finditer(pattern, t):
-        clause = text.CLAUSE_BREAK.split(t[:m.start()])[-1]
-        if text.is_negated(t, m.start()) and not re.search(r"\b(can'?t|cannot|barely|won'?t)\s*$", t[:m.start()]):
+        lead = t[max(0, m.start() - 25):m.start()]
+        tail = t[m.end():m.end() + 30]
+        if re.search(r"\b(no|not having|don'?t have|do not have|didn'?t have|without|never had|haven'?t had|not)\s+(any\s+)?$", lead) \
+                and not re.search(r"\b(can'?t|cannot|barely|won'?t)\s*$", lead) \
+                and not re.search(r"\b(like this|like that|this bad|before|until now|now)\b", tail):
             continue
-        if re.search(r"\b(no|not|don'?t have|do not have|without|never had)\b[^.]{0,12}$", clause):
+        if re.search(PAST_ONLY, t) and not present:
             continue
-        if context == "teachback" and re.search(CONDITIONAL, clause):
-            continue
+        if context == "teachback":
+            clause = re.split(r"[.;!?]", t[:m.start()])[-1]
+            if re.search(CONDITIONAL, clause) and not present:
+                continue
         return m
     return None
 
@@ -94,7 +114,7 @@ def screen(message: str, context: str = "chat") -> SafetyResult:
     t = text.normalize(message)
     if re.search(SELF_HARM, t) and not re.search(r"\b(stop|quit) (hurting|killing) myself (with|by) (smoking|drinking)\b", t):
         return SafetyResult("crisis", "self-harm language", CRISIS_MESSAGE)
-    educational = bool(re.search(EDUCATIONAL, t)) and not re.search(FIRST_PERSON, t)
+    educational = bool(re.search(EDUCATIONAL, t)) and not re.search(FIRST_PERSON, t) and not re.search(PRESENT, t)
     if not educational:
         for label, pattern in EMERGENCY:
             if _live_match(t, pattern, context):
