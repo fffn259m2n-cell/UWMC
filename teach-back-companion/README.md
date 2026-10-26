@@ -107,7 +107,7 @@ Details: [docs/architecture.md](docs/architecture.md), [docs/clinical_safety.md]
 ## Testing
 
 ```bash
-pip install -e ".[dev]" && pytest          # 247 tests
+pip install -e ".[dev]" && pytest          # all should pass
 teachback serve --port 8765 &
 node scripts/e2e_check.mjs http://127.0.0.1:8765    # needs playwright + axe-core (npm)
 ```

@@ -45,9 +45,9 @@ jobs:
           call "windows\Run demos and tests.bat" < NUL > run.log 2>&1
           echo --- demos and tests script finished
           type run.log
-          findstr /c:"249 passed" run.log || exit /b 1
-          findstr /c:"74 passed" run.log || exit /b 1
-          findstr /c:"54 passed" run.log || exit /b 1
+          findstr /r /c:"[0-9][0-9]* passed" run.log || exit /b 1
+          findstr /r /c:"[0-9][0-9]* failed" /c:"[0-9][0-9]* error" run.log && exit /b 1
+          echo No test failures.
           if not exist "quality-signal-monitor\output\uwmc_quality_report.html" exit /b 1
           if not exist "ep-research-copilot\output\ep_research_digest.html" exit /b 1
 

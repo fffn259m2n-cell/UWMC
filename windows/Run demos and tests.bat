@@ -15,7 +15,7 @@ pushd ep-research-copilot
 ep-copilot run --offline
 ep-copilot run --offline --fixtures tests/fixtures/snapshot_run2
 popd
-echo == 3/3 Automated tests. Expect 74, 54 and 249 passed. ==
+echo == 3/3 Automated tests. Each project should say "passed", with nothing failed. ==
 for %%D in (quality-signal-monitor ep-research-copilot teach-back-companion) do call :tests %%D
 rem UWMC_NO_SERVE=1 is the automated check: do not open a browser there.
 if not defined UWMC_NO_SERVE start "" "quality-signal-monitor\output\uwmc_quality_report.html"

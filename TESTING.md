@@ -50,8 +50,8 @@ pip install -e ./quality-signal-monitor -e ./ep-research-copilot -e ./teach-back
 
 ```bash
 pip install pytest httpx
-cd quality-signal-monitor && pytest -q && cd ..      # expect: 74 passed
-cd ep-research-copilot   && pytest -q && cd ..      # expect: 54 passed
+cd quality-signal-monitor && pytest -q && cd ..      # expect: all passed
+cd ep-research-copilot   && pytest -q && cd ..      # expect: all passed
 cd teach-back-companion  && pytest -q && cd ..      # expect: all passed
 ```
 
