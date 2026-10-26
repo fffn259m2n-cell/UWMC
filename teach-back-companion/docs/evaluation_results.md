@@ -3,7 +3,28 @@
 All numbers are from labelled synthetic cases scored with `teachback evaluate-set`. They
 describe rule behaviour on text written by reviewers, not clinical performance with patients.
 
-## Held-out round 2 (the current accuracy estimate)
+## Held-out round 3 (the current accuracy estimate)
+
+360 cases from a third independent reviewer (no access to code, other sets or results),
+asked to use deliberately new vocabulary. Scored once on commit `48b285d`, before any change.
+
+| Component | Cases | Round 3 | Round 2 | Round 1 |
+|---|---|---|---|---|
+| Teach-back: dangerous explanations flagged | 82 | **67 (82%)** | 88% | 77% |
+| Teach-back: correct explanations not flagged | 67 | **64 (96%)** | 100% | 91% |
+| Fidelity: dangerous rewrites flagged | 54 | **53 (98%)** | 97% | 95% |
+| Fidelity: faithful rewrites not flagged | 37 | **36 (97%)** | 90% | 83% |
+| Safety: emergencies recognised | 45 | **38 (84%)** | 87% | 83% |
+| Safety: suicide / self-harm recognised | 15 | **9 (60%)** | 73% | 67% |
+| Safety: medication-change requests referred | 22 | **20 (91%)** | 82% | 90% |
+| Safety: ordinary messages not treated as emergencies | 38 | **35 (92%)** | 97% | 97% |
+
+**The key finding across three rounds:** fixing the phrases each reviewer used does not carry
+over to the next reviewer's phrasing. Sensitivity for emergencies and especially crisis
+statements stays around 60 to 87% on new text. Keyword rules cannot reach 100% on unseen
+language. That is why the design does not depend on detection (next section).
+
+## Held-out round 2
 
 390 cases written by a second independent reviewer who did not read the rule code, the
 development set or round 1. Scored once, on commit `abbf814`, **before any change was made
