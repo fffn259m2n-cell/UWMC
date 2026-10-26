@@ -17,13 +17,14 @@ ep-copilot run --offline --fixtures tests/fixtures/snapshot_run2
 popd
 echo == 3/3 Automated tests. Expect 74, 54 and 249 passed. ==
 for %%D in (quality-signal-monitor ep-research-copilot teach-back-companion) do call :tests %%D
-start "" "quality-signal-monitor\output\uwmc_quality_report.html"
-start "" "ep-research-copilot\output\ep_research_digest.html"
+rem UWMC_NO_SERVE=1 is the automated check: do not open a browser there.
+if not defined UWMC_NO_SERVE start "" "quality-signal-monitor\output\uwmc_quality_report.html"
+if not defined UWMC_NO_SERVE start "" "ep-research-copilot\output\ep_research_digest.html"
 echo.
 echo Done. Two reports opened in your browser.
 echo Real data needs internet. In this folder, in a Command Prompt, run:
 echo    .venv\Scripts\activate ^&^& cd quality-signal-monitor ^&^& uwmc-monitor run --fetch
-pause
+if not defined UWMC_NO_SERVE pause
 exit /b 0
 
 :tests
