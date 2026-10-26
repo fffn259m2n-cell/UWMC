@@ -21,7 +21,7 @@ teachback = "teachback.cli:main"
 where = ["src"]
 
 [tool.setuptools.package-data]
-teachback = ["data/plans/*.json", "data/knowledge/*.json", "data/benchmark/*.json", "static/*"]
+teachback = ["data/plans/*.json", "data/knowledge/*.json", "data/benchmark/*.json", "static/*", "static/themes/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

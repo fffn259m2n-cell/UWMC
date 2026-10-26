@@ -113,3 +113,17 @@ def test_cli(capsys, tmp_path):
     f.write_text("Take apixaban 5 mg once a day.")
     assert main(["evaluate", "afib-demo", "med-apixaban", str(f)]) == 1
     assert main(["benchmark"]) == 0
+
+
+def test_themes(tmp_path, monkeypatch):
+    monkeypatch.setenv("TEACHBACK_THEME", "portal")
+    html = TestClient(create_app(tmp_path / "t.sqlite", today=TODAY)).get("/").text
+    assert '/static/themes/portal.css' in html
+    monkeypatch.setenv("TEACHBACK_THEME", "../../etc/passwd")
+    with pytest.raises(ValueError):
+        create_app(tmp_path / "t2.sqlite")
+    monkeypatch.setenv("TEACHBACK_THEME", "nonexistent")
+    with pytest.raises(ValueError, match="Available"):
+        create_app(tmp_path / "t3.sqlite")
+    monkeypatch.delenv("TEACHBACK_THEME")
+    assert "themes/" not in TestClient(create_app(tmp_path / "t4.sqlite", today=TODAY)).get("/").text

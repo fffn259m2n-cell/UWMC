@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import os
+import re
 from datetime import date, datetime
 from importlib import resources
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -50,6 +51,7 @@ class StatusIn(BaseModel):
 
 
 def create_app(db_path: Path | None = None, today: date | None = None) -> FastAPI:
+    """Build the app. TEACHBACK_THEME=<name> adds static/themes/<name>.css (e.g. portal, high-contrast)."""
     app = FastAPI(title="Teach-Back Companion (synthetic demo)", version=__version__,
                   docs_url=None, redoc_url=None, openapi_url=None)
     plans = load_plans()
@@ -172,9 +174,21 @@ def create_app(db_path: Path | None = None, today: date | None = None) -> FastAP
     def reset():
         store.clear()
 
+    theme = os.environ.get("TEACHBACK_THEME", "").strip()
+    if theme and not re.fullmatch(r"[a-z0-9-]+", theme):
+        raise ValueError("TEACHBACK_THEME may contain only lowercase letters, digits and hyphens")
+    if theme and not (STATIC / "themes" / f"{theme}.css").exists():
+        raise ValueError(f"Unknown theme '{theme}'. Available: "
+                         + ", ".join(sorted(p.stem for p in (STATIC / "themes").glob("*.css"))))
+    index_html = (STATIC / "index.html").read_text(encoding="utf-8")
+    if theme:
+        index_html = index_html.replace(
+            '<link rel="stylesheet" href="/static/styles.css">',
+            f'<link rel="stylesheet" href="/static/styles.css">\n<link rel="stylesheet" href="/static/themes/{theme}.css">')
+
     @app.get("/")
     def index():
-        return FileResponse(STATIC / "index.html")
+        return HTMLResponse(index_html)
 
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
     return app

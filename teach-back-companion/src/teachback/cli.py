@@ -22,6 +22,7 @@ def main(argv: list[str] | None = None) -> int:
     s.add_argument("--host", default="127.0.0.1")
     s.add_argument("--port", type=int, default=8000)
     s.add_argument("--db", type=Path, default=Path("data/demo.sqlite"))
+    s.add_argument("--theme", help="Optional theme from static/themes/ (portal, high-contrast, or your own)")
     e = sub.add_parser("evaluate", help="Check a rewritten instruction against the plan")
     e.add_argument("plan_id")
     e.add_argument("item_id")
@@ -36,6 +37,9 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "serve":
             import uvicorn
             from .app import create_app
+            if args.theme:
+                import os
+                os.environ["TEACHBACK_THEME"] = args.theme
             if args.host not in ("127.0.0.1", "localhost"):
                 print("WARNING: serving beyond this computer. This is a synthetic-data demo with no login.",
                       file=sys.stderr)

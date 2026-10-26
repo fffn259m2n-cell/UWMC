@@ -1,0 +1,17 @@
+/* Patient-portal layout: sidebar navigation and card-based pages, the arrangement most
+   patient portals use. Generic by design; no institution's or vendor's branding. */
+@media (min-width: 900px) {
+  body { display: grid; grid-template-columns: 240px 1fr; grid-template-rows: auto auto 1fr auto;
+         grid-template-areas: "skip skip" "head head" "nav main" "foot foot"; min-height: 100vh; }
+  .skip { grid-area: skip; }
+  body > header { grid-area: head; }
+  .tabs { grid-area: nav; flex-direction: column; gap: 2px; padding: 16px 10px; border-bottom: none;
+          border-right: 1px solid var(--rule); overflow: visible; align-items: stretch; }
+  .tabs button { text-align: left; border-radius: 8px; padding: 10px 14px; }
+  .tabs button[aria-current="page"] { border-left: 4px solid var(--accent); }
+  .staff-tab { margin-left: 0; margin-top: 16px; border-top: 1px solid var(--rule) !important; }
+  main { grid-area: main; max-width: 960px; width: 100%; padding: 24px 28px 60px; }
+  .foot { grid-area: foot; max-width: none; }
+  .tabs[hidden] + main, .tabs[hidden] ~ main { grid-column: 1 / -1; }
+}
+.card { box-shadow: 0 1px 2px rgba(0,0,0,.06); }
