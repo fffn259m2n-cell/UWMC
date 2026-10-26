@@ -12,6 +12,7 @@ README, tests, documentation and gift-handoff notes.
 |---|---|---|---|
 | [quality-signal-monitor](quality-signal-monitor/) | Benchmarks UWMC's public CMS HCAHPS patient-experience results against matched national values, led by discharge and care-transition measures, with data-quality checks and an HTML/PDF report | CMS Provider Data Catalog (public) | Tested on synthetic fixtures; first real run pending (CMS blocked in build environment) |
 | [ep-research-copilot](ep-research-copilot/) | Monthly AF-ablation literature discovery, abstract evidence extraction with source quotes, and ClinicalTrials.gov change tracking for an EP research team | PubMed, ClinicalTrials.gov (public) | Tested; sample run on 26 real articles and 396 real trials |
+| [teach-back-companion](teach-back-companion/) | Patient teach-back checks on discharge instructions, plus an Instruction Fidelity Evaluator that flags dose, negation, 911 and medicine-name errors in simplified, AI-generated or translated instructions | Fictional patients only | Working local web app; 73 tests; browser and accessibility checks pass; not clinically reviewed |
 
 ## Quick start
 
@@ -20,6 +21,7 @@ Each project installs and runs on its own (Python 3.11+):
 ```bash
 cd quality-signal-monitor && pip install -e . && uwmc-monitor run --fetch
 cd ep-research-copilot   && pip install -e . && ep-copilot run
+cd teach-back-companion  && pip install -e . && teachback serve   # http://127.0.0.1:8000
 ```
 
 Offline demos with synthetic data are described in each README. CI runs every project's
