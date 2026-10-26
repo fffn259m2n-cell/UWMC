@@ -50,6 +50,7 @@ jobs:
           echo No test failures.
           if not exist "quality-signal-monitor\output\uwmc_quality_report.html" exit /b 1
           if not exist "ep-research-copilot\output\ep_research_digest.html" exit /b 1
+          exit /b 0
 
   quality-signal-monitor:
     runs-on: ubuntu-latest
