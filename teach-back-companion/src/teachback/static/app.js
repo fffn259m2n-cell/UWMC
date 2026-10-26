@@ -219,7 +219,7 @@ function renderAsk() {
       : el("div", { class: "msg bot" }, el("span", { class: "sr-only" }, "Companion: "),
           m.bot.safety && ["emergency", "crisis"].includes(m.bot.safety.level) ? el("div", { class: "emergency-box", role: "alert" }, el("strong", {}, m.bot.safety.message)) : null,
           m.bot.blocks.filter(b => !(m.bot.safety && ["emergency", "crisis"].includes(m.bot.safety.level) && b.source === "companion"))
-            .map(b => el("div", { class: "block" }, sourceTag(b.source), b.label ? el("div", { class: "muted" }, b.label) : null, el("p", {}, b.text),
+            .map(b => el("div", { class: b.source === "help" ? "block emergency-box" : "block", role: b.source === "help" ? "alert" : null }, sourceTag(b.source), b.label ? el("div", { class: "muted" }, b.label) : null, el("p", {}, b.text),
               b.url ? el("a", { href: b.url, rel: "noopener noreferrer", target: "_blank", class: "muted" }, "Source") : null)),
           m.bot.suggestions && m.bot.suggestions.length ? el("div", { class: "chips" }, m.bot.suggestions.map(s => el("button", { type: "button", onclick: () => send(s) }, s))) : null)));
     log.lastElementChild && log.lastElementChild.scrollIntoView({ block: "nearest" });

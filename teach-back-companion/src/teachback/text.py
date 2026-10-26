@@ -34,7 +34,7 @@ NEGATOR_PHRASES = re.compile(
     r"|wait (?:and see|to see)|steer clear of|stopp?(?:ed|ing|s)? (?=(?:taking|using|smoking|vaping|drinking|eating)\b)"
     r"|quit(?:s|ting)? (?=(?:taking|using|smoking|vaping|drinking)\b)|give up|gave up|stay clear of)")
 # "tell you to stop", "unless your cardiologist says to stop": the action is someone else's decision.
-AUTHORITY_BEFORE = re.compile(r"\b(?:tells?|told|asks?|asked|says?|said|lets?|instructs?)\s+(?:you|me|us|them)?\s*(?:to\s+)?$"
+AUTHORITY_BEFORE = re.compile(r"\b(?:tells?|told|asks?|asked|says?|said|lets?|instructs?)\s+(?:you|me|us|them|her|him)?\s*(?:to\s+)?$"
                               r"|\b(?:decides?|decided|chooses|says|tells me)\s+(?:if|when|whether)\s+(?:i|you|we)\s+(?:can\s+|should\s+)?$")
 AUTHORITY_AFTER = re.compile(r"^\s*(?:it\s+|taking it\s+)?(?:if|when|unless)\s+(?:my|your|the)\s+(?:cardiologist|doctor|care team|heart doctor|provider|nurse)\s+(?:tells|says|asks)")
 # Phrases that contain a negator but do not negate what follows.
@@ -45,7 +45,9 @@ NOT_NEGATING = re.compile(
     r"no more than|not more than|not exceed|no later than|not sure|no matter|"
     r"(?:not|never|won'?t|don'?t|do not|wouldn'?t|will not|can'?t) (?:stop|quit)(?:ping|ped)? (?:taking|using)|"
     r"(?:do not|don't|dont|never|not)\s+(?:[a-z]+\s+){0,2}(?:more than|over|above|beyond|exceed)|"
-    r"(?:do not|don't|never|not) let (?:it|this|your \w+) (?:go|get) (?:over|above))\b")
+    r"(?:do not|don't|never|not) let (?:it|this|your \w+) (?:go|get) (?:over|above)|"
+    # a symptom, not a negated action: "if he can't talk right I dial 911"
+    r"(?:can'?t|cannot|couldn'?t|isn'?t|is not|won'?t|not) (?:talk|speak|breathe|move|wake|feel|see|walk|stand|get (?:his|her|my|their) words))\b")
 NEGATION_WINDOW = 5  # words before the target
 LIST_WORDS = (r"(?:\bor\b|\band\b|\bnor\b|\blike\b|\bsuch as\b|\bincluding\b|\bfor example\b|\be\.?g\.?|\bnsaids?\b"
               r"|\balso (?:sold|known) as\b|\balso called\b|\bknown as\b|\bwhich is\b|\bbrand names?\b|\bsold as\b|\bor any\b|[\s(),/:])")
@@ -74,6 +76,8 @@ def normalize(text: str) -> str:
 
 
 def _words_to_digits(t: str) -> str:
+    t = re.sub(r"\bovernight\b", "in 1 day", t)
+    t = re.sub(r"\b(a|one) single\b", "1", t)
     t = re.sub(r"\b(for|in|within|after|over) (?:a|an|one) (day|week|month|year)\b", r"\1 1 \2", t)
     for w, n in sorted(WORD_NUMBERS.items(), key=lambda kv: -len(kv[0])):
         t = re.sub(rf"\b{w}\b", str(n), t)
@@ -149,6 +153,11 @@ def numbers(text: str) -> list[Number]:
                 continue
             seen.add(key)
             out.append(Number(float(raw.replace(",", "")), unit, m.span(1)))
+    # Other units for the same quantity: "2 grams" = 2,000 mg, "2 gallons" = 7.6 liters
+    for m in re.finditer(r"(\d+(?:\.\d+)?)\s*(grams?|g)\b(?!\s*/)", t):
+        out.append(Number(float(m.group(1)) * 1000, "mg", m.span(1)))
+    for m in re.finditer(r"(\d+(?:\.\d+)?)\s*gallons?\b", t):
+        out.append(Number(round(float(m.group(1)) * 3.785, 1), "liters", m.span(1)))
     # "24/26 mg": also record the second strength
     for m in re.finditer(r"\d[\d,]*(?:\.\d+)?\s*(?:mg)?\s*/\s*(\d[\d,]*(?:\.\d+)?)\s*mg\b", t):
         if ("mg", m.start(1)) not in seen:
@@ -176,7 +185,7 @@ def find_phrase(text: str, phrase: str) -> list[tuple[int, int]]:
 # Clauses end at sentence punctuation, at contrast words, and at a comma that starts a new
 # clause ("…, I'll use Aleve"). Other commas (lists, asides, appositives) do not end a clause.
 CLAUSE_BREAK = re.compile(
-    r"[.;!?=]|->|→|\bbut\b|\bunless\b|\buntil\b|\btill\b|\bexcept\b|\bhowever\b|\botherwise\b"
+    r"[.;!?=]|->|→|\bso\b(?=\s*$|\s+(?:i|i'll|i'm|i will|i can|you|he|she|we|they)\b)|\bbut\b|\bunless\b|\buntil\b|\btill\b|\bexcept\b|\bhowever\b|\botherwise\b"
     r"|,\s*(?=(?:i|i'll|i'm|i'd|i've|i will|i can|you|we|it's|only|then|so|and then|and i|after that)\b)")
 
 
@@ -321,6 +330,11 @@ def directions(s: str) -> dict[tuple[str, float], set[str]]:
         sentence_start = max(t.rfind(".", 0, n.span[0]), t.rfind(";", 0, n.span[0])) + 1
         before = t[max(sentence_start, n.span[0] - 60):n.span[0]]
         after = t[n.span[1]:n.span[1] + 60]
+        if re.search(r"\(\s*(?:about|approximately|around|or|=)?\s*$", before) and out:
+            # "2 liters (about 8 cups)": the bracketed amount is the same limit
+            prev = [k for k in out if k[1] != n.value]
+            if prev:
+                out.setdefault((n.unit, n.value), set()).update(out[prev[-1]])
         for label, pat in DIRECTION_BEFORE:
             if re.search(pat, before):
                 out.setdefault((n.unit, n.value), set()).add(DIRECTION_GROUP[label])

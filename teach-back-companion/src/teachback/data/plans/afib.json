@@ -334,7 +334,10 @@
               "speak",
               "talk",
               "droop",
-              "stroke"
+              "stroke",
+              "words",
+              "speech",
+              "slur"
             ]
           ],
           "misconceptions": [

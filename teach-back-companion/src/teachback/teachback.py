@@ -155,7 +155,10 @@ def check(plan: CarePlan, item_id: str, said: str) -> TeachBackResult:
                             f"Your explanation mentions “{verb}”, but the instruction says: “{fact.statement}” "
                             "Please read the instruction below again, and ask your care team if you are unsure.")
         # 3) A required point stated the opposite way ("never call 911", "without food").
+        #    Emergency signs are skipped: "can't talk" or "can't breathe" describes the sign.
         for g in fact.concepts:
+            if fact.emergency and not any(p in ("911", "ambulance", "emergency") for p in g):
+                continue
             neg = text.group_only_negated(said, g)
             if neg:
                 concern(fact, "contradiction",

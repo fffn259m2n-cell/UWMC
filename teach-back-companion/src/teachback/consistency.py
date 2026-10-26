@@ -72,7 +72,9 @@ DOUBLE_UP = (r"\bdouble (up|the dose|my dose|it)\b|\bmiss\w* (a|one|the) dose\b[
              r"|\b(1|one) more (pill|tablet|dose)\b|\btake (2|two) the next time\b")
 
 # ---------------------------------------------------------------- warnings: normalising and delaying
-NORMALISING = (r"\b(is|are|'s|'re|were|was) (just |totally |pretty |completely |perfectly )?(normal|expected|common|nothing|fine|harmless|ok|okay)\b"
+NORMALISING = (r"\b(no|not a) big deal\b|\bnothing serious\b|\b(a )?good sign\b|\ba good thing\b|\bthat'?s good\b|\bbreaking up\b"
+               r"|\bmeans (it'?s|she'?s|he'?s|i'?m|you'?re) (healing|better|eating|working|getting better)\b"
+               r"|\b(is|are|'s|'re|were|was) (just |totally |pretty |completely |perfectly )?(normal|expected|common|nothing|fine|harmless|ok|okay)\b"
                r"|\bjust (from|because of|a side effect)\b|\bis (a )?(normal|expected) (side effect|part)\b"
                r"|\b(i|you) (don'?t|do not|won'?t|wouldn'?t) (need to |have to )?(worry|call|bother|bring)\b|\bno need to (call|worry|bring|go)\b"
                r"|\bnothing to worry about\b|\bso (i|you) (just )?(wait|ignore|leave)\b|\b(i|you) just (wait|ignore|rest|sleep|lie down|drink less)\b"
@@ -93,18 +95,19 @@ ALTERNATIVE_TO_911 = (r"\b911 or (have|ask|get|go|call (the|your|my) (clinic|doc
 # ---------------------------------------------------------------- limits
 UNLIMITED = (r"\b(plenty of|as much as|as much \w+ as|as many as|no limit|unlimited|all (i|you) want|lots of|a lot of)\b"
              r"|\bmore (if|when) (you'?re|you are|i'?m|i am) thirsty\b|\bmore\b[^.]{0,20}\b(is|are) (fine|ok|okay|allowed)\b"
-             r"|\bmore on (weekends?|holidays|special)\b|\bon weekdays\b|\bexcept (on )?weekends\b"
+             r"|\b(is|are) (ok|okay|fine) as long as\b|\bno max\w*\b|\bwhenever (i|you) (want|like|need)\b|\btake it whenever\b|\bmore on (weekends?|holidays|special)\b|\bon weekdays\b|\bexcept (on )?weekends\b"
              r"|\bsave (them|it|my \w+)? ?up\b|\bcatch up\b|\b(don'?t|doesn'?t|do not|does not|won'?t) count\b")
 GAIN, LOSS = r"\b(gain|gains|gained|goes up|go up|went up|increase\w*|up by|heavier)\b", r"\b(lose|loses|lost|loss|goes down|go down|went down|drop\w*|decrease\w*|lighter)\b"
 PERIOD = (r"(?:in|per|within|a|an|each|every|over|en|al|por)\s+(?:(1|2|3|4|5|6|7|a|an|one|un|una)\s+)?"
           r"(day|week|month|hour|24 hours|meal|dose|serving|sitting|time|dia|semana)s?\b")
 NON_DAILY = (r"\bonce a week\b|\bevery other (morning|night|evening)\b|\bevery (other day|week|few days|2 days|couple (of )?days)\b|\bweekly\b|\b(a few|couple of|2|3) times a week\b"
-             r"|\bnow and then\b|\bwhenever (i|you) remember\b|\bonly (need to|have to)\b[^.]{0,30}\b(when|if)\b|\bonly (on days|on the days|when|if)\b|\bon (the )?days (i|you|when)\b|\bsome days\b")
+             r"|\bnow and then\b|\bonly (take|use|weigh|need|do|get)\b[^.]{0,30}\b(when|if|on days)\b|\b(just|only) for when\b|\b(una|1) vez (por|a la) semana\b|\bcada semana\b|\bsemanal\w*\b|\bwhenever (i|you) remember\b|\bonly (need to|have to)\b[^.]{0,30}\b(when|if)\b|\bonly (on days|on the days|when|if)\b|\bon (the )?days (i|you|when)\b|\bsome days\b")
 DAILY = r"\bevery (day|morning|night|evening)\b|\bdaily\b|\beach (day|morning)\b|\b(once|twice|\d times) (a|per|each) day\b"
 AS_NEEDED = r"\bas needed\b|\bif (you|i) need\b|\bwhen needed\b|\bif needed\b"
-COMBINED = r"\b(both|all)\b[^.]{0,40}\b(together|at once|at the same time)\b|\btogether at (breakfast|dinner|night|bedtime)\b"
+COMBINED = r"\bboth\b[^.]{0,25}\bin the (morning|evening)\b|\bnone (at night|at bedtime|in the morning|in the evening)\b|\b(both|all)\b[^.]{0,40}\b(together|at once|at the same time)\b|\btogether at (breakfast|dinner|night|bedtime)\b"
 RESTRICT_FLUIDS = r"\b(as little as possible|drink less|limit (how much|fluids|drinking|what)|cut back on (fluids|drinking|water)|not too much (water|fluid))\b"
-SKIP_FOLLOW_UP = (r"\bonly\b[^.]{0,30}\b(if|when)\b|\balready done\b|\bno more (needed|necessary)\b|\bskip\b|\bno need\b|\b(don'?t|do not|won'?t) (really )?need\b"
+SKIP_FOLLOW_UP = (r"\bwhenever\b|\bafter the holidays\b|\bwhen i get (around|a chance)\b|\bsometime\b|\bsomeday\b|\bno rush\b|\beventually\b"
+                  r"|\b(isn'?t|is not|aren'?t) (really )?(necessary|needed|important)\b|\byearly\b|\bannual\b|\bphysical\b|\bin the (spring|summer|fall|autumn|winter)\b|\bnext year\b|\bonly\b[^.]{0,30}\b(if|when)\b|\balready done\b|\bno more (needed|necessary)\b|\bskip\b|\bno need\b|\b(don'?t|do not|won'?t) (really )?need\b"
                   r"|\bnot (necessary|needed|important)\b|\bif (i'?m|i am) not (getting )?better\b|\bcan skip\b|\b(already|just) (did|had|got)\b")
 
 
@@ -206,6 +209,8 @@ def compare(item, candidate: str, *, patient: bool) -> list[Change]:
         counts = [(float(m.group(1)), m.start()) for m in re.finditer(
             rf"\b(\d{{1,2}}) (?:of (?:the|my|your) )?(?:\d+(?:\.\d+)? ?mg )?(?:{names})\b", cand)]
         counts += [(n.value, n.span[0]) for n in cand_nums if n.unit == "tablets"]
+        counts += [(float(m.group(1)), m.start()) for m in re.finditer(
+            r"\b(\d{1,2}) of the (?:\d+s\b|[a-z ]{0,25}?\b(?:pills|tablets|capsules)\b)", cand)]
         for value, pos in counts:
             if value > max(tabs_src) and re.match(r"\d+\s*(?:tablets?|pills?|tabs?|capsules?)?\s*(?:total\s+)?(?:in|per) (?:1 |a |one )?(?:day|24)", cand[pos:pos + 60]):
                 continue   # a daily total ("no more than 9 pills in a day"), not a per-dose count
@@ -232,11 +237,14 @@ def compare(item, candidate: str, *, patient: bool) -> list[Change]:
                 add("warning_normalised", f"“{m.group(0)}”: the instruction treats this as a reason to call, not as normal.")
                 break
         for m in re.finditer(DELAY, cand):
-            if not text.is_negated(cand, m.start()) and m.group(0) not in src:
+            sentence_before = cand[:m.start()].rsplit(".", 1)[-1]
+            if re.search(r"\b(don'?t|do not|never|without|no) wait", sentence_before):
+                continue
+            if not text.is_negated(cand, m.start(), window=3) and m.group(0) not in src:
                 add("action_delayed", f"“{m.group(0)}”: the instruction says to call when this happens, without waiting.")
                 break
     if not is_med:
-        m = re.search(r"\b(i'?ll|i will|i'?d|i would|going to|i) (just )?(stop|skip|hold) (it|them|taking \w+|my [a-z ]{0,20}?(pills|meds|medicines?|medication|antibiotics?))\b", cand)
+        m = re.search(r"\b(i'?ll|i will|i'?d|i would|going to|i can|i could|i) (just )?(stop|skip|hold) (it|them|taking \w+|my [a-z ]{0,20}?(pills|meds|medicines?|medication|antibiotics?))\b", cand)
         if m and not text.is_negated(cand, m.start()):
             add("stop_condition_added", f"“{m.group(0)}”: your instructions do not say to stop a medicine.")
     if item.kind in ("appointment", "test"):
@@ -271,7 +279,11 @@ def compare(item, candidate: str, *, patient: bool) -> list[Change]:
     if not patient:
         cand_dirs = text.directions(candidate)
         for (unit, value), d in src_dirs.items():
-            if "upper" in d and any(n.unit == unit and n.value == value for n in cand_nums) and not cand_dirs.get((unit, value)):
+            hits = [n for n in cand_nums if n.unit == unit and n.value == value]
+            # "2 liters, which is about 8 cups": a conversion of a limit already stated
+            if all(re.search(r"\b(about|approximately|around|roughly)\s*$", cand[:n.span[0]]) for n in hits):
+                continue
+            if "upper" in d and hits and not cand_dirs.get((unit, value)):
                 add("limit_softened", f"“{value:g} {unit}” is a maximum in the instruction but not stated as a limit here.")
     if re.search(GAIN, src) and re.search(LOSS, cand) and not re.search(LOSS, src):
         add("direction_changed", "The instruction is about weight going up; this describes it going down.")

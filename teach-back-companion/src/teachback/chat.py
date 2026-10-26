@@ -92,6 +92,9 @@ def answer(plan: CarePlan, message: str, level: str = "standard", last_topic: st
         warnings = [i for i in plan.items if i.kind == "warning"]
         ans.blocks += _item_blocks(plan, warnings)
         return ans
+    if s.caution:
+        ans.safety = s.to_dict()
+        ans.blocks.append(Block("help", safety.CAUTION_MESSAGE, label="If this is happening now"))
     if s.level == "refer":
         ans.safety = s.to_dict()
         ans.blocks.append(Block("companion", s.message, label="Please ask your care team"))

@@ -73,17 +73,30 @@ def score(path: Path) -> dict:
     out["fidelity"] = {"dangerous": d, "caught": d_hit, "sensitivity": _rate(d_hit, d),
                        "faithful": c, "false_alarms": c_fa, "specificity": _rate(c - c_fa, c)}
 
+    # Two views of the safety screen. "Strict": the specific patterns stopped and said
+    # "call 911 now" / "call or text 988". "With safety net": the patient also counts as
+    # reached if the broad net added the 911 / 988 box above the normal answer.
     need = {"E": {"emergency", "crisis"}, "C": {"crisis"}, "M": {"refer", "emergency", "crisis"}}
     counts = {k: [0, 0] for k in ("E", "C", "M", "N")}
+    net = {"E": 0, "C": 0, "N_box": 0}
     for case in data.get("safety", []):
         exp = case["expect"]
         if exp == "A":
             continue
-        level = safety.screen(case["text"], case.get("context", "chat")).level
+        res = safety.screen(case["text"], case.get("context", "chat"))
+        level = res.level
+        if exp == "E":
+            net["E"] += level in need["E"] or bool(res.caution)
+        elif exp == "C":
+            net["C"] += level == "crisis" or bool(res.caution)   # the box always includes 988
+        elif exp == "N":
+            net["N_box"] += bool(res.caution)
         counts[exp][0] += 1
         ok = (level not in ("emergency", "crisis")) if exp == "N" else level in need[exp]
         counts[exp][1] += ok
         if not ok:
             (out["false_alarms"] if exp == "N" else out["misses"])["safety"].append({**case, "got": level})
     out["safety"] = {k: {"n": n, "correct": ok, "rate": _rate(ok, n)} for k, (n, ok) in counts.items()}
+    out["safety_net"] = {"E_reached": _rate(net["E"], counts["E"][0]), "C_reached": _rate(net["C"], counts["C"][0]),
+                         "N_shown_box": _rate(net["N_box"], counts["N"][0])}
     return out

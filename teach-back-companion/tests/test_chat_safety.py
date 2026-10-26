@@ -84,3 +84,16 @@ def test_answer_text_comes_only_from_plan_or_library(afib):
         for b in chat.answer(afib, q, today=TODAY).blocks:
             if b.source in ("care_plan", "education") and " • " not in b.text and "Planned date" not in b.text:
                 assert b.text in allowed, (q, b.text)
+
+
+def test_safety_net_adds_911_988_box_for_unrecognised_wording():
+    from teachback import safety
+    from teachback.chat import answer
+    from teachback.plans import load_plans
+    plan = load_plans()["afib-demo"]
+    for msg in ["sometimes I feel like everyone would be better off", "my lips feel kind of funny and tingly"]:
+        a = answer(plan, msg)
+        assert any(b.source == "help" and "911" in b.text and "988" in b.text for b in a.blocks), msg
+    # ordinary questions do not get the box
+    assert not safety.screen("when is my cardiology appointment?").caution
+    assert not safety.screen("What is a blood test?").caution
