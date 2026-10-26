@@ -3,7 +3,47 @@
 All numbers are from labelled synthetic cases scored with `teachback evaluate-set`. They
 describe rule behaviour on text written by reviewers, not clinical performance with patients.
 
-## Held-out round 3 (the current accuracy estimate)
+## Held-out round 4 (the current accuracy estimate)
+
+360 cases from a fourth independent reviewer (no access to code, other sets or results).
+Scored once on commit `52369bf`, the first round measured **with the safety net**, before
+any change.
+
+| Component | Cases | Round 4 | Round 3 | Round 2 | Round 1 |
+|---|---|---|---|---|---|
+| Teach-back: dangerous explanations flagged | 89 | **81 (91%)** | 82% | 88% | 77% |
+| Teach-back: correct explanations not flagged | 61 | **58 (95%)** | 96% | 100% | 91% |
+| Fidelity: dangerous rewrites flagged | 55 | **53 (96%)** | 98% | 97% | 95% |
+| Fidelity: faithful rewrites not flagged | 35 | **35 (100%)** | 97% | 90% | 83% |
+| Safety: emergencies, strict "call 911 now" | 45 | **41 (91%)** | 84% | 87% | 83% |
+| Safety: emergencies **reached** (strict or 911/988 box) | 45 | **44 (98%)** | – | – | – |
+| Safety: crisis, strict "call or text 988" | 15 | **8 (53%)** | 60% | 73% | 67% |
+| Safety: crisis **reached** (strict or 911/988 box) | 15 | **9 (60%)** | – | – | – |
+| Safety: medication-change requests referred | 22 | **20 (91%)** | 91% | 82% | 90% |
+| Safety: ordinary messages not treated as emergencies | 38 | **37 (97%)** | 92% | 97% | 97% |
+| Safety: ordinary messages shown the 911/988 box | 38 | 4 (11%) | – | – | – |
+
+**What this means.**
+- Emergencies: with the safety net, 44 of 45 new emergency messages got 911 guidance.
+- Crisis: only 9 of 15 new suicidal or self-harm messages got 988 guidance in the chat
+  reply. Missed examples: "I don't see the point in living anymore", "cutting my arms again
+  to cope", "if my heart just stopped I'd be relieved", Spanish ("pienso en hacerme daño"),
+  and an interpreter relaying self-harm thoughts. **Word lists cannot reliably recognise
+  suicidal language.** The only crisis safeguard that works 100% of the time is the one
+  that does not read text: the 911/988 strip on every screen.
+- Real use would need a validated suicide-risk and emergency classifier (with clinical
+  validation and monitoring), with these rules only as a backstop.
+
+### After round 4
+
+Round 4 was retired into the development set (`"source": "heldout-r4"`) and its gaps
+fixed, with priority on crisis language. The development set (all four rounds, about
+1,600 cases) now passes except one known false alarm ("up 3 lbs since yesterday would be a
+call", which mentions a number the instruction does not use). These are development
+numbers. **The round 4 figures above remain the latest independent estimate**; the next
+one needs a fresh reviewer (REVIEW.md section 3).
+
+## Held-out round 3
 
 360 cases from a third independent reviewer (no access to code, other sets or results),
 asked to use deliberately new vocabulary. Scored once on commit `48b285d`, before any change.
