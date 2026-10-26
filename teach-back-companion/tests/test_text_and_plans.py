@@ -58,7 +58,7 @@ def test_bundled_plans_valid_and_synthetic(plans):
 
 def _write(tmp_path, plan):
     path = tmp_path / "p.json"
-    path.write_text(json.dumps(plan))
+    path.write_text(json.dumps(plan), encoding="utf-8")
     return path
 
 

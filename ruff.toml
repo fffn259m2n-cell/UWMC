@@ -5,6 +5,10 @@ extend-exclude = ["**/node_modules", "**/output", "**/data"]
 
 [lint]
 select = ["E", "F", "W", "B", "I", "UP"]
+# Always say UTF-8 when reading or writing text, so Windows (default cp1252) behaves like Mac and Linux.
+extend-select = ["PLW1514"]
+preview = true
+explicit-preview-rules = true
 # Long lines are mostly clinical regular expressions and quoted instruction text;
 # splitting them hurts readability more than it helps.
 ignore = ["E501"]

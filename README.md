@@ -38,6 +38,7 @@ tests on Python 3.11 to 3.13.
 | [samples/](samples/) | Sample outputs on synthetic data (open in a browser) |
 | [one-pagers/pdf/](one-pagers/pdf/) | One-page PDF summary of each project |
 | [downloads/](downloads/) | Everything in one zip, and the reviewer packet |
+| [mac/](mac/), [windows/](windows/) | Double-click files that install everything and start the demo |
 
 ## Before sharing anything
 

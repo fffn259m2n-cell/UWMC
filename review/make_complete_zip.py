@@ -82,9 +82,16 @@ QUICKEST START ON A MAC (no GitHub sign-in needed)
   2. Double-click "Run demos and tests.command" for the other two projects and all tests.
   Step-by-step checks with expected results: TESTING.md.
 
+QUICKEST START ON WINDOWS (no GitHub sign-in needed)
+  1. Open source\\windows\\ and double-click "Start Teach-Back Companion.bat".
+     If Windows says "Windows protected your PC": click More info, then Run anyway.
+     If it says Python is needed: install Python 3.11+ from the page it opens and TICK
+     "Add python.exe to PATH" on the first installer screen, then double-click again.
+  2. Double-click "Run demos and tests.bat" for the other two projects and all tests.
+
 OTHER WAYS
   Browser: open the GitHub repository in Codespaces (TESTING.md, Option A).
-  Windows/Linux: install Python 3.11+, then in source/:
+  Linux or by hand: install Python 3.11+, then in source/:
            pip install -e ./quality-signal-monitor -e ./ep-research-copilot -e ./teach-back-companion
            teachback serve      (then open http://127.0.0.1:8000)
 

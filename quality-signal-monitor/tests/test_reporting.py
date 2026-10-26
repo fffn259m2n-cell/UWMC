@@ -19,14 +19,14 @@ def test_tables_written(result, tmp_path):
     paths = reporting.write_tables(result, tmp_path)
     comp = pd.read_csv(paths["benchmark_comparisons"])
     assert {"hcahps_measure_id", "gap_pp", "not_comparable_reason", "start_date"} <= set(comp.columns)
-    meta = json.loads(paths["metadata"].read_text())
+    meta = json.loads(paths["metadata"].read_text(encoding="utf-8"))
     assert meta["synthetic_data"] is True
     assert meta["hospital"]["facility_id"] == "500008"
     assert pd.read_csv(paths["data_quality_findings"]).shape[0] == len(result.findings)
 
 
 def test_html_report_has_sections_and_synthetic_banner(result, tmp_path):
-    html = reporting.write_report(result, tmp_path)["html"].read_text()
+    html = reporting.write_report(result, tmp_path)["html"].read_text(encoding="utf-8")
     for text in ("SYNTHETIC TEST DATA", "Independent project", "Executive summary",
                  "Focus: discharge and care transitions", "Retired from the updated survey",
                  "National benchmark comparisons", "Changes between releases", "Data-quality findings",
@@ -123,7 +123,7 @@ def test_fetch_release_with_mocked_cms(monkeypatch, tmp_path):
     monkeypatch.setattr(sources, "_get", fake_get)
     release = sources.fetch_release(tmp_path)
     assert release.name == "2026-08-13"
-    manifest = json.loads((release / "manifest.json").read_text())
+    manifest = json.loads((release / "manifest.json").read_text(encoding="utf-8"))
     assert {d["key"] for d in manifest["datasets"]} == set(sources.DATASETS)
     assert all(len(d["sha256"]) == 64 and d["retrieved_at"] for d in manifest["datasets"])
     assert manifest["provenance"] == "cms_api"

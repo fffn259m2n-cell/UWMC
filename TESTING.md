@@ -3,6 +3,15 @@
 About 45 minutes for all three projects. You do not need to know Python.
 Write anything surprising in the "Notes" column, and send it back for fixing.
 
+## Quickest on Windows: double-click
+
+In the zip package, open `source\windows\` and double-click **Start Teach-Back Companion.bat**
+(if Windows shows "Windows protected your PC", click **More info**, then **Run anyway**). If it
+says Python is needed, install Python 3.11 or newer and tick **"Add python.exe to PATH"** on
+the first installer screen, then double-click again. It installs everything the first time and
+opens the demo in your browser. Then double-click **Run demos and tests.bat**. Continue at
+section 1.
+
 ## Quickest on a Mac: double-click
 
 In the zip package, open `source/mac/` and double-click **Start Teach-Back Companion.command**

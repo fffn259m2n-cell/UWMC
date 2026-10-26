@@ -34,7 +34,7 @@ def test_numeric_conversion_handles_text_and_symbols():
 
 def test_facility_id_leading_zeros_preserved(tmp_path):
     p = tmp_path / "x.csv"
-    p.write_text("Facility ID,Facility Name,State\n050008,A,CA\n")
+    p.write_text("Facility ID,Facility Name,State\n050008,A,CA\n", encoding="utf-8")
     assert sources.load_csv(p).iloc[0, 0] == "050008"
 
 

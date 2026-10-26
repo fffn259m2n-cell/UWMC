@@ -15,6 +15,37 @@ jobs:
       - run: pip install ruff==0.16.9
       - run: ruff check .
 
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e "./quality-signal-monitor[dev]" -e "./ep-research-copilot[dev]" -e "./teach-back-companion[dev]"
+      - run: python -m pytest -q
+        working-directory: quality-signal-monitor
+      - run: python -m pytest -q
+        working-directory: ep-research-copilot
+      - run: python -m pytest -q
+        working-directory: teach-back-companion
+      - run: teachback check-content
+        working-directory: teach-back-companion
+      - name: Windows double-click scripts (install, demos, tests)
+        shell: cmd
+        env:
+          UWMC_NO_SERVE: "1"
+        run: |
+          call "windows\Start Teach-Back Companion.bat" < NUL
+          if not exist ".venv\Scripts\python.exe" exit /b 1
+          call "windows\Run demos and tests.bat" < NUL > run.log 2>&1
+          type run.log
+          findstr /c:"249 passed" run.log || exit /b 1
+          findstr /c:"74 passed" run.log || exit /b 1
+          findstr /c:"54 passed" run.log || exit /b 1
+          if not exist "quality-signal-monitor\output\uwmc_quality_report.html" exit /b 1
+          if not exist "ep-research-copilot\output\ep_research_digest.html" exit /b 1
+
   quality-signal-monitor:
     runs-on: ubuntu-latest
     strategy:

@@ -109,7 +109,7 @@ def test_cli(capsys, tmp_path):
     from teachback.cli import main
     assert main(["check-content"]) == 0
     f = tmp_path / "c.txt"
-    f.write_text("Take apixaban 5 mg once a day.")
+    f.write_text("Take apixaban 5 mg once a day.", encoding="utf-8")
     assert main(["evaluate", "afib-demo", "med-apixaban", str(f)]) == 1
     assert main(["benchmark"]) == 0
 

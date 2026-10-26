@@ -146,10 +146,10 @@ def write_outputs(result, store: Store, out_dir: Path) -> dict[str, Path]:
                    "new_trials": len(result.new_trials),
                    "trials_with_changes": len({c["nct_id"] for c in result.trial_changes})},
     }
-    paths["metadata"].write_text(json.dumps(meta, indent=2, default=str))
+    paths["metadata"].write_text(json.dumps(meta, indent=2, default=str), encoding="utf-8")
     paths["changes"].write_text(json.dumps({
         "run_id": result.run_id, "new_pmids": result.new_pmids, "updated_pmids": result.updated_pmids,
-        "new_trials": result.new_trials, "trial_changes": rows["changes"]}, indent=2, default=str))
+        "new_trials": result.new_trials, "trial_changes": rows["changes"]}, indent=2, default=str), encoding="utf-8")
 
     env = Environment(loader=PackageLoader("ep_copilot", "templates"), autoescape=select_autoescape())
     html = env.get_template("digest.html.j2").render(

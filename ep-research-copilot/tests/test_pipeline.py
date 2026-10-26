@@ -103,7 +103,7 @@ def test_corrupt_database_reported(tmp_path):
 
 
 def test_corrupt_snapshot_file(tmp_path, store, topic):
-    (tmp_path / "snapshot.json").write_text("{not json")
+    (tmp_path / "snapshot.json").write_text("{not json", encoding="utf-8")
     with pytest.raises(ValueError):
         pipeline.run(store, topic, snapshot=tmp_path, mode="imported")
     assert store.last_successful_run(topic.key) is None
@@ -112,22 +112,22 @@ def test_corrupt_snapshot_file(tmp_path, store, topic):
 def test_outputs_and_link_integrity(store, topic, tmp_path):
     r = pipeline.run(store, topic, snapshot=RUN1, mode="offline-fixture")
     paths = reporting.write_outputs(r, store, tmp_path)
-    html = paths["digest"].read_text()
+    html = paths["digest"].read_text(encoding="utf-8")
     assert "SYNTHETIC TEST DATA" in html and reporting.DISCLAIMER in html
-    with paths["articles"].open() as fh:
+    with paths["articles"].open(encoding="utf-8") as fh:
         arts = list(csv.DictReader(fh))
     assert len(arts) == 6 and len({a["pmid"] for a in arts}) == 6
     for a in arts:
         assert a["url"] == f"https://pubmed.ncbi.nlm.nih.gov/{a['pmid']}/"
         assert f'href="{a["url"]}"' in html
-    with paths["trials"].open() as fh:
+    with paths["trials"].open(encoding="utf-8") as fh:
         for t in csv.DictReader(fh):
             assert t["nct_id"].startswith("NCT") and t["url"] == f"https://clinicaltrials.gov/study/{t['nct_id']}"
-    with paths["evidence"].open() as fh:
+    with paths["evidence"].open(encoding="utf-8") as fh:
         assert all(row["evidence"] for row in csv.DictReader(fh))
-    meta = json.loads(paths["metadata"].read_text())
+    meta = json.loads(paths["metadata"].read_text(encoding="utf-8"))
     assert meta["pubmed"]["query"] == topic.pubmed_query and meta["synthetic_data"] is True
-    with paths["review_queue"].open() as fh:
+    with paths["review_queue"].open(encoding="utf-8") as fh:
         assert list(csv.DictReader(fh))[0].keys() >= {"source_id", "reviewer_decision", "reviewer_notes",
                                                        "suggested_priority", "classification_reason"}
 
@@ -144,14 +144,14 @@ def test_review_import_and_evaluation(store, topic, tmp_path):
     r = pipeline.run(store, topic, snapshot=RUN1, mode="offline-fixture")
     paths = reporting.write_outputs(r, store, tmp_path)
     assert review.evaluate(store, topic.key)["precision"] is None   # nothing measured without humans
-    with paths["review_queue"].open() as fh:
+    with paths["review_queue"].open(encoding="utf-8") as fh:
         rows = list(csv.DictReader(fh))
     decisions = {"99000001": "include", "99000002": "include", "99000006": "exclude",
                  "99000004": "include", "99000005": "exclude", "99000003": "maybe"}
     for row in rows:
         row["reviewer_decision"] = decisions.get(row["source_id"], "")
     filled = tmp_path / "filled.csv"
-    with filled.open("w", newline="") as fh:
+    with filled.open("w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=rows[0].keys())
         w.writeheader()
         w.writerows(rows)
@@ -179,20 +179,20 @@ def test_packaged_config_matches_repo_config():
     from pathlib import Path
 
     from ep_copilot.config import PACKAGED_CONFIG
-    assert PACKAGED_CONFIG.read_text() == (Path(__file__).parents[1] / "config" / "topics.yaml").read_text()
+    assert PACKAGED_CONFIG.read_text(encoding="utf-8") == (Path(__file__).parents[1] / "config" / "topics.yaml").read_text(encoding="utf-8")
 
 
 def test_extraction_accuracy_from_reviewer_file(store, topic, tmp_path):
     r = pipeline.run(store, topic, snapshot=RUN1, mode="offline-fixture")
     paths = reporting.write_outputs(r, store, tmp_path)
-    with paths["evidence"].open() as fh:
+    with paths["evidence"].open(encoding="utf-8") as fh:
         rows = list(csv.DictReader(fh))
     assert "reviewer_correct" in rows[0]
     assert review.extraction_accuracy(paths["evidence"])["reviewed_items"] == 0
     for i, row in enumerate(rows[:4]):
         row["field"], row["reviewer_correct"] = "sample_size", "yes" if i < 3 else "no"
     filled = tmp_path / "ev.csv"
-    with filled.open("w", newline="") as fh:
+    with filled.open("w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=rows[0].keys())
         w.writeheader()
         w.writerows(rows)
@@ -209,14 +209,14 @@ def test_connector_import_script(tmp_path):
         "identifiers": {"pmid": "99000050", "doi": "10.0000/x"}, "title": "[SYNTHETIC] t", "abstract": "A total of 20 patients.",
         "journal": {"title": "J"}, "authors": [{"fore_name": "A", "last_name": "B"}],
         "publication_date": {"year": "2026", "month": "Oct", "day": "21"}, "article_types": ["Journal Article"],
-        "keywords": [], "language": "eng"}]}))
+        "keywords": [], "language": "eng"}]}), encoding="utf-8")
     trials = tmp_path / "t.json"
     trials.write_text(json.dumps({"items": [{"nct_id": "NCT99000150", "title": "[SYNTHETIC] T", "status": "RECRUITING",
-                                             "phase": None, "conditions": None, "interventions": None}]}))
+                                             "phase": None, "conditions": None, "interventions": None}]}), encoding="utf-8")
     script = Path(__file__).parents[1] / "scripts" / "import_connector_export.py"
     subprocess.run([sys.executable, str(script), str(tmp_path / "snap"), "--window", "2026-10-01", "2026-10-26",
                     "--articles", str(arts), "--trials", str(trials)], check=True, capture_output=True)
-    snap = json.loads((tmp_path / "snap" / "snapshot.json").read_text())
+    snap = json.loads((tmp_path / "snap" / "snapshot.json").read_text(encoding="utf-8"))
     assert snap["articles"][0]["pub_date"] == "2026-10-21" and snap["articles"][0]["authors"] == ["A B"]
     assert snap["trials"][0]["phases"] == [] and snap["synthetic"] is False
     assert "washington_sites" in snap["fields_unavailable"]["trials"]

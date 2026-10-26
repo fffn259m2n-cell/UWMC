@@ -82,7 +82,7 @@ def write(path, cols, rows):
 def release(folder, start, end, which, drop_col=None):
     folder.mkdir(parents=True, exist_ok=True)
     (folder / "SYNTHETIC_DATA").write_text(
-        "All files in this folder are SYNTHETIC test fixtures. They are not CMS data.\n")
+        "All files in this folder are SYNTHETIC test fixtures. They are not CMS data.\n", encoding="utf-8")
     hosp, nat = [], []
     for mid, q, a in MEASURES:
         v = VALUES.get(mid)

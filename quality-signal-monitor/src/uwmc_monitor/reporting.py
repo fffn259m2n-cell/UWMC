@@ -39,7 +39,7 @@ def write_tables(result, out_dir: Path) -> dict[str, Path]:
     if result.trends is not None:
         paths["release_changes"] = out_dir / "release_changes.csv"
         result.trends.to_csv(paths["release_changes"], index=False)
-    paths["metadata"].write_text(json.dumps(metadata(result), indent=2, default=str))
+    paths["metadata"].write_text(json.dumps(metadata(result), indent=2, default=str), encoding="utf-8")
     return paths
 
 
