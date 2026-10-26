@@ -3,6 +3,13 @@
 About 45 minutes for all three projects. You do not need to know Python.
 Write anything surprising in the "Notes" column, and send it back for fixing.
 
+## Quickest on a Mac: double-click
+
+In the zip package, open `source/mac/` and double-click **Start Teach-Back Companion.command**
+(if the Mac blocks it, right-click it, choose **Open**, then **Open**). It installs everything
+the first time and opens the demo in your browser. Then double-click **Run demos and
+tests.command** for the other two projects and the automated tests. Continue at section 1.
+
 ## Option A: in your browser (no install), recommended
 
 1. Open https://github.com/fffn259m2n-cell/UWMC on a laptop or tablet.

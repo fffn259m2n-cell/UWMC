@@ -44,7 +44,9 @@ def main() -> int:
             base = "UWMC_complete/"
             for info in s.infolist():
                 if not info.is_dir() and not info.filename.startswith("downloads/"):
-                    z.writestr(f"{base}source/{info.filename}", s.read(info))
+                    out = zipfile.ZipInfo(f"{base}source/{info.filename}", info.date_time)
+                    out.external_attr, out.compress_type = info.external_attr, zipfile.ZIP_DEFLATED  # keeps scripts executable
+                    z.writestr(out, s.read(info))
             for g in GUIDES:
                 z.write(ROOT / g, base + g)
             for pdf in sorted((ROOT / "one-pagers" / "pdf").glob("*.pdf")):
@@ -71,9 +73,18 @@ WHAT IS IN HERE
   REVIEW.md                   Guide for independent reviewers.
   CONTRIBUTING.md             How anyone can extend the code.
 
-QUICKEST START
-  Easiest: open the GitHub repository in Codespaces (TESTING.md, Option A).
-  Local:   install Python 3.11+, then in source/:
+QUICKEST START ON A MAC (no GitHub sign-in needed)
+  1. Open source/mac/ and double-click "Start Teach-Back Companion.command".
+     If the Mac blocks it: right-click (Control-click) the file, choose Open, then Open.
+     The first time it installs everything (1 to 3 minutes; internet needed), then opens
+     the demo in your browser. If it says Python is needed, install Python 3.11+ from the
+     page it opens, then double-click again.
+  2. Double-click "Run demos and tests.command" for the other two projects and all tests.
+  Step-by-step checks with expected results: TESTING.md.
+
+OTHER WAYS
+  Browser: open the GitHub repository in Codespaces (TESTING.md, Option A).
+  Windows/Linux: install Python 3.11+, then in source/:
            pip install -e ./quality-signal-monitor -e ./ep-research-copilot -e ./teach-back-companion
            teachback serve      (then open http://127.0.0.1:8000)
 
