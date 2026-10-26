@@ -34,6 +34,15 @@ any change.
 - Real use would need a validated suicide-risk and emergency classifier (with clinical
   validation and monitoring), with these rules only as a backstop.
 
+### After round 4
+
+Round 4 was retired into the development set (`"source": "heldout-r4"`) and its gaps
+fixed, with priority on crisis language. The development set (all four rounds, about
+1,600 cases) now passes except one known false alarm ("up 3 lbs since yesterday would be a
+call", which mentions a number the instruction does not use). These are development
+numbers. **The round 4 figures above remain the latest independent estimate**; the next
+one needs a fresh reviewer (REVIEW.md section 3).
+
 ## Held-out round 3
 
 360 cases from a third independent reviewer (no access to code, other sets or results),

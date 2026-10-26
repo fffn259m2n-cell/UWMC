@@ -57,6 +57,8 @@ FOOD_CHANGED = (r"\bempty stomach\b|\bwithout (food|eating|a meal)\b|\bfood (doe
 
 # ---------------------------------------------------------------- stopping, pausing, extra doses
 STOP_CONDITION = (
+    r"\b(leave|leaves|left|leaving) (out|off)\b|\b(once|when|after) (the |my |her |his )?\w+ (goes|go|is|are|gets) (down|away|gone|better)\b"
+    r"|\bno big deal\b|\bnot a big deal\b|\blike a vitamin\b|\bif (i|you|we|she|he) run out\b|\btil (i|she|he|you|they) feels?\b|"
     r"\b(until|till|once|when|whenever|if|unless) (i|you|my \w+|your \w+|the \w+) (feel|feels|am|are|is|get|gets|seem|seems)"
     r"( \w+)? (better|fine|normal|good|ok|okay|well|back to normal|gone|over|slow|dizzy)\b"
     r"|\bthen (i'?m|i am|you'?re|you are) (done|finished)\b|\bi'?m (done|finished)\b"
@@ -83,7 +85,7 @@ DELAY = (r"\b(next|upcoming) (appointment|visit|checkup|check-up|clinic visit)\b
          r"|\buntil (monday|tomorrow|the morning|morning|the weekend|next week|later)\b|\b(tomorrow|in the morning|next day|later on|monday)\b"
          r"|\bif it'?s still (there|happening|going)\b|\bstill there when\b|\bif it (keeps|continues|lasts|doesn'?t go away)\b"
          r"|\b(only )?if it lasts\b|\blasts? (more|longer) than\b|\b(do|does) not go away after\b|\bafter a (few|couple of) (hours|minutes|days)\b"
-         r"|\b(take|have) a nap\b|\bnap\b|\blie down\b|\bsleep (it off|on it)\b|\bsee (if|how)\b|\bwait\b(?! for (the )?(ambulance|paramedics|help|911|emts?))|\bbefore calling\b|\bfor an hour\b|\bkeep (pressing|holding)\b[^.]{0,30}\b(hour|before)\b")
+         r"|\brest (and|first|then)\b|\bif it (happens again|comes back|returns)\b|\b(take|have) a nap\b|\bnap\b|\blie down\b|\bsleep (it off|on it)\b|\bsee (if|how)\b|\bwait\b(?! for (the )?(ambulance|paramedics|help|911|emts?))|\bbefore calling\b|\bfor an hour\b|\bkeep (pressing|holding)\b[^.]{0,30}\b(hour|before)\b")
 
 # ---------------------------------------------------------------- emergency: other actions in place of 911
 OTHER_ACTION = (r"\b(call|ring|phone|text|message) (my|the|your|a|our)\b(?! ?911)|\b(go|drive|head|get|take (me|myself)) to\b|\bdrive (myself|me)\b"
@@ -95,7 +97,8 @@ ALTERNATIVE_TO_911 = (r"\b911 or (have|ask|get|go|call (the|your|my) (clinic|doc
 # ---------------------------------------------------------------- limits
 UNLIMITED = (r"\b(plenty of|as much as|as much \w+ as|as many as|no limit|unlimited|all (i|you) want|lots of|a lot of)\b"
              r"|\bmore (if|when) (you'?re|you are|i'?m|i am) thirsty\b|\bmore\b[^.]{0,20}\b(is|are) (fine|ok|okay|allowed)\b"
-             r"|\b(is|are) (ok|okay|fine) as long as\b|\bno max\w*\b|\bwhenever (i|you) (want|like|need)\b|\btake it whenever\b|\bmore on (weekends?|holidays|special)\b|\bon weekdays\b|\bexcept (on )?weekends\b"
+             r"|\b(is|are) (ok|okay|fine) as long as\b|\bas long as (i'?m|i am|you'?re)\b|\bin moderation\b|\bjust don'?t get drunk\b|\ba few (beers|drinks|glasses)\b"
+             r"|\b(alcohol|drinking|beer|wine) (is|are) (fine|ok|okay)\b|\bno (daily |\w+ )?(limit|max\w*)\b|\bno max\w*\b|\bwhenever (i|you) (want|like|need)\b|\btake it whenever\b|\bmore on (weekends?|holidays|special)\b|\bon weekdays\b|\bexcept (on )?weekends\b"
              r"|\bsave (them|it|my \w+)? ?up\b|\bcatch up\b|\b(don'?t|doesn'?t|do not|does not|won'?t) count\b")
 GAIN, LOSS = r"\b(gain|gains|gained|goes up|go up|went up|increase\w*|up by|heavier)\b", r"\b(lose|loses|lost|loss|goes down|go down|went down|drop\w*|decrease\w*|lighter)\b"
 PERIOD = (r"(?:in|per|within|a|an|each|every|over|en|al|por)\s+(?:(1|2|3|4|5|6|7|a|an|one|un|una)\s+)?"
@@ -106,7 +109,7 @@ DAILY = r"\bevery (day|morning|night|evening)\b|\bdaily\b|\beach (day|morning)\b
 AS_NEEDED = r"\bas needed\b|\bif (you|i) need\b|\bwhen needed\b|\bif needed\b"
 COMBINED = r"\bboth\b[^.]{0,25}\bin the (morning|evening)\b|\bnone (at night|at bedtime|in the morning|in the evening)\b|\b(both|all)\b[^.]{0,40}\b(together|at once|at the same time)\b|\btogether at (breakfast|dinner|night|bedtime)\b"
 RESTRICT_FLUIDS = r"\b(as little as possible|drink less|limit (how much|fluids|drinking|what)|cut back on (fluids|drinking|water)|not too much (water|fluid))\b"
-SKIP_FOLLOW_UP = (r"\bwhenever\b|\bafter the holidays\b|\bwhen i get (around|a chance)\b|\bsometime\b|\bsomeday\b|\bno rush\b|\beventually\b"
+SKIP_FOLLOW_UP = (r"\boptional\b|\bonly\b[^.]{0,50}\b(if|when)\b|\bwhenever\b|\bafter the holidays\b|\bwhen i get (around|a chance)\b|\bsometime\b|\bsomeday\b|\bno rush\b|\beventually\b"
                   r"|\b(isn'?t|is not|aren'?t) (really )?(necessary|needed|important)\b|\byearly\b|\bannual\b|\bphysical\b|\bin the (spring|summer|fall|autumn|winter)\b|\bnext year\b|\bonly\b[^.]{0,30}\b(if|when)\b|\balready done\b|\bno more (needed|necessary)\b|\bskip\b|\bno need\b|\b(don'?t|do not|won'?t) (really )?need\b"
                   r"|\bnot (necessary|needed|important)\b|\bif (i'?m|i am) not (getting )?better\b|\bcan skip\b|\b(already|just) (did|had|got)\b")
 

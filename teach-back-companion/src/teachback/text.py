@@ -30,7 +30,7 @@ NEGATORS = (
 # Multi-word avoidance phrases, rewritten to "not" before counting.
 NEGATOR_PHRASES = re.compile(
     r"\b(?:stay (?:off|away from)|keep (?:off|away from)|hold off(?: on)?|put off|instead of|rather than"
-    r"|skip(?:ping)? (?=(?:911|calling|the call|the er|the hospital|going)\b)|forget about (?=(?:911|calling)\b)"
+    r"|skip(?:ping)? (?=(?:911|calling|the call|the er|the hospital|going|the ibuprofen|the naproxen|the advil|the aleve|ibuprofen|naproxen|advil|aleve|nsaids)\b)|forget about (?=(?:911|calling)\b)"
     r"|wait (?:and see|to see)|steer clear of|stopp?(?:ed|ing|s)? (?=(?:taking|using|smoking|vaping|drinking|eating)\b)"
     r"|quit(?:s|ting)? (?=(?:taking|using|smoking|vaping|drinking)\b)|give up|gave up|stay clear of)")
 # "tell you to stop", "unless your cardiologist says to stop": the action is someone else's decision.
@@ -49,7 +49,7 @@ NOT_NEGATING = re.compile(
     # a symptom, not a negated action: "if he can't talk right I dial 911"
     r"(?:can'?t|cannot|couldn'?t|isn'?t|is not|won'?t|not) (?:talk|speak|breathe|move|wake|feel|see|walk|stand|get (?:his|her|my|their) words))\b")
 NEGATION_WINDOW = 5  # words before the target
-LIST_WORDS = (r"(?:\bor\b|\band\b|\bnor\b|\blike\b|\bsuch as\b|\bincluding\b|\bfor example\b|\be\.?g\.?|\bnsaids?\b"
+LIST_WORDS = (r"(?:\bthe\b|\bany\b|\bor\b|\band\b|\bnor\b|\blike\b|\bsuch as\b|\bincluding\b|\bfor example\b|\be\.?g\.?|\bnsaids?\b"
               r"|\balso (?:sold|known) as\b|\balso called\b|\bknown as\b|\bwhich is\b|\bbrand names?\b|\bsold as\b|\bor any\b|[\s(),/:])")
 # Negation that follows the target: "Smoking is not allowed", "crushing is not ok".
 POST_NEGATION = re.compile(r"^\s*(?:it\s+|that\s+|them\s+)?(?:(?:or|and)\s+[a-z]+\s+)?(?:is|are)\s+(?:not\s*(?:$|[.,;!]|okay\b|ok\b|good\b|for me\b))|^\s*(?:it\s+|that\s+|them\s+)?(?:(?:or|and)\s+[a-z]+\s+)?(?:is|are)\s+(?:not\s+(?:allowed|ok|okay|safe|permitted|recommended)|forbidden|prohibited|unsafe)\b"
@@ -225,7 +225,7 @@ def phrase_states(text: str, phrase: str) -> list[bool]:
 
 def _numeric(phrase: str) -> bool:
     """Limits and thresholds such as "3,000" or "110" (but not "911", which is an action)."""
-    return bool(re.search(r"\d", phrase)) and "911" not in phrase
+    return bool(re.search(r"\d", _words_to_digits(normalize(phrase)))) and "911" not in phrase
 
 
 def group_present(text: str, group: list[str], allow_negated: bool = False) -> str | None:
