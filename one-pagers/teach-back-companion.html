@@ -14,7 +14,8 @@
 <li>Teach-back is recommended (AHRQ Health Literacy Toolkit, Tool 5) but time-consuming.</li>
 <li>A 2026 randomised trial in internal medicine found physician-reviewed, AI-generated patient discharge summaries increased patient activation (Rust et al., <i>Lancet Digit Health</i> 2026;8(6):100991). The fidelity evaluator is a candidate aid for that review step.</li></ul>
 <h2>Status and boundaries</h2><ul>
-<li>{{TBC_TESTS}} automated tests; browser and WCAG automated checks pass; two independent adversarial review rounds, all findings fixed.</li>
+<li>Measured on 390 cases written by an independent reviewer, before tuning: flagged 88% of dangerous teach-back explanations with no false alarms; recognised 87% of emergencies and 73% of crisis messages. <b>Not a safety net</b>; an aid for clinician-led teach-back.</li>
+<li>{{TBC_TESTS}} automated tests; browser and WCAG automated checks pass; five review and measurement rounds.</li>
 <li>Fictional patients; draft education text not yet clinician-reviewed; rule-based, not clinically validated.</li>
 <li>No EHR connection, no PHI, nothing typed is stored.</li></ul></div></div>
 <div class="box"><b>Try it (15 min):</b> open the repository in GitHub Codespaces; the demo opens in the browser. Or <code>pip install -e . &amp;&amp; teachback serve</code>.<br><b>Ask:</b> 20 minutes of feedback on whether this problem is worth solving at UW Medicine. This is not a pilot request.<br><b>Code:</b> {{REPO_URL}}/tree/main/teach-back-companion</div>
