@@ -202,7 +202,11 @@
               "vapes",
               "e-cigarette",
               "e-cigarettes",
-              "vape pen"
+              "vape pen",
+              "cigarette",
+              "cigarettes",
+              "cigs",
+              "cigar"
             ],
             "polarity": "dont"
           },

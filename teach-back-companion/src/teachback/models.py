@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field, field_validator, model_validator
 Severity = Literal["critical", "major", "minor"]
 Kind = Literal["medication", "instruction", "warning", "appointment", "test"]
 UNITS = {"mg", "per_day", "tablets", "hours", "minutes", "days", "weeks", "months", "pounds", "liters",
-         "cups", "bpm", "fahrenheit", "celsius", "drinks"}
+         "cups", "bpm", "fahrenheit", "celsius", "drinks", "years"}
 
 
 class Quantity(BaseModel):

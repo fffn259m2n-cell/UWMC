@@ -100,7 +100,13 @@ def detect_language(s: str) -> str:
     return "en"
 
 
+DAYS = {"days": 1, "weeks": 7, "months": 30, "years": 365}
+
+
 def _has_quantity(candidate_numbers, value, unit) -> bool:
+    if unit in DAYS:
+        # "in one week" is the same as "in 7 days"
+        return any(n.unit in DAYS and n.value * DAYS[n.unit] == value * DAYS[unit] for n in candidate_numbers)
     if unit == "per_day" and value == 2:
         # "every 12 hours" is the same frequency as "twice a day"
         if any(n.unit == "per_day" and n.value == 2 for n in candidate_numbers):
@@ -118,9 +124,9 @@ def _threshold_periods(s: str) -> set[tuple[float, str]]:
     pairs = set()
     for n in text.numbers(s):
         if n.unit == "pounds":
-            m = re.match(r"^\s*(?:pounds?|lbs?)?\s*(?:or more\s+)?(?:in|per|within)\s+(?:1|a|an|one)\s+(day|week)", t[n.span[1]:])
+            m = re.match(r"^\s*(?:pounds?|lbs?|libras?)?\s*(?:or more\s+)?(?:in|per|within|en|por)\s+(?:1|a|an|one|un|una)\s+(day|week|dia|semana)", t[n.span[1]:])
             if m:
-                pairs.add((n.value, m.group(1)))
+                pairs.add((n.value, {"dia": "day", "semana": "week"}.get(m.group(1), m.group(1))))
     return pairs
 
 
@@ -176,7 +182,8 @@ def evaluate_item(plan: CarePlan, item: Item, candidate: str, language: str | No
             mentions = text.action_mentions(candidate, fact.action.verbs, fact.action.objects)
             if any(not neg for _, neg in mentions):
                 add(fact.severity, "negation_lost", fact.id, f"“{fact.statement}” — the candidate states the action without “do not”.")
-            elif fact.coverage == "negated_action" and not mentions:
+            elif fact.coverage in ("negated_action", "concepts_or_negated_action") and not mentions \
+                    and not (fact.coverage == "concepts_or_negated_action" and all(text.group_present(candidate, g) for g in fact.concepts)):
                 add(fact.severity, "instruction_missing", fact.id, f"“{fact.statement}” — this “do not” instruction is missing.")
         if english:
             for g in fact.concepts:
@@ -227,7 +234,7 @@ def evaluate_item(plan: CarePlan, item: Item, candidate: str, language: str | No
     # Meaning changes shared with teach-back (time of day, food, stop conditions, 911 alternatives, limits).
     present = {i.check for i in rep.issues}
     for ch in consistency.compare(item, candidate, patient=False):
-        if ch.check not in present:
+        if ch.check not in present and (english or ch.check != "limit_softened"):
             add("major" if ch.check in ("limit_softened",) else "critical", ch.check, ch.fact_id, ch.message)
 
     # Medicine names: every source medicine still named; nothing new introduced.
@@ -237,7 +244,7 @@ def evaluate_item(plan: CarePlan, item: Item, candidate: str, language: str | No
     cand_drugs = {d for d in known if re.search(rf"(?<![a-z]){re.escape(d)}(?![a-z])", cand_norm)}
     if item.kind == "medication" and item.drug_names:
         names = {n.lower() for n in item.drug_names}
-        if not names & cand_drugs and not any(n in cand_norm for n in names):
+        if not names & cand_drugs and not any(n in cand_norm or (len(n) >= 8 and n[:7] in cand_norm) for n in names):
             add("critical", "medicine_name_missing", None, f"The medicine name ({item.drug_names[0]}) is missing.")
     for d in sorted(cand_drugs - src_drugs - {n.lower() for n in item.drug_names}):
         add("critical", "medicine_added", None, f"“{d}” is not in the original instruction.")

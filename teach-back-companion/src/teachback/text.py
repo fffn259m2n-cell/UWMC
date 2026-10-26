@@ -54,6 +54,7 @@ POST_NEGATION = re.compile(r"^\s*(?:it\s+|that\s+|them\s+)?(?:(?:or|and)\s+[a-z]
                            r"|^(?:\s*(?:,|and|or)?\s*[a-z]{2,15}){0,3}?\s+(?:are|is)\s+(?:a\s+)?(?:off[- ]limits|no[- ]go|no|out|bad for me|not safe)\b"
                            r"|^(?:\s*(?:,|and|or)?\s*[a-z]{2,15}){0,3}?\s*:\s*(?:never|no|nope|not for me)\b"
                            r"|^(?:\s*(?:,|and|or)?\s*[a-z]{2,15}){0,3}?\s+(?:i|you)\s+(?:must not|mustn'?t|can'?t|cannot|shouldn'?t|should not|won'?t|don'?t|do not|never)\s+(?:take|use|have)\b"
+                           r"|^(?:\s*(?:,|and|or)?\s*[a-z]{2,15}){0,3}?\s+(?:no|nope|never)\s*(?:$|[.,;!])"
                            r"|^\s*(?:it\s+|that\s+)?(?:could|can|would|will|may|might)\s+(?:cause|raise|lead|give|increase|put)\b|^\s*(?:it\s+)?(?:is|are)\s+(?:dangerous|risky)\b")
 # Permission that follows the target: "ibuprofen is fine", "Advil is OK for me".
 POST_PERMISSION = re.compile(r"^\s*(?:is|are)\s+(?:also\s+|totally\s+|just\s+)?(?:fine|ok|okay|good|safe|allowed|alright|all right)\b|^\s*works\b"
@@ -73,7 +74,7 @@ def normalize(text: str) -> str:
 
 
 def _words_to_digits(t: str) -> str:
-    t = re.sub(r"\b(for|in|within|after|over) (?:a|an|one) (day|week|month)\b", r"\1 1 \2", t)
+    t = re.sub(r"\b(for|in|within|after|over) (?:a|an|one) (day|week|month|year)\b", r"\1 1 \2", t)
     for w, n in sorted(WORD_NUMBERS.items(), key=lambda kv: -len(kv[0])):
         t = re.sub(rf"\b{w}\b", str(n), t)
     return t
@@ -93,18 +94,19 @@ FREQUENCY = (
 )
 WEAK_FREQUENCY = (
     # "every day" / "daily" say the medicine is continued, not how often, so they are not counted.
-    (r"\b(?:every|each) (?:morning|night|evening|bedtime)\b|\b1 (?:\d+ mg )?(?:pill|tablet|dose|capsule)s? (?:a|per|each) day\b", 1),
+    (r"\b(?:every|each|a) day,? (?:in the morning|at night|at bedtime|in the evening)\b|\b(?:every|each) (?:morning|night|evening|bedtime)\b|\b1 (?:\d+ mg )?(?:pill|tablet|dose|capsule)s? (?:a|per|each) day\b", 1),
 )
 UNIT_PATTERNS = (
     ("mg", r"(\d[\d,]*(?:\.\d+)?)\s*(?:mg|milligrams?)\b"),
     ("mg", r"(\d[\d,]*(?:\.\d+)?)\s*(?:mg)?\s*/\s*\d[\d,]*(?:\.\d+)?\s*mg\b"),          # first of "24/26 mg"
     ("tablets", r"(?<![\d/.,])(\d{1,2})\s*(?:tablets?|pills?|capsules?|tabs?|tabletas?|pastillas?)\b"),
-    ("hours", r"(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)\b"),
+    ("hours", r"(\d+(?:\.\d+)?)\s*-?\s*(?:hours?|hrs?)\b"),
     ("minutes", r"(\d+)\s*(?:minutes?|mins?)\b"),
     ("days", r"(\d+)\s*(?:more\s+)?days?\b"),
     ("weeks", r"(\d+)\s*weeks?\b"),
     ("months", r"(\d+)\s*months?\b"),
-    ("pounds", r"(\d+(?:\.\d+)?)\s*(?:pounds?|lbs?)\b"),
+    ("years", r"(\d+)\s*years?\b"),
+    ("pounds", r"(\d+(?:\.\d+)?)\s*(?:pounds?|lbs?|libras?)\b"),
     ("liters", r"(\d+(?:\.\d+)?)\s*(?:liters?|litres?|l)\b"),
     ("cups", r"(\d+)\s*cups?\b"),
     ("bpm", r"(\d+)\s*(?:beats?\s*(?:a|per)\s*minute|bpm)\b"),
@@ -114,6 +116,7 @@ UNIT_PATTERNS = (
     ("fahrenheit", r"\b(?:fever|temperature|temp)\b[^.\d]{0,25}?(9\d(?:\.\d)?|1[01]\d(?:\.\d)?)\b(?!\s*(?:°\s*c|mg|days?|hours?))"),
     ("celsius", r"(\d+(?:\.\d+)?)\s*°\s*c\b"),
     ("drinks", r"(\d+)\s*(?:alcoholic\s+)?(?:drinks?|beers?|glasses(?: of wine)?|shots?)\b"),
+    ("drinks", r"(?<=\bhave )(\d+)(?: or \d+)?(?= on (?:saturday|sunday|friday|the weekend|weekends)\b)"),
 )
 
 
@@ -173,7 +176,7 @@ def find_phrase(text: str, phrase: str) -> list[tuple[int, int]]:
 # Clauses end at sentence punctuation, at contrast words, and at a comma that starts a new
 # clause ("…, I'll use Aleve"). Other commas (lists, asides, appositives) do not end a clause.
 CLAUSE_BREAK = re.compile(
-    r"[.;!?]|\bbut\b|\bunless\b|\buntil\b|\btill\b|\bexcept\b|\bhowever\b|\botherwise\b"
+    r"[.;!?=]|->|→|\bbut\b|\bunless\b|\buntil\b|\btill\b|\bexcept\b|\bhowever\b|\botherwise\b"
     r"|,\s*(?=(?:i|i'll|i'm|i'd|i've|i will|i can|you|we|it's|only|then|so|and then|and i|after that)\b)")
 
 
@@ -203,7 +206,7 @@ def phrase_states(text: str, phrase: str) -> list[bool]:
     for start, end in find_phrase(t, phrase):
         neg = is_negated(t, start)
         after = re.sub(r"\([^)]*\)", " ", t[end:])
-        if neg and (LIMIT_AFTER.match(after) or POST_PERMISSION.match(after)):
+        if POST_PERMISSION.match(after) or (neg and LIMIT_AFTER.match(after)):
             neg = False
         elif POST_NEGATION.match(after):
             neg = not neg
@@ -268,13 +271,20 @@ def action_mentions(text: str, verbs: list[str], objects: list[str] | None = Non
                     neg = True
                 found.append((obj, neg))
         return found
+    hits = []
     for verb in verbs:
         for m in re.finditer(rf"(?<![a-z]){re.escape(verb)}(?:s|ed|ing|ping|ped|d)?(?![a-z])", t):
-            neg = is_negated(t, m.start()) or bool(AUTHORITY_BEFORE.search(t[:m.start()])) \
-                or bool(re.search(r"\bonly\s*$", t[:m.start()]) and AUTHORITY_AFTER.match(t[m.end():]))
-            if POST_NEGATION.match(t[m.end():]):
-                neg = True
-            found.append((verb, neg))
+            hits.append((m.start(), m.end(), verb))
+    prev = None  # (end, negated) of the previous mention: "can't crush or chew" negates both
+    for start, end, verb in sorted(hits):
+        neg = is_negated(t, start) or bool(AUTHORITY_BEFORE.search(t[:start])) \
+            or bool(re.search(r"\bonly\s*$", t[:start]) and AUTHORITY_AFTER.match(t[end:]))
+        if POST_NEGATION.match(t[end:]):
+            neg = True
+        if prev and prev[1] and re.fullmatch(r"\s*(?:,|or|and|nor|, or|, and)\s*", t[prev[0]:start]):
+            neg = True
+        prev = (end, neg)
+        found.append((verb, neg))
     return found
 
 

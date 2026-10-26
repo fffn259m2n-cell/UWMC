@@ -86,18 +86,26 @@ DELAY = (r"\b(next|upcoming) (appointment|visit|checkup|check-up|clinic visit)\b
 # ---------------------------------------------------------------- emergency: other actions in place of 911
 OTHER_ACTION = (r"\b(call|ring|phone|text|message) (my|the|your|a|our)\b(?! ?911)|\b(go|drive|head|get|take (me|myself)) to\b|\bdrive (myself|me)\b"
                 r"|\burgent care\b|\b(clinic|cardiologist|primary care|doctor|nurse line|pharmacy)\b|\b(take|took|use|chew) (an? |my |some |the |a few )?(aspirin|tylenol|nitro\w*|pills?|medicine|\w+ pill|extra|another|ibuprofen|advil)\b"
-                r"|\b(wife|husband|partner|daughter|son|family|neighbor|friend|someone|somebody)\b|\b(lie|lay) down\b|\bnap\b|\brest\b|\bwait\b")
+                r"|\b(come get|pick me up|drive me|take me)\b|\b(lie|lay) down\b|\bnap\b|\brest\b|\bwait\b")
 ALTERNATIVE_TO_911 = (r"\b911 or (have|ask|get|go|call (the|your|my) (clinic|doctor))\b|\b(clinic|doctor|cardiologist|someone|family member)\b[^.]{0,30}\bor (call )?911\b"
                       r"|\bor (have|ask|get) (a |an? )?(family member|friend|someone|somebody|neighbor)\b[^.]{0,20}\b(drive|take)\b")
 
 # ---------------------------------------------------------------- limits
 UNLIMITED = (r"\b(plenty of|as much as|as much \w+ as|as many as|no limit|unlimited|all (i|you) want|lots of|a lot of)\b"
              r"|\bmore (if|when) (you'?re|you are|i'?m|i am) thirsty\b|\bmore\b[^.]{0,20}\b(is|are) (fine|ok|okay|allowed)\b"
-             r"|\bmore on (weekends?|holidays|special)\b|\bon weekdays\b|\bexcept (on )?weekends\b")
+             r"|\bmore on (weekends?|holidays|special)\b|\bon weekdays\b|\bexcept (on )?weekends\b"
+             r"|\bsave (them|it|my \w+)? ?up\b|\bcatch up\b|\b(don'?t|doesn'?t|do not|does not|won'?t) count\b")
 GAIN, LOSS = r"\b(gain|gains|gained|goes up|go up|went up|increase\w*|up by|heavier)\b", r"\b(lose|loses|lost|loss|goes down|go down|went down|drop\w*|decrease\w*|lighter)\b"
-PERIOD = r"(?:in|per|within|a|an|each|every|over)\s+(?:(1|2|3|4|5|6|7|a|an|one)\s+)?(day|week|month|hour|24 hours)s?\b"
-NON_DAILY = r"\bonce a week\b|\bevery (other day|week|few days|2 days|couple of days)\b|\bweekly\b|\b(a few|couple of|2|3) times a week\b|\bnow and then\b"
-DAILY = r"\bevery (day|morning|night|evening)\b|\bdaily\b|\beach (day|morning)\b"
+PERIOD = (r"(?:in|per|within|a|an|each|every|over|en|al|por)\s+(?:(1|2|3|4|5|6|7|a|an|one|un|una)\s+)?"
+          r"(day|week|month|hour|24 hours|meal|dose|serving|sitting|dia|semana)s?\b")
+NON_DAILY = (r"\bonce a week\b|\bevery (other day|week|few days|2 days|couple (of )?days)\b|\bweekly\b|\b(a few|couple of|2|3) times a week\b"
+             r"|\bnow and then\b|\bwhenever (i|you) remember\b|\bonly (need to|have to)\b[^.]{0,30}\b(when|if)\b|\bonly (on days|on the days|when|if)\b|\bon (the )?days (i|you|when)\b|\bsome days\b")
+DAILY = r"\bevery (day|morning|night|evening)\b|\bdaily\b|\beach (day|morning)\b|\b(once|twice|\d times) (a|per|each) day\b"
+AS_NEEDED = r"\bas needed\b|\bif (you|i) need\b|\bwhen needed\b|\bif needed\b"
+COMBINED = r"\b(both|all)\b[^.]{0,40}\b(together|at once|at the same time)\b|\btogether at (breakfast|dinner|night|bedtime)\b"
+RESTRICT_FLUIDS = r"\b(as little as possible|drink less|limit (how much|fluids|drinking|what)|cut back on (fluids|drinking|water)|not too much (water|fluid))\b"
+SKIP_FOLLOW_UP = (r"\bonly (need to |have to )?(go |see \w+ |get it |do it )?(if|when)\b|\bskip\b|\bno need\b|\b(don'?t|do not|won'?t) (really )?need\b"
+                  r"|\bnot (necessary|needed|important)\b|\bif (i'?m|i am) not (getting )?better\b|\bcan skip\b|\b(already|just) (did|had|got)\b")
 
 
 def limit_periods(s: str) -> set[tuple[str, float, str]]:
@@ -110,9 +118,10 @@ def limit_periods(s: str) -> set[tuple[str, float, str]]:
         m = re.match(r"^\s*(?:mg|milligrams?|pounds?|lbs?|liters?|litres?|cups?|drinks?)?\s*(?:\([^)]*\)\s*)?(?:of [a-z ]{0,20}?)?\s*(?:\([^)]*\)\s*)?(?:or more\s+)?" + PERIOD, t[n.span[1]:])
         if m:
             count, period = m.group(1), m.group(2)
+            period = {"dia": "day", "semana": "week"}.get(period, period)
             if period == "24 hours":
                 period, count = "day", "1"
-            k = 1 if count in (None, "a", "an", "1", "one") else int(count)
+            k = 1 if count in (None, "a", "an", "1", "one", "un", "una") else int(count)
             out.add((n.unit, n.value, f"{k} {period}"))
     return out
 
@@ -179,7 +188,7 @@ def compare(item, candidate: str, *, patient: bool) -> list[Change]:
 
     # Stopping, pausing and extra doses
     if is_med:
-        for m in re.finditer(STOP_CONDITION, cand):
+        for m in ([] if re.search(AS_NEEDED, src) else re.finditer(STOP_CONDITION, cand)):
             before = cand[max(0, m.start() - 12):m.start()]
             if re.search(r"\beven(?: (if|when|though))?\s*$", before) or text.is_negated(cand, m.start()) \
                     or re.match(r"[^.]{0,25}\b(my|your|the) (cardiologist|doctor|care team|provider) (tells|says|asks)", cand[m.end() - 8:]):
@@ -192,9 +201,21 @@ def compare(item, candidate: str, *, patient: bool) -> list[Change]:
         if live(DOUBLE_UP) and not no_double and not re.search(DOUBLE_UP, src):
             add("dose_added", "This mentions taking more or an extra dose; the instruction does not say that.")
         tabs_src = {n.value for n in src_nums if n.unit == "tablets"} | {1.0}
-        for n in cand_nums:
-            if n.unit == "tablets" and n.value not in tabs_src:
-                add("tablet_count_changed", f"“{n.value:g} tablet(s)” does not match the instruction.")
+        names = "|".join(re.escape(text.normalize(n)) for n in item.drug_names) or r"(?!)"
+        counts = [(float(m.group(1)), m.start()) for m in re.finditer(
+            rf"\b(\d{{1,2}}) (?:of (?:the|my|your) )?(?:\d+(?:\.\d+)? ?mg )?(?:{names})\b", cand)]
+        counts += [(n.value, n.span[0]) for n in cand_nums if n.unit == "tablets"]
+        for value, pos in counts:
+            if value > max(tabs_src) and re.match(r"\d+\s*(?:tablets?|pills?|tabs?|capsules?)?\s*(?:total\s+)?(?:in|per) (?:1 |a |one )?(?:day|24)", cand[pos:pos + 60]):
+                continue   # a daily total ("no more than 9 pills in a day"), not a per-dose count
+            if value not in tabs_src:
+                add("tablet_count_changed", f"“{value:g}” tablets or pills per dose does not match the instruction.")
+        src_freq = {n.value for n in src_nums if n.unit == "per_day"}
+        m = re.search(rf"\b(\d) (?:{names})s? (?:a|per|each) day\b", cand)
+        if m and src_freq and float(m.group(1)) not in {f * t for f in src_freq for t in tabs_src}:
+            add("frequency_changed", f"“{m.group(0)}” does not match how often the instruction says to take it.")
+        if live(COMBINED) and not re.search(COMBINED, src):
+            add("doses_combined", "This describes taking doses together; the instruction spaces them out.")
         pairs = re.findall(r"(\d+(?:\.\d+)?)\s*(?:mg)?\s*/\s*(\d+(?:\.\d+)?)", src)
         for a, b in pairs:
             if a != b and re.search(rf"\b{re.escape(b)}\s*(?:mg)?\s*/\s*{re.escape(a)}\b", cand):
@@ -213,8 +234,16 @@ def compare(item, candidate: str, *, patient: bool) -> list[Change]:
             if not text.is_negated(cand, m.start()) and m.group(0) not in src:
                 add("action_delayed", f"“{m.group(0)}”: the instruction says to call when this happens, without waiting.")
                 break
-    if item.kind in ("appointment", "test") and live(r"\b(i|you) (don'?t|do not) (need|have) to (bring|go|get)\b|\bno need to (bring|go)\b"):
-        add("instruction_dropped", "This says something is not needed that the instruction asks for.")
+    if item.kind in ("appointment", "test"):
+        for m in re.finditer(SKIP_FOLLOW_UP, cand):
+            if not text.is_negated(cand, m.start()) or re.match(r"(no need|don'?t|do not|won'?t)", m.group(0)):
+                if not re.search(r"\b(don'?t|do not|never|won'?t|shouldn'?t) (skip|miss)\b", cand):
+                    add("instruction_dropped", f"“{m.group(0)}”: the instruction gives this visit or test without conditions.")
+                    break
+    if re.search(r"\bplenty\b|\blots of (fluids|water)\b|\bmore fluids\b", src) and live(RESTRICT_FLUIDS):
+        add("limit_reversed", "The instruction says to drink plenty; this says to drink less.")
+    if re.search(r"\bpackage directions\b|\bas directed\b", src) and live(UNLIMITED):
+        add("limit_loosened", "The instruction says to follow the package directions; this describes no limit.")
 
     # Emergency signs paired with something other than 911
     signs = emergency_sign_phrases(item)
@@ -264,7 +293,8 @@ def compare(item, candidate: str, *, patient: bool) -> list[Change]:
             add("prohibition_weakened", "The instruction says not to take this at all; this only limits the amount.")
         # Spanish: "Puede tomar ibuprofeno" where the original says not to take it.
         for f in item.facts:
-            if f.action and f.action.objects and re.search(r"(?<!no )\b(puede|pueden|podra|podria) (tomar|usar)\b", cand):
-                if any(re.search(rf"\b{re.escape(o.lower()[:6])}", cand) for o in f.action.objects):
+            if f.action and f.action.objects:
+                stems = "|".join(re.escape(o.lower()[:6]) for o in f.action.objects)
+                if re.search(rf"(?<!no )\b(puede|pueden|podra|podria) (tomar|usar)\b[^.]{{0,40}}\b({stems})", cand):
                     add("negation_possibly_lost", "The text appears to allow a medicine the original says not to take (“puede tomar…”).", f.id)
     return out

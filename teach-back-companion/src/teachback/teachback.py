@@ -16,7 +16,7 @@ from .models import CarePlan, Fact, Item
 
 MAX_INPUT = 2000
 # Durations compared in days, so "2 months" conflicts with "2 weeks".
-DURATION_DAYS = {"days": 1, "weeks": 7, "months": 30}
+DURATION_DAYS = {"days": 1, "weeks": 7, "months": 30, "years": 365}
 SKIP_VERBS = ["skip", "stop taking", "quit taking", "miss", "leave it out", "leave out", "go without", "come off",
               "go off", "get off", "done with it", "leave the rest", "throw away", "throw out", "won't need it",
               "no longer need"]
